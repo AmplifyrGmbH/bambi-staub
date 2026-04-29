@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #FBF9F4;
+    color: #2C2C2C;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    text-align: left;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Noto Serif', Georgia, serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block px-8 py-3.5 bg-forest text-linen font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-forest-light hover:shadow-lg;
+  }
+
+  .btn-outline {
+    @apply inline-block px-8 py-3.5 border border-linen text-linen font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-linen hover:text-forest;
+  }
+
+  .btn-outline-dark {
+    @apply inline-block px-8 py-3.5 border border-forest text-forest font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-forest hover:text-linen;
+  }
+
+  .section-label {
+    @apply font-sans text-xs font-medium tracking-widest uppercase text-forest-muted mb-3;
+  }
+
+  .section-heading {
+    @apply font-serif text-4xl md:text-5xl font-light text-charcoal leading-tight;
+  }
+
+  .divider {
+    @apply w-12 h-px bg-forest-muted;
+  }
+}
+
+/* Glassmorphism nav */
+.glass-nav {
+  background: rgba(251, 249, 244, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(44, 62, 51, 0.08);
+}
+
+/* Gallery lightbox overlay */
+.gallery-overlay {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Smooth image hover */
+.img-hover {
+  overflow: hidden;
+}
+.img-hover img {
+  transition: transform 0.6s ease;
+}
+.img-hover:hover img {
+  transform: scale(1.04);
+}
