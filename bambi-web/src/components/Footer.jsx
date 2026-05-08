@@ -63,8 +63,8 @@ export default function Footer() {
           </address>
           <div className="mt-6">
             <p className="font-sans text-xs tracking-widest uppercase text-linen/40 mb-2">Kontakt</p>
-            <a href="mailto:info@haus-bambi.ch" className="font-sans text-sm text-linen/60 hover:text-linen transition-colors">
-              info@haus-bambi.ch
+            <a href="mailto:info@bambi-staub.ch" className="font-sans text-sm text-linen/60 hover:text-linen transition-colors">
+              info@bambi-staub.ch
             </a>
           </div>
         </div>

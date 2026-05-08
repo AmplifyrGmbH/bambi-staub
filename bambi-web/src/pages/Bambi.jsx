@@ -2,11 +2,11 @@ import { useState } from 'react'
 
 
 const ausstattung = [
-  { kategorie: 'Konnektivität', items: ['Gratis WLAN (Highspeed)', 'Flachbildschirm-TV', 'Radio'] },
-  { kategorie: 'Küche', items: ['Vollausgestattete Küche', 'Fondue-Set', 'Raclette-Gerät', 'Geschirrspüler', 'Kaffeemaschine', 'Backofen'] },
-  { kategorie: 'Komfort', items: ['Kachelofen / Holzofen', 'Arvenholz-Vertäfelung', 'Balkon & Terrasse', 'Gemütliche Sitzecken'] },
-  { kategorie: 'Praktisches', items: ['Skikeller mit Trockenraum', 'Parkplatz (2 Fahrzeuge)', 'Waschmaschine', 'Kinderstuhl & -bett auf Anfrage'] },
-  { kategorie: 'Ausssen', items: ['Grosser Garten', 'Steinofen / Pizzaofen', 'Grillplatz', 'Liegestühle'] },
+  { kategorie: 'Entertainment', items: ['Flachbildschirm-TV', 'Sat-TV', 'Radio', 'CD-Player', 'Gratis WLAN'] },
+  { kategorie: 'Küche', items: ['Nespresso Maschine', 'Bialetti Moka & Milchschäumer', 'Herd & Backofen', 'Dunstabzugshaube', 'Toaster', 'Wasserkocher', 'Kühlschrank & Gefrierfach'] },
+  { kategorie: 'Komfort', items: ['Holzofen', 'Arvenholz-Vertäfelung', 'Sonnenterrasse (20 m²)', 'Heizung in allen Räumen', 'Gemütliche Sitzecken'] },
+  { kategorie: 'Praktisches', items: ['Parkplatz (1 Fahrzeug)', 'Staubsauger', 'Kinderstuhl & -bett auf Anfrage'] },
+  { kategorie: 'Aussen', items: ['Garten (650 m²)', 'Grillplatz', 'Outdoormöbel', 'Direkter Zugang zur Waldemme', 'Gedeckter Sitzplatz unter Terrasse'] },
 ]
 
 const zimmer = [
@@ -41,12 +41,12 @@ const zimmer = [
   },
   {
     name: 'Schlafzimmer',
-    beschreibung: 'Mehrere Schlafzimmer mit traditionellem Bergcharme. Ruhige Atmosphäre, natürliche Materialien und die heilende Kraft des Arvenholzes für erholsamen Schlaf.',
+    beschreibung: 'Das Schlafzimmer bietet 4 Etagenbetten – ideal für Familien mit Kindern. Ruhige Atmosphäre, natürliche Materialien und die heilende Kraft des Arvenholzes. Im Wohnzimmer und im Untergeschoss befinden sich zusätzlich je ein ausziehbares Schlafsofa.',
     bilder: ['/images/IMG_5773.jpeg', '/images/IMG_5776.jpeg'],
   },
   {
     name: 'Untergeschoss',
-    beschreibung: 'Das gemütliche Untergeschoss bietet zusätzlichen Wohnraum mit Sitzecke, Kaminofen und direktem Zugang zum Skikeller.',
+    beschreibung: 'Das gemütliche Untergeschoss bietet zusätzlichen Wohnraum mit einem Schlafsofa, Sesseln und TV. Der Zugang erfolgt vom Schlafzimmer aus über eine Bodenklappe mit Leiter – oder von aussen über die Gartentreppe.',
     bilder: [
       '/images/IMG_5730.jpeg', '/images/IMG_5718.jpeg', '/images/IMG_5720 (1).jpeg',
       '/images/IMG_5721 (1).jpeg', '/images/IMG_5723.jpeg', '/images/IMG_5724.jpeg',
@@ -56,7 +56,7 @@ const zimmer = [
   },
   {
     name: 'Aussenbereich',
-    beschreibung: 'Der grosszügige Balkon lädt zum Verweilen ein – Waldblick inklusive. Im Garten warten ein Steinofen für Pizzaabende und ein Grillplatz für unvergessliche Sommerabende.',
+    beschreibung: 'Die 20 m² grosse Sonnenterrasse zeigt Richtung Süden – mit Blick auf das Brienzer Rothorn und die Waldemme. Unter der Terrasse befindet sich ein gedeckter Sitzplatz mit Grillzubehör. Das Grundstück bietet direkten Zugang zum Bach, an dem Kinder bei tiefem Wasserstand spielen können.',
     bilder: [
       '/images/IMG_5669.jpeg', '/images/IMG_5671.jpeg', '/images/IMG_5672.jpeg',
       '/images/IMG_5675.jpeg', '/images/IMG_5676.jpeg', '/images/IMG_5677.jpeg',

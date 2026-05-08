@@ -6,6 +6,7 @@ const activities = [
       { titel: 'Skifahren', text: '13 Anlagen zwischen 1165 m und 2340 m Höhe – vom Chalet sind es ca. 8–10 Minuten zu Fuss bis zur nächsten Bahn. Pisten für alle Niveaus.' },
       { titel: 'Schneeschuh & Winterwandern', text: 'Markierte Schneeschuhrouten durch verschneite Wälder und Moorlandschaften.' },
       { titel: 'Schlitteln', text: 'Natürliche Rodelabfahrten für Gross und Klein – familienfreundlicher Winterspass.' },
+      { titel: 'Eislaufen', text: 'Eislauffläche in der Region – Spass auf dem Eis für die ganze Familie.' },
       { titel: 'Langlaufen', text: 'Gepflegte Langlaufloipen im Entlebuch für Klassisch und Skating.' },
       { titel: 'Ski- & Snowboardkurse', text: 'Schneesportschule direkt vor Ort – ideal für Anfänger und zur Technikverbesserung.' },
     ],
@@ -20,6 +21,10 @@ const activities = [
       { titel: 'Moorwelten Rossweid', text: 'Einzigartiges Moorerlebnis mit dem Erlebnisweg «Mooraculum» – Naturwunder hautnah.' },
       { titel: 'Sommerrodelbahn Rischli', text: 'Nervenkitzel auf der Sommerrodelbahn – Spass für die ganze Familie.' },
       { titel: 'Fischen am Eisee', text: 'Angeln in klarem Bergseewasser – Erholung pur in unberührter Natur.' },
+      { titel: 'Paragliding', text: 'Thermik und Alpenpanorama – Sörenberg ist ein bekannter Startplatz für Gleitschirmpiloten.' },
+      { titel: 'Reiten', text: 'Reitplatz und Reitausflüge durch die Entlebucher Landschaft für Gross und Klein.' },
+      { titel: 'Minigolf', text: 'Minigolfanlage in der Region – idealer Zeitvertreib für die ganze Familie.' },
+      { titel: 'Hallenbad', text: 'Hallenbad mit Sprudelbad in der Nähe – entspanntes Baden auch bei schlechtem Wetter.' },
       { titel: 'Genusswanderungen', text: 'Geführte Touren zu lokalen Alpbeizen und Käsereien – Sörenberger Gastfreundschaft erleben.' },
     ],
   },
@@ -30,6 +35,7 @@ const activities = [
       { titel: 'Brienzer Rothorn Bahn', text: 'Die Dampfzahnradbahn auf den Rothorn (2\'348 m) – seit 1892 ein unvergessliches Erlebnis mit Panoramablick auf Alpen und Voralpen.' },
       { titel: 'UNESCO Biosphäre', text: 'Exkursionen, Kurse und geführte Erlebnisse in einer der artenreichsten Regionen der Schweiz.' },
       { titel: 'Grillstellen & Picknick', text: 'Zahlreiche Grillstellen und Picknickplätze inmitten der Natur.' },
+      { titel: 'Fahrrad-Verleih', text: 'Fahrrad-Verleih direkt neben dem Chalet – spontane Radtouren durch die Biosphäre sind sofort möglich.' },
       { titel: 'Lokale Produkte', text: 'Frischer Alpkäse, Entlebucher Spezialitäten und regionale Küche direkt vom Produzenten.' },
     ],
   },
@@ -102,6 +108,30 @@ export default function Lage() {
             <div className="img-hover h-64 mt-8">
               <img src="/images/IMG_5699.jpeg" alt="Alpenpanorama Sörenberg" className="w-full h-full object-cover" />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── DISTANZEN ── */}
+      <section className="bg-linen py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10">
+            <h2 className="section-heading">Alles in Reichweite</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+            {[
+              { distanz: '50 m', label: 'Postautohaltestelle' },
+              { distanz: '350 m', label: 'Sesselbahn' },
+              { distanz: '500 m', label: 'Dorfzentrum & Restaurants' },
+              { distanz: '550 m', label: 'Gondelbahn' },
+              { distanz: '550 m', label: 'Lebensmittel' },
+              { distanz: '17 km', label: 'Bahnhof' },
+            ].map(({ distanz, label }) => (
+              <div key={label} className="text-center bg-cream p-5">
+                <p className="font-serif text-2xl font-light text-forest mb-1">{distanz}</p>
+                <p className="font-sans text-xs text-stone tracking-wide">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -198,7 +228,7 @@ export default function Lage() {
               },
               {
                 title: 'Mit dem ÖV',
-                text: 'Zug nach Schüpfheim, dann mit dem Bus Richtung Sörenberg (Entlebuch Bahn). Haltestelle Sörenberg, Dorf.',
+                text: 'Zug nach Schüpfheim, dann mit dem Bus Richtung Sörenberg (Entlebuch Bahn). Die Postautohaltestelle befindet sich nur 50 m neben dem Chalet.',
               },
               {
                 title: 'Adresse',
