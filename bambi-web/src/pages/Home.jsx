@@ -1,6 +1,63 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+const familieImages = [
+  '/images/familie/IMG_3074.jpg',
+  '/images/familie/IMG_3077.jpg',
+  '/images/familie/IMG_3084.jpg',
+  '/images/familie/IMG_3087.jpg',
+  '/images/familie/IMG_3798.JPG',
+  '/images/familie/IMG_3807.JPG',
+  '/images/familie/BCTH5054.jpeg',
+  '/images/familie/FPAJ0093.jpeg',
+  '/images/familie/GYNY5816.jpeg',
+  '/images/familie/NGUQ2505.jpeg',
+  '/images/familie/SEQN5232.jpeg',
+  '/images/familie/SQMS2579.jpeg',
+]
+
+function FamilieStack() {
+  const [current, setCurrent] = useState(0)
+  const total = familieImages.length
+  const prev = () => setCurrent(i => (i - 1 + total) % total)
+  const next = () => setCurrent(i => (i + 1) % total)
+
+  return (
+    <div className="relative h-80 md:h-[420px]">
+      {/* Bild */}
+      <div className="absolute inset-0 mx-8 shadow-lg overflow-hidden">
+        {familieImages.map((src, i) => (
+          <div
+            key={src}
+            className="absolute inset-0"
+            style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+          >
+            <img src={src} alt="Familie Staub" className="w-full h-full object-cover" />
+          </div>
+        ))}
+        {/* Dots */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          {familieImages.map((_, i) => (
+            <button key={i} onClick={() => setCurrent(i)} className={`h-1.5 rounded-full ${i === current ? 'w-4 bg-linen' : 'w-1.5 bg-linen/50'}`} aria-label={`Bild ${i + 1}`} />
+          ))}
+        </div>
+      </div>
+
+      {/* Pfeile – halb ausserhalb */}
+      <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center bg-linen shadow-md hover:bg-linen-dark transition-colors" aria-label="Zurück">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 text-charcoal">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 15l-5-5 5-5" />
+        </svg>
+      </button>
+      <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center bg-linen shadow-md hover:bg-linen-dark transition-colors" aria-label="Weiter">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 text-charcoal">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 5l5 5-5 5" />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
 const stackImages = [
   { src: '/images/IMG_5775.jpeg', alt: 'Esszimmer mit Arvenholz' },
   { src: '/images/IMG_5750.jpeg', alt: 'Wohnbereich mit Holzvertäfelung' },
@@ -13,40 +70,34 @@ const stackImages = [
 function PhotoStack() {
   const [current, setCurrent] = useState(0)
   const total = stackImages.length
-
   const prev = () => setCurrent(i => (i - 1 + total) % total)
   const next = () => setCurrent(i => (i + 1) % total)
 
   return (
-    <div className="relative w-full h-[460px] overflow-hidden">
-      {stackImages.map((img, i) => (
-        <div
-          key={img.src}
-          className="absolute inset-0 transition-opacity duration-500"
-          style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
-        >
-          <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+    <div className="relative w-full h-[460px]">
+      <div className="absolute inset-0 mx-8 shadow-lg overflow-hidden">
+        {stackImages.map((img, i) => (
+          <div key={img.src} className="absolute inset-0" style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}>
+            <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+          </div>
+        ))}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          {stackImages.map((_, i) => (
+            <button key={i} onClick={() => setCurrent(i)} className={`h-1.5 rounded-full ${i === current ? 'w-4 bg-linen' : 'w-1.5 bg-linen/50'}`} aria-label={`Bild ${i + 1}`} />
+          ))}
         </div>
-      ))}
+      </div>
 
-      {/* Pfeile */}
-      <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-linen/80 hover:bg-linen transition-colors" aria-label="Zurück">
+      <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center bg-linen shadow-md" aria-label="Zurück">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 text-charcoal">
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 15l-5-5 5-5" />
         </svg>
       </button>
-      <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-linen/80 hover:bg-linen transition-colors" aria-label="Weiter">
+      <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center bg-linen shadow-md" aria-label="Weiter">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4 text-charcoal">
           <path strokeLinecap="round" strokeLinejoin="round" d="M7 5l5 5-5 5" />
         </svg>
       </button>
-
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-        {stackImages.map((_, i) => (
-          <button key={i} onClick={() => setCurrent(i)} className={`w-1.5 h-1.5 rounded-full transition-all ${i === current ? 'bg-linen w-4' : 'bg-linen/50'}`} aria-label={`Bild ${i + 1}`} />
-        ))}
-      </div>
     </div>
   )
 }
@@ -99,7 +150,7 @@ export default function Home() {
       <section className="relative h-screen min-h-[600px] flex items-center">
         <div className="absolute inset-0">
           <img
-            src="/images/IMG_5679.jpeg"
+            src="/images/hero/Hero_Main.JPG"
             alt="Chalet Bambi – Alpenpanorama vom Balkon in Sörenberg"
             className="w-full h-full object-cover"
           />
@@ -129,7 +180,7 @@ export default function Home() {
 
           {/* Text */}
           <div className="lg:pl-8">
-            <p className="section-label">Das Haus</p>
+            <p className="section-label">Bambi</p>
             <div className="divider mb-6" />
             <h2 className="section-heading mb-6">
               Wo Tradition auf alpine Gemütlichkeit trifft
@@ -212,13 +263,7 @@ export default function Home() {
       {/* ── ÜBER UNS ── */}
       <section className="bg-linen-dark py-24 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="img-hover h-80 md:h-[420px] shadow-lg">
-            <img
-              src="/images/IMG_5730.jpeg"
-              alt="Gemütliches Wohnzimmer im Chalet Bambi"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <FamilieStack />
           <div className="lg:pl-8">
             <p className="section-label">Über uns</p>
             <div className="divider mb-6" />

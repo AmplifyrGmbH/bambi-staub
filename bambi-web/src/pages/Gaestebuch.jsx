@@ -94,7 +94,7 @@ export default function Gaestebuch() {
       <section className="relative h-[50vh] min-h-[360px] flex items-end">
         <div className="absolute inset-0">
           <img
-            src="/images/IMG_5669.jpeg"
+            src="/images/hero/Hero_Gästebuch.jpg"
             alt="Balkon Chalet Bambi"
             className="w-full h-full object-cover"
           />

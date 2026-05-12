@@ -6,7 +6,7 @@ const BOOKING_URL = 'https://booking.haus-bambi.ch'
 const navLinks = [
   {
     to: '/bambi',
-    label: 'Das Haus',
+    label: 'Bambi',
     sub: [
       { label: 'Räumlichkeiten', hash: '#raeumlichkeiten' },
       { label: 'Ausstattung', hash: '#ausstattung' },
@@ -23,15 +23,7 @@ const navLinks = [
       { label: 'Anreise', hash: '#anreise' },
     ],
   },
-  {
-    to: '/ueber-uns',
-    label: 'Über uns',
-    sub: [
-      { label: 'Geschichte', hash: '#geschichte' },
-      { label: 'Familie Staub', hash: '#familie' },
-      { label: 'Unsere Werte', hash: '#werte' },
-    ],
-  },
+  { to: '/ueber-uns', label: 'Über uns' },
   { to: '/gaestebuch', label: 'Gästebuch' },
 ]
 

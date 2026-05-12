@@ -37,7 +37,7 @@ export default function Footer() {
           <p className="font-sans text-xs tracking-widest uppercase text-linen/40 mb-5">Navigation</p>
           <nav className="flex flex-col gap-2.5">
             {[
-              { to: '/bambi', label: 'Das Haus' },
+              { to: '/bambi', label: 'Bambi' },
               { to: '/lage', label: 'Umgebung & Aktivitäten' },
               { to: '/ueber-uns', label: 'Über uns' },
               { to: '/gaestebuch', label: 'Gästebuch' },

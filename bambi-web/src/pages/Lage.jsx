@@ -48,7 +48,7 @@ export default function Lage() {
       <section className="relative h-[60vh] min-h-[400px] flex items-end">
         <div className="absolute inset-0">
           <img
-            src="/images/IMG_5685.jpeg"
+            src="/images/hero/Hero_Umgebung_Aktivitäten.jpg"
             alt="Panoramablick von Sörenberg"
             className="w-full h-full object-cover"
           />
