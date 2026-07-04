@@ -104,6 +104,39 @@
   });
 })();
 
+/* ── FAMILIE SLIDER ───────────────────────────────────────────── */
+(function () {
+  const slider = document.querySelector('.familie-slider');
+  if (!slider) return;
+
+  const slides   = slider.querySelectorAll('.familie-slide');
+  const dotsWrap = document.getElementById('familie-dots');
+  const prev     = slider.querySelector('.familie-prev');
+  const next     = slider.querySelector('.familie-next');
+  let current    = 0;
+
+  // Build dots
+  slides.forEach(function (_, i) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Bild ' + (i + 1));
+    dot.addEventListener('click', function () { goTo(i); });
+    dotsWrap.appendChild(dot);
+  });
+
+  function goTo(n) {
+    const dots = dotsWrap.querySelectorAll('.dot');
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = ((n % slides.length) + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+})();
+
 /* ── STAR RATING ──────────────────────────────────────────────── */
 (function () {
   const container = document.querySelector('.star-rating');

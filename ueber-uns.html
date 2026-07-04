@@ -45,9 +45,27 @@
           <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
         </a>
         <div class="dropdown">
+          <div class="dropdown-inner">
           <button class="dropdown-item" data-href="/bambi" data-hash="#raeumlichkeiten">Räumlichkeiten</button>
           <button class="dropdown-item" data-href="/bambi" data-hash="#ausstattung">Ausstattung</button>
-          <button class="dropdown-item" data-href="/bambi" data-hash="#hausordnung">Hausordnung</button>
+          <button class="dropdown-item" data-href="/bambi" data-hash="#gaestebuch">Gästebuch</button>
+        </div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="/stay-guide" class="nav-link" data-page="stay-guide">
+          Stay Guide
+          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
+        </a>
+        <div class="dropdown">
+          <div class="dropdown-inner">
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#anreise-abreise">An- &amp; Abreise</button>
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#heizung">Heizung</button>
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#warmwasser">Warmwasser &amp; Boiler</button>
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#kueche">Küche &amp; Geräte</button>
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#hausordnung">Hausordnung</button>
+          <button class="dropdown-item" data-href="/stay-guide" data-hash="#notfall">Notfallnummern</button>
+        </div>
         </div>
       </div>
       <div class="nav-item">
@@ -56,14 +74,14 @@
           <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
         </a>
         <div class="dropdown">
+          <div class="dropdown-inner">
           <button class="dropdown-item" data-href="/lage" data-hash="#biosphaere">UNESCO Biosphäre</button>
           <button class="dropdown-item" data-href="/lage" data-hash="#winter">Aktivitäten</button>
           <button class="dropdown-item" data-href="/lage" data-hash="#kulinarik">Kulinarik</button>
-          <button class="dropdown-item" data-href="/lage" data-hash="#anreise">Anreise</button>
+        </div>
         </div>
       </div>
       <a href="/ueber-uns" class="nav-link active" data-page="ueber-uns">Über uns</a>
-      <a href="/gaestebuch" class="nav-link" data-page="gaestebuch">Gästebuch</a>
     </nav>
     <div class="header-actions">
       <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="header-cta">Jetzt buchen</a>
@@ -84,9 +102,14 @@
         <div class="mobile-sub">
           <a href="/bambi#raeumlichkeiten" class="mobile-sub-link">Räumlichkeiten</a>
           <a href="/bambi#ausstattung" class="mobile-sub-link">Ausstattung</a>
-          <a href="/bambi#hausordnung" class="mobile-sub-link">Hausordnung</a>
+          <a href="/bambi#gaestebuch" class="mobile-sub-link">Gästebuch</a>
         </div>
       </div>
+      <div class="mobile-nav-item">
+        <div class="mobile-nav-row">
+          <a href="/stay-guide" class="mobile-nav-link">Stay Guide</a>
+          <button class="mobile-sub-toggle" aria-label="Untermenü Stay Guide"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
+        </div>
       <div class="mobile-nav-item">
         <div class="mobile-nav-row">
           <a href="/lage" class="mobile-nav-link">Umgebung &amp; Aktivitäten</a>
@@ -96,11 +119,9 @@
           <a href="/lage#biosphaere" class="mobile-sub-link">UNESCO Biosphäre</a>
           <a href="/lage#winter" class="mobile-sub-link">Aktivitäten</a>
           <a href="/lage#kulinarik" class="mobile-sub-link">Kulinarik</a>
-          <a href="/lage#anreise" class="mobile-sub-link">Anreise</a>
         </div>
       </div>
       <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/ueber-uns" class="mobile-nav-link active">Über uns</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/gaestebuch" class="mobile-nav-link">Gästebuch</a></div></div>
       <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="mobile-cta">Jetzt buchen</a>
     </div>
   </div>
@@ -111,11 +132,10 @@
   <!-- ── HERO ─────────────────────────────────────────────────── -->
   <section class="hero hero--short" aria-label="Über uns">
     <div class="hero-bg">
-      <img src="Bilder/hero/Hero_Über_uns.JPG" alt="Gemütliche Sitzecke im Chalet Bambi" width="1920" height="1080">
+      <img src="Bilder/hero/Hero_über_uns.jpeg" alt="Familie Staub – Chalet Bambi Sörenberg" width="1920" height="1080" style="object-position: center 30%">
       <div class="hero-gradient-full" aria-hidden="true"></div>
     </div>
     <div class="hero-content container">
-      <p class="hero-eyebrow section-label--light">Die Familie</p>
       <h1 class="hero-title" style="max-width:none">Über uns</h1>
       <p class="hero-subtitle">Drei Generationen, ein Haus, unzählige Erinnerungen</p>
     </div>
@@ -124,49 +144,47 @@
   <!-- ── GESCHICHTE & WURZELN ──────────────────────────────────── -->
   <section id="geschichte" class="section-linen">
     <div class="container">
-      <div class="ueber-grid" style="display:grid;grid-template-columns:1fr;gap:4rem;align-items:start">
 
-        <!-- Text -->
-        <div>
+      <!-- Block 1: Text links, Portrait rechts -->
+      <div class="geschichte-row">
+        <div class="geschichte-text">
           <p class="section-label">Geschichte &amp; Wurzeln</p>
           <div class="divider"></div>
-          <h2 class="section-heading" style="margin-bottom:2rem">Mit Herzblut erbaut – mit Liebe weitergeführt</h2>
-          <div style="display:flex;flex-direction:column;gap:1.25rem">
-            <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75">
-              Chalet Bambi hat eine lange Geschichte. Es waren unsere Grosseltern, die das Haus in Sörenberg aufgebaut und ihm seinen unverwechselbaren Charakter gegeben haben. Mit eigenen Händen, viel Leidenschaft und einem Gespür für Qualität entstanden die handgefertigte Arvenholz-Vertäfelung, die warmen Holzböden und die gemütliche Atmosphäre, die noch heute jeden Gast empfängt.
-            </p>
-            <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75">
-              Ihre Liebe zum Detail, ihr Gespür für Qualität und ihre Freude an der Gastfreundschaft sind bis heute in jedem Winkel des Hauses zu spüren. Was als Rückzugsort für die eigene Familie begann, wurde über die Jahrzehnte zu einem Ort, an dem viele Generationen unvergessliche Momente erlebt haben.
-            </p>
-            <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75">
-              Heute pflegen wir, die Familie Staub, dieses Erbe mit der gleichen Sorgfalt und Herzlichkeit weiter. Wir haben das Haus behutsam modernisiert, ohne seinen Charakter zu verlieren: Schnelles WLAN trifft auf handgeschnitztes Holz, moderner Komfort auf alpine Tradition.
-            </p>
-            <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75">
-              Wenn Sie Chalet Bambi besuchen, werden Sie nicht nur ein Ferienhaus mieten – Sie werden Teil einer Geschichte, die weitergeschrieben wird.
-            </p>
-          </div>
+          <h2 class="section-heading">Mit Herzblut erbaut – mit Liebe weitergeführt</h2>
+          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.85;margin-top:1.5rem">
+            Chalet Bambi hat eine lange Geschichte. Es waren unsere Grosseltern, die das Haus in Sörenberg aufgebaut und ihm seinen unverwechselbaren Charakter gegeben haben. Mit eigenen Händen, viel Leidenschaft und einem Gespür für Qualität entstanden die handgefertigte Holz-Vertäfelung, die warmen Holzböden und die gemütliche Atmosphäre, die noch heute jeden Gast empfängt.
+          </p>
+          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.85;margin-top:1.25rem">
+            Ihre Liebe zum Detail und ihre Freude an der Gastfreundschaft sind bis heute in jedem Winkel des Hauses zu spüren. Was als Rückzugsort für die eigene Familie begann, wurde über die Jahrzehnte zu einem Ort, an dem viele Generationen unvergessliche Momente erlebt haben.
+          </p>
         </div>
-
-        <!-- Bilder -->
-        <div class="ueber-images">
-          <div class="ueber-main-img">
-            <img src="Bilder/aussenbereich/Chalet_Bambi_Titelseite_Neu_2025.JPG" alt="Chalet Bambi – Aussenansicht 2025" loading="lazy" width="900" height="600">
-          </div>
-          <div class="ueber-sub-grid">
-            <div class="ueber-sub-img">
-              <img src="Bilder/grosseltern/bde362e6-58ad-4b12-b5d7-4fb0a39f899e.jpeg" alt="Die Grosseltern – Erbauer des Chalet Bambi" loading="lazy" width="450" height="400" style="object-position:center 15%">
-            </div>
-            <div class="ueber-sub-img">
-              <img src="Bilder/grosseltern/bb3ab447-68f9-40c3-b53e-089bc2857c40.jpeg" alt="Die Grosseltern vor dem Chalet" loading="lazy" width="450" height="400" style="object-position:center 15%">
-            </div>
-          </div>
-          <div class="ueber-third-img">
-            <img src="Bilder/grosseltern/d191f743-8d2c-4737-a010-666e22d1aef6.jpeg" alt="Grossvater beim Abendessen im Chalet-Garten" loading="lazy" width="900" height="400" style="object-position:center 20%">
-          </div>
-          <p class="img-caption">Die Grosseltern – Erbauer und Seele des Chalet Bambi</p>
+        <div class="geschichte-img">
+          <img src="Bilder/grosseltern/bb3ab447-68f9-40c3-b53e-089bc2857c40.jpeg" alt="Die Grosseltern vor dem Chalet Bambi" loading="lazy" width="600" height="720" style="object-position:center 15%">
         </div>
-
       </div>
+
+      <!-- Block 2: Breites Bild mit Caption -->
+      <div class="geschichte-wide" style="margin-top:4rem">
+        <img src="Bilder/grosseltern/d191f743-8d2c-4737-a010-666e22d1aef6.jpeg" alt="Die Grosseltern im Garten des Chalet Bambi" loading="lazy" width="1200" height="500" style="object-position:center 20%">
+        <p class="img-caption" style="margin-top:.75rem">Die Grosseltern – Erbauer und Seele des Chalet Bambi</p>
+      </div>
+
+      <!-- Block 3: Zwei Portraits + Text -->
+      <div class="geschichte-row" style="margin-top:4rem">
+        <div class="geschichte-img-pair">
+          <img src="Bilder/grosseltern/bde362e6-58ad-4b12-b5d7-4fb0a39f899e.jpeg" alt="Die Grosseltern" loading="lazy" width="400" height="500" style="object-position:center 15%">
+          <img src="Bilder/grosseltern/1c911833-40e5-4597-8694-2831ad14551a.jpeg" alt="Die Grosseltern – frühere Jahre" loading="lazy" width="400" height="500" style="object-position:center 20%">
+        </div>
+        <div class="geschichte-text">
+          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.85">
+            Heute pflegen wir, die Familie Staub, dieses Erbe mit der gleichen Sorgfalt und Herzlichkeit weiter. Wir haben das Haus behutsam modernisiert, ohne seinen Charakter zu verlieren – moderner Komfort trifft auf alpine Tradition.
+          </p>
+          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.85;margin-top:1.25rem">
+            Wenn Sie Chalet Bambi besuchen, werden Sie nicht nur ein Ferienhaus mieten – Sie werden Teil einer Geschichte, die weitergeschrieben wird.
+          </p>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -180,19 +198,28 @@
         <p class="text-intro">Wir sind Familie Staub aus der Schweiz. Chalet Bambi liegt uns am Herzen – als Ort der Begegnung, der Erholung und der Freude an der Natur. Wir freuen uns, diesen besonderen Ort mit Ihnen zu teilen.</p>
       </div>
 
-      <div class="photo-grid">
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3074.jpg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3077.jpg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3084.jpg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3087.jpg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3798.JPG" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/IMG_3807.JPG" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/BCTH5054.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/FPAJ0093.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/GYNY5816.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/NGUQ2505.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/SEQN5232.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
-        <div class="photo-grid-item"><img src="Bilder/familie/SQMS2579.jpeg" alt="Familie Staub" loading="lazy" width="400" height="400"></div>
+      <div class="familie-slider">
+        <div class="familie-slides">
+          <div class="familie-slide active"><img src="Bilder/familie/IMG_3074.jpg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/IMG_3077.jpg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/IMG_3084.jpg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/IMG_3087.jpg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/IMG_3798.JPG" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/IMG_3807.JPG" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/BCTH5054.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/FPAJ0093.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/GYNY5816.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/NGUQ2505.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/SEQN5232.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+          <div class="familie-slide"><img src="Bilder/familie/SQMS2579.jpeg" alt="Familie Staub" loading="lazy" width="800" height="600"></div>
+        </div>
+        <button class="familie-prev slider-btn" aria-label="Vorheriges Bild">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg>
+        </button>
+        <button class="familie-next slider-btn" aria-label="Nächstes Bild">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 5l5 5-5 5"/></svg>
+        </button>
+        <div class="slider-dots" id="familie-dots"></div>
       </div>
     </div>
   </section>
@@ -216,9 +243,9 @@
         <p class="footer-col-label">Navigation</p>
         <nav class="footer-nav" aria-label="Footer-Navigation">
           <a href="/bambi">Bambi</a>
+          <a href="/stay-guide">Stay Guide</a>
           <a href="/lage">Umgebung &amp; Aktivitäten</a>
           <a href="/ueber-uns">Über uns</a>
-          <a href="/gaestebuch">Gästebuch</a>
         </nav>
       </div>
       <div class="footer-contact">
