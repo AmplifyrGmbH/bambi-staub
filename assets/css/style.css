@@ -1633,6 +1633,58 @@ h1, h2, h3, h4 {
 }
 .emergency-number:hover { text-decoration: underline; }
 
+/* ── MOBILE OVERRIDES ────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Section padding */
+  .section-linen,
+  .section-linen-dark,
+  .section-cream,
+  .section-narrow     { padding: 3.5rem var(--px); }
+  .section-forest     { padding: 3.5rem var(--px); }
+  .section-distances  { padding: 2.5rem var(--px); }
+  .editorial          { padding: 3.5rem var(--px); }
+  .footer-cta         { padding: 3rem var(--px); }
+  .footer-grid        { padding: 3rem var(--px); gap: 2rem; }
+  .footer-bottom      { padding: 1.25rem var(--px); }
+
+  /* Typography */
+  .section-heading    { font-size: 1.75rem; }
+  .forest-intro-title { font-size: 1.75rem; }
+  .footer-cta h2      { font-size: 1.6rem; }
+  .hero-subtitle      { font-size: 0.95rem; }
+  .room-name          { font-size: 1.6rem; }
+
+  /* Section header */
+  .section-header     { margin-bottom: 2.5rem; }
+
+  /* Rooms */
+  .rooms-list         { gap: 3rem; }
+  .room-item          { gap: 1.5rem; }
+
+  /* Hero content padding */
+  .hero--short .hero-content,
+  .hero--medium .hero-content { padding-bottom: 2.5rem; }
+
+  /* Slider */
+  .slider-inner       { height: 260px; }
+  .slider-inner--tall { height: 320px; }
+
+  /* Stats */
+  .stats-row          { gap: 0.5rem; }
+  .stat-number        { font-size: 1.35rem; }
+
+  /* Biosphäre images */
+  .bio-img-wrap         { height: 11rem; }
+  .bio-img-wrap--offset { margin-top: 0; }
+
+  /* Geschichte portrait pair: stack vertically */
+  .geschichte-img-pair              { grid-template-columns: 1fr; }
+  .geschichte-img-pair img          { height: 14rem; }
+
+  /* Geschichte portrait */
+  .geschichte-img img               { height: 20rem; }
+}
+
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (min-width: 640px) {
   .ausstattung-grid { grid-template-columns: repeat(3, 1fr); }
