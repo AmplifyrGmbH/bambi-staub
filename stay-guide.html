@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stay Guide – Chalet Bambi Sörenberg</title>
+  <title>Wissenswertes für Ihren Aufenthalt – Chalet Bambi Sörenberg</title>
   <meta name="description" content="Alle Infos für Ihren Aufenthalt im Chalet Bambi: An- und Abreise, Heizung, Warmwasser, Hausordnung, Geräte-Anleitungen und Notfallnummern.">
+  <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="https://bambi-staub.ch/stay-guide">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bambi-staub.ch/stay-guide">
-  <meta property="og:title" content="Stay Guide – Chalet Bambi Sörenberg">
+  <meta property="og:title" content="Wissenswertes für Ihren Aufenthalt – Chalet Bambi Sörenberg">
   <meta property="og:description" content="Alle wichtigen Infos für Ihren Aufenthalt im Chalet Bambi: Anreise, Hausordnung, Geräte und Notfallnummern.">
   <meta property="og:image" content="https://bambi-staub.ch/Bilder/hero/Hero_stayguide.JPG">
   <meta name="twitter:card" content="summary_large_image">
@@ -18,6 +19,47 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251,249,244,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(44,62,51,0.08);
+    }
+    .site-header .logo-name { color: var(--charcoal); }
+    .site-header .logo-sub  { color: var(--stone); }
+    .site-header .hamburger { color: var(--charcoal); }
+    .mobile-menu.open { overflow-y: auto; max-height: calc(100dvh - var(--header-h, 88px)); }
+    .mobile-menu .mobile-nav-link { padding: .6rem 0; font-size: .9rem; }
+    .mobile-menu .mobile-menu-inner { padding-top: .5rem; padding-bottom: 1rem; }
+    .mobile-menu .mobile-cta { margin-top: .75rem; }
+    .site-header .header-cta {
+      background: var(--forest);
+      border-color: var(--forest);
+      color: var(--linen);
+    }
+    .site-header .header-cta:hover { background: var(--forest-light); }
+    .sg-fold {
+      height: calc(100vh - var(--header-h, 88px));
+      height: calc(100dvh - var(--header-h, 88px));
+      display: flex;
+      flex-direction: column;
+    }
+    .sg-fold .hero--short {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+    }
+    @media (max-width: 767px) {
+      .hero-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+      .guide-card { padding: 1.1rem 1.25rem; }
+      .toc-nav { display: none; }
+      .sg-fold .hero--short { flex: 1; }
+    }
+  </style>
 
   <script type="application/ld+json">
   {
@@ -25,7 +67,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://bambi-staub.ch/"},
-      {"@type": "ListItem", "position": 2, "name": "Stay Guide", "item": "https://bambi-staub.ch/stay-guide"}
+      {"@type": "ListItem", "position": 2, "name": "Wissenswertes für Ihren Aufenthalt", "item": "https://bambi-staub.ch/stay-guide"}
     ]
   }
   </script>
@@ -38,55 +80,8 @@
       <span class="logo-name">Chalet Bambi</span>
       <span class="logo-sub">Sörenberg</span>
     </a>
-    <nav class="main-nav" aria-label="Hauptnavigation">
-      <div class="nav-item">
-        <a href="/bambi" class="nav-link" data-page="bambi">
-          Bambi
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="/bambi" data-hash="#raeumlichkeiten">Räumlichkeiten</button>
-          <button class="dropdown-item" data-href="/bambi" data-hash="#ausstattung">Ausstattung</button>
-          <button class="dropdown-item" data-href="/bambi" data-hash="#gaestebuch">Gästebuch</button>
-        </div>
-        </div>
-      </div>
-      <div class="nav-item">
-        <a href="/stay-guide" class="nav-link active" data-page="stay-guide">
-          Stay Guide
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#anreise-abreise">An- &amp; Abreise</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#heizung">Heizung</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#warmwasser">Warmwasser &amp; Boiler</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#waesche">Bettwäsche</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#kueche">Küche &amp; Geräte</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#hausordnung">Hausordnung</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#abfall">Abfall &amp; Recycling</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#notfall">Notfallnummern</button>
-        </div>
-        </div>
-      </div>
-      <div class="nav-item">
-        <a href="/lage" class="nav-link" data-page="lage">
-          Umgebung &amp; Aktivitäten
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="/lage" data-hash="#biosphaere">UNESCO Biosphäre</button>
-          <button class="dropdown-item" data-href="/lage" data-hash="#winter">Aktivitäten</button>
-          <button class="dropdown-item" data-href="/lage" data-hash="#kulinarik">Kulinarik</button>
-        </div>
-        </div>
-      </div>
-      <a href="/ueber-uns" class="nav-link" data-page="ueber-uns">Über uns</a>
-    </nav>
     <div class="header-actions">
-      <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="header-cta">Jetzt buchen</a>
+      <a href="/" class="header-cta">Zur Website</a>
       <button class="hamburger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -96,87 +91,81 @@
   </div>
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation">
     <div class="mobile-menu-inner">
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/bambi" class="mobile-nav-link">Bambi</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Bambi"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
-        </div>
-        <div class="mobile-sub">
-          <a href="/bambi#raeumlichkeiten" class="mobile-sub-link">Räumlichkeiten</a>
-          <a href="/bambi#ausstattung" class="mobile-sub-link">Ausstattung</a>
-          <a href="/bambi#gaestebuch" class="mobile-sub-link">Gästebuch</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/stay-guide" class="mobile-nav-link active">Stay Guide</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Stay Guide"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
-        </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/lage" class="mobile-nav-link">Umgebung &amp; Aktivitäten</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Lage"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
-        </div>
-        <div class="mobile-sub">
-          <a href="/lage#biosphaere" class="mobile-sub-link">UNESCO Biosphäre</a>
-          <a href="/lage#winter" class="mobile-sub-link">Aktivitäten</a>
-          <a href="/lage#kulinarik" class="mobile-sub-link">Kulinarik</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/ueber-uns" class="mobile-nav-link">Über uns</a></div></div>
-      <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="mobile-cta">Jetzt buchen</a>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#chalet-info" class="mobile-nav-link">Chalet auf einen Blick</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#anreise-abreise" class="mobile-nav-link">An- &amp; Abreise</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#heizung" class="mobile-nav-link">Heizung</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#warmwasser" class="mobile-nav-link">Warmwasser &amp; Boiler</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#waesche" class="mobile-nav-link">Bettwäsche</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#kueche" class="mobile-nav-link">Küche &amp; Geräte</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#hausordnung" class="mobile-nav-link">Hausordnung</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#abfall" class="mobile-nav-link">Abfall &amp; Recycling</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#notfall" class="mobile-nav-link">Wichtige Nummern</a></div></div>
+      <a href="/" class="mobile-cta">Zur Website</a>
     </div>
   </div>
 </header>
 
 <main>
 
+  <div class="sg-fold">
   <!-- ── HERO ─────────────────────────────────────────────────── -->
-  <section class="hero hero--short" aria-label="Stay Guide">
+  <section class="hero hero--short" aria-label="Wissenswertes für Ihren Aufenthalt">
     <div class="hero-bg">
-      <img src="Bilder/hero/Hero_stayguide.JPG" alt="Chalet Bambi – Ihr Zuhause in Sörenberg" width="1920" height="1080" style="object-position: center 85%">
+      <img src="Bilder/hero/Hero_Haus.JPG" alt="Wohnzimmer Chalet Bambi – gemütliches Holzinterieur" width="1920" height="1080" style="object-position: center 40%">
       <div class="hero-gradient-full" aria-hidden="true"></div>
     </div>
     <div class="hero-content container">
-      <h1 class="hero-title" style="max-width:none">Stay Guide</h1>
+      <h1 class="hero-title" style="max-width:none">Wissenswertes für Ihren Aufenthalt</h1>
       <p class="hero-subtitle">Alles, was Sie für einen perfekten Aufenthalt wissen müssen</p>
     </div>
   </section>
 
+  <!-- ── INHALTSVERZEICHNIS ───────────────────────────────────── -->
+  <nav class="toc-nav" aria-label="Inhaltsverzeichnis">
+    <div class="container">
+      <p class="toc-label">Inhalt</p>
+      <div class="toc-chips">
+        <a href="#chalet-info" class="toc-chip"><span class="toc-num">01</span>Chalet auf einen Blick</a>
+        <a href="#anreise-abreise" class="toc-chip"><span class="toc-num">02</span>An- &amp; Abreise</a>
+        <a href="#heizung" class="toc-chip"><span class="toc-num">03</span>Heizung</a>
+        <a href="#warmwasser" class="toc-chip"><span class="toc-num">04</span>Warmwasser &amp; Boiler</a>
+        <a href="#waesche" class="toc-chip"><span class="toc-num">05</span>Bettwäsche</a>
+        <a href="#kueche" class="toc-chip"><span class="toc-num">06</span>Küche &amp; Geräte</a>
+        <a href="#hausordnung" class="toc-chip"><span class="toc-num">07</span>Hausordnung</a>
+        <a href="#abfall" class="toc-chip"><span class="toc-num">08</span>Abfall &amp; Recycling</a>
+        <a href="#notfall" class="toc-chip"><span class="toc-num">09</span>Wichtige Nummern</a>
+      </div>
+    </div>
+  </nav>
+  </div><!-- /.sg-fold -->
+
   <!-- ── CHALET INFO ───────────────────────────────────────────── -->
   <section id="chalet-info" class="section-linen">
     <div class="container">
-      <div class="guide-section-row">
-        <div class="guide-section-text">
-          <p class="section-label">Das Chalet</p>
-          <div class="divider"></div>
-          <h2 class="section-heading">Chalet Bambi auf einen Blick</h2>
-          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75;margin-bottom:1.5rem">Baujahr 1972. Idyllisch gelegen auf einem 650 m² grossen Grundstück direkt an der Waldemme – mit direktem Blick auf das Brienzer Rothorn.</p>
-          <div class="info-box">
-            <div class="info-row">
-              <span class="info-label">Wohnfläche</span>
-              <span class="info-value">62 m² (35 m² OG + 27 m² UG)</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Schlafplätze</span>
-              <span class="info-value">4 Etagenbetten + 1 Bettsofa (1,60 × 2,00 m)</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Kapazität</span>
-              <span class="info-value">Ideal für 4 Personen</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Terrasse</span>
-              <span class="info-value">Grosse Sonnenterrasse Richtung Fluss</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Postadresse</span>
-              <span class="info-value">Rothornstrasse 40, Postfach 459, 6174 Sörenberg</span>
-            </div>
+      <div class="sg-section">
+        <h2 class="sg-title">Chalet Bambi auf einen Blick</h2>
+        <p class="guide-card-text" style="margin-bottom:1.5rem">Baujahr 1972. Idyllisch gelegen auf einem 650 m² grossen Grundstück direkt an der Waldemme – mit direktem Blick auf das Brienzer Rothorn.</p>
+        <div class="info-box">
+          <div class="info-row">
+            <span class="info-label">Wohnfläche</span>
+            <span class="info-value">35 m² Wohnbereich + 27 m² ausgebauter Keller</span>
           </div>
-        </div>
-        <div class="guide-section-img">
-          <img src="Bilder/aussenbereich/Chalet_Bambi_Titelseite_Neu_2025.JPG" alt="Chalet Bambi Aussenansicht" loading="lazy" width="700" height="500">
+          <div class="info-row">
+            <span class="info-label">Schlafplätze</span>
+            <span class="info-value">4 Etagenbetten + 1 Bettsofa (1,60 × 2,00 m)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Kapazität</span>
+            <span class="info-value">Ideal für 4 Personen</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Terrasse</span>
+            <span class="info-value">Grosse Sonnenterrasse mit Blick auf die Waldemme und das Brienzer Rothorn</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Postadresse</span>
+            <span class="info-value">Rothornstrasse 40, Postfach 459, 6174 Sörenberg</span>
+          </div>
         </div>
       </div>
     </div>
@@ -185,36 +174,29 @@
   <!-- ── ANREISE & ABREISE ─────────────────────────────────── -->
   <section id="anreise-abreise" class="section-cream">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Ankommen &amp; Abreisen</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">An- und Abreise</h2>
-      </div>
-
-      <!-- Anreise -->
+      <h2 class="sg-title">An- &amp; Abreise</h2>
       <h3 class="guide-subheading">Anreise</h3>
       <div class="stay-guide-grid" style="margin-top:1rem">
         <div class="guide-card">
           <h3 class="guide-card-title">Mit dem Auto</h3>
           <p class="guide-card-text">A2 Richtung Luzern, Ausfahrt Wolhusen, dann via Entlebuch nach Flühli und Sörenberg. Ca. 40 min ab Luzern.</p>
+          <a href="https://maps.app.goo.gl/TgWmJ8JcF46fdbgt8" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:.75rem;font-size:.85rem;color:var(--forest);text-decoration:underline">Google Maps öffnen →</a>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Mit dem ÖV</h3>
-          <p class="guide-card-text">Zug nach Schüpfheim, dann Bus Richtung Sörenberg (Entlebuch Bahn). Die Haltestelle liegt nur 50 m vom Chalet entfernt.</p>
+          <p class="guide-card-text">Zug via Entlebuch nach Schüpfheim, dann Entlebuch Bahn Richtung Sörenberg, anschliessend Postauto nach Sörenberg. Aussteigen bei Haltestelle <strong>Höchistrasse</strong> – nur 50 m vom Chalet entfernt.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Adresse &amp; Parkplatz</h3>
           <p class="guide-card-text">Rothornstrasse 40, 6174 Sörenberg. Zwei kostenlose Aussenparkplätze direkt vor dem Chalet.</p>
         </div>
       </div>
-
-      <!-- Check-in / Check-out -->
-      <h3 class="guide-subheading" style="margin-top:3rem">Check-in &amp; Check-out</h3>
+      <h3 class="guide-subheading" style="margin-top:2.5rem">Check-in &amp; Check-out</h3>
       <div class="stay-guide-grid stay-guide-grid--2" style="margin-top:1rem">
         <div class="guide-card">
           <h3 class="guide-card-title">Check-in ab 15:00 Uhr</h3>
           <p class="guide-card-text">Den Schlüssel finden Sie im Schlüsselsafe am Eingang. Den Code erhalten Sie rechtzeitig vor Ihrer Anreise per E-Mail.</p>
-          <p class="guide-card-text" style="margin-top:.75rem">Kurtaxen bitte in den ersten Tagen beim <strong>Tourismus-Büro Sörenberg Flühli</strong> (Posthaltestelle Dorf) bezahlen.</p>
+          <p class="guide-card-text" style="margin-top:.75rem">Kurtaxen bitte in den ersten Tagen beim <strong>Tourismus-Büro Sörenberg</strong> (Haltestelle Post) bezahlen.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Check-out bis 12:00 Uhr</h3>
@@ -224,7 +206,7 @@
             <li>Lichter löschen, Fernseher ausschalten</li>
             <li>Boiler auf 0 stellen</li>
             <li>Kühlschrank auf 0 (Türe offenlassen)</li>
-            <li>Oelofen auf 5 Grad einstellen</li>
+            <li>Beide Warmluftöfen auf 5 Grad einstellen</li>
           </ul>
         </div>
       </div>
@@ -234,35 +216,28 @@
   <!-- ── HEIZUNG ───────────────────────────────────────────────── -->
   <section id="heizung" class="section-linen">
     <div class="container">
-      <div class="guide-section-row guide-section-row--reverse">
-        <div class="guide-section-text">
-          <p class="section-label">Wärme &amp; Behaglichkeit</p>
-          <div class="divider"></div>
-          <h2 class="section-heading">Heizung</h2>
-          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75;margin-bottom:1.25rem">Der Oelofen mit Thermostat regelt die Temperatur automatisch – stellen Sie einfach die gewünschte Temperatur ein.</p>
-          <div class="info-box" style="margin-bottom:1.5rem">
-            <div class="info-row">
-              <span class="info-label">Thermostat Wohnzimmer</span>
-              <span class="info-value">An der Wand gegen Eingangsbereich</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Thermostat Keller</span>
-              <span class="info-value">In der rechten Ofentüre</span>
-            </div>
+      <div class="sg-section">
+        <h2 class="sg-title">Heizung</h2>
+        <p class="guide-card-text" style="margin-bottom:1.25rem">Die mit Öl betriebenen Warmluftöfen regeln die Temperatur automatisch – stellen Sie einfach die gewünschte Temperatur ein.</p>
+        <div class="info-box" style="margin-bottom:1.75rem">
+          <div class="info-row">
+            <span class="info-label">Thermostat Wohnzimmer</span>
+            <span class="info-value">An der Wand gegen Eingangsbereich</span>
           </div>
-          <h3 class="guide-subheading">Falls der Ofen tönt, aber nicht heiss wird:</h3>
-          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75;margin-bottom:.75rem">Rechte Türe öffnen (Gebrauchsanweisung liegt darin) und Folgendes kontrollieren:</p>
-          <ol class="guide-list" style="margin-bottom:1rem">
-            <li>Sind alle Schalter in der richtigen Stellung?</li>
-            <li>Sind alle Sicherungen in der Ofentüre vorhanden?</li>
-            <li>Liegt der dünne Keilriemen noch über den zwei Antriebsrädern (oben gross, unten klein)?</li>
-            <li>Beim Pfeil auf der linken Seite (hinten unten): Ist das Regler-«Fälleli» nach unten eingeschnappt? Einige Male auf und ab bewegen und dann hinunterdrücken, damit es nicht mehr hochspringt.</li>
-          </ol>
-          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75">Hilft das alles nicht, wenden Sie sich an Herrn Kaufmann (siehe Notfallnummern).</p>
+          <div class="info-row">
+            <span class="info-label">Thermostat Keller</span>
+            <span class="info-value">In der rechten Ofentüre</span>
+          </div>
         </div>
-        <div class="guide-section-img">
-          <img src="Bilder/wohnzimmer/02IMG_0780 - Kopie.JPG" alt="Wohnzimmer Chalet Bambi" loading="lazy" width="700" height="500">
-        </div>
+        <h3 class="guide-subheading">Falls der Ofen tönt, aber nicht heiss wird:</h3>
+        <p class="guide-card-text" style="margin-bottom:.75rem">Rechte Türe öffnen (Gebrauchsanweisung liegt darin) und Folgendes kontrollieren:</p>
+        <ol class="guide-list" style="margin-bottom:1rem">
+          <li>Sind alle Schalter in der richtigen Stellung?</li>
+          <li>Sind alle Sicherungen in der Ofentüre vorhanden? (Glühdraht hell = intakt)</li>
+          <li>Liegt der dünne Keilriemen noch über den zwei Antriebsrädern (oben gross, unten klein)?</li>
+          <li>Beim Pfeil auf der linken Seite (hinten unten): Ist das Regler-«Fälleli» nach unten eingeschnappt? Einige Male auf und ab bewegen und dann hinunterdrücken, damit es nicht mehr hochspringt.</li>
+        </ol>
+        <p class="guide-card-text">Hilft das alles nicht, wenden Sie sich an Herrn Kaufmann (siehe Wichtige Nummern).</p>
       </div>
     </div>
   </section>
@@ -270,34 +245,20 @@
   <!-- ── WARMWASSER & BOILER ───────────────────────────────────── -->
   <section id="warmwasser" class="section-cream">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Wichtig zu wissen</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">Warmwasser &amp; Boiler</h2>
-        <p class="text-intro">Unser Warmwasserspeicher fasst <strong>120 Liter</strong>. Bei bewusstem Verbrauch reicht das warme Wasser für alle.</p>
-      </div>
+      <h2 class="sg-title">Warmwasser &amp; Boiler</h2>
       <div class="stay-guide-grid stay-guide-grid--2">
         <div class="guide-card">
           <h3 class="guide-card-title">Standard – Stellung «Nacht»</h3>
-          <p class="guide-card-text">Der Boiler heizt automatisch und kosteneffizient zwischen <strong>02:00 und 06:00 Uhr</strong> auf. Dies ist die normale Einstellung – bitte so lassen.</p>
+          <p class="guide-card-text">Der Boiler (120 Liter) heizt automatisch zwischen <strong>02:00 und 06:00 Uhr</strong> auf. Dies ist die normale Einstellung – bitte so lassen.</p>
         </div>
         <div class="guide-card guide-card--emergency">
           <h3 class="guide-card-title">Extra-Bedarf – Stellung «Tag»</h3>
-          <p class="guide-card-text">Falls das Warmwasser einmal knapp wird: Schalter <strong>links neben dem Herd</strong> für 2–4 Stunden auf «Tag» stellen. Danach wieder auf «Nacht» zurückstellen.</p>
+          <p class="guide-card-text">Falls das Warmwasser knapp wird: Schalter <strong>links neben dem Herd</strong> für 2–4 Stunden auf «Tag» stellen. Danach wieder auf «Nacht» zurückstellen.</p>
         </div>
-      </div>
-      <div class="stay-guide-grid stay-guide-grid--2" style="margin-top:1.5rem">
         <div class="guide-card">
           <h3 class="guide-card-title">Duschraum – Elektrische Wandheizung</h3>
-          <p class="guide-card-text" style="margin-bottom:.75rem">Der Duschraum hat eine elektrische Wandheizung mit Timer:</p>
-          <ol class="guide-list">
-            <li>EIN/AUS-Schalter (6) drücken.</li>
-            <li>Timer-Taste (1) drücken – Bildschirm blinkt «0h».</li>
-            <li>Mit Plus-Taste (4) Stunden einstellen (0–9).</li>
-            <li>3 Sekunden warten – Einstellung wird bestätigt.</li>
-          </ol>
-          <p style="font-size:.85rem;color:var(--charcoal-light);margin-top:.75rem">Bitte beachten: Es dauert ca. eine Stunde, bis die Heizung heiss ist.</p>
-          <p style="font-size:.85rem;color:var(--charcoal-light);margin-top:.75rem">Bitte den Duschraum nach jedem Duschen <strong>gründlich lüften</strong>, um Feuchtigkeit und Schimmelbildung zu vermeiden.</p>
+          <p class="guide-card-text" style="margin-bottom:.75rem">Wandheizung mit Timer: EIN/AUS (6) → Timer (1) → Stunden mit + (4) einstellen → 3 Sek. warten. Aufheizzeit ca. 1 Stunde.</p>
+          <p class="guide-card-text">Nach dem Duschen bitte <strong>gründlich lüften</strong>.</p>
         </div>
       </div>
     </div>
@@ -306,19 +267,15 @@
   <!-- ── WÄSCHE & KOMFORT ──────────────────────────────────────── -->
   <section id="waesche" class="section-linen">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Schlafen &amp; Wohlfühlen</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">Bettwäsche</h2>
-      </div>
+      <h2 class="sg-title">Bettwäsche</h2>
       <div class="stay-guide-grid stay-guide-grid--3">
         <div class="guide-card">
           <h3 class="guide-card-title">Bettwäsche</h3>
-          <p class="guide-card-text">Küchenwäsche ist vorhanden. Alle andere Wäsche bitte selbst mitbringen. Bettdecken: nordisch 1,60 × 2,10 m, Kissen 65 × 100 cm.<br><br>Bettwäsche kann auf Wunsch von uns gestellt werden: <strong>CHF 20.–/Bett</strong> – bitte bei Buchung angeben.</p>
+          <p class="guide-card-text">Küchenwäsche ist vorhanden. Alle andere Wäsche bitte selbst mitbringen. Bettdecken: nordisch 1,60 × 2,10 m, Kissen 65 × 100 cm.<br><br>Bettwäsche auf Wunsch: <strong>CHF 20.–/Bett</strong> – bitte bei Buchung angeben.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Bettsofa</h3>
-          <p class="guide-card-text">Im Wohnzimmer steht ein neues Bettsofa zur Verfügung.<br><strong>Format: 1,60 × 2,00 m</strong><br>Bettwäsche dafür bitte selber mitbringen.</p>
+          <p class="guide-card-text">Im Wohnzimmer steht ein Bettsofa zur Verfügung (<strong>1,60 × 2,00 m</strong>). Fixleintuch und Bettwäsche bitte selber mitbringen.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Wolldecken</h3>
@@ -331,32 +288,31 @@
   <!-- ── KÜCHE & GERÄTE ────────────────────────────────────────── -->
   <section id="kueche" class="section-cream">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Kochen &amp; Geniessen</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">Küche &amp; Geräte</h2>
-        <p class="text-intro">Die Küche ist vollständig ausgestattet. Hier finden Sie die wichtigsten Hinweise zu den Geräten.</p>
-      </div>
+      <h2 class="sg-title">Küche &amp; Geräte</h2>
       <div class="stay-guide-grid stay-guide-grid--3">
         <div class="guide-card">
           <h3 class="guide-card-title">Herd &amp; Backofen</h3>
           <p class="guide-card-text">Cerankochfeld mit 4 Zonen. Backofen darunter – Temperatur über Drehregler einstellen. Bitte nach Benutzung reinigen.</p>
         </div>
         <div class="guide-card">
-          <h3 class="guide-card-title">TV &amp; Radio</h3>
-          <p class="guide-card-text">Fernseher mit <strong>Satellitenempfang (Astra)</strong> im Wohnzimmer. DAB+ Radio mit CD-Player, USB-Anschluss und Bluetooth ebenfalls im Wohnzimmer. Kein WLAN im Chalet.</p>
-        </div>
-        <div class="guide-card">
           <h3 class="guide-card-title">Kühlschrank</h3>
-          <p class="guide-card-text">Bitte den Kühlschrank vor Abreise leeren. <strong>Vor Abreise: Kühlschrank auf 0 stellen</strong> (einige Sekunden drücken) und die Türe offenlassen.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Feuerschale</h3>
-          <p class="guide-card-text">Die Feuerschale darf <strong>nicht unter dem Balkon</strong> benutzt werden. Bitte beim Sitzplatz auf die bereitliegenden <strong>drei Backsteine</strong> stellen – so schützen Sie die Steinplatten vor der Hitze.</p>
+          <p class="guide-card-text">Bitte vor Abreise leeren. <strong>Kühlschrank auf 0 stellen</strong> (einige Sekunden drücken) und Türe offenlassen.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Brandschutz</h3>
-          <p class="guide-card-text">Ein <strong>Feuerlöscher</strong> befindet sich im Untergeschoss neben der Treppe. Eine <strong>Löschdecke</strong> hängt im Eingangsbereich.</p>
+          <p class="guide-card-text"><strong>Feuerlöscher</strong> im Untergeschoss neben der Treppe. <strong>Löschdecke</strong> im Eingangsbereich.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">TV</h3>
+          <p class="guide-card-text">Fernseher mit <strong>Satellitenempfang (Astra)</strong>. Ausschalten: <strong>On/Off mehrere Sekunden halten</strong>. Schweizer Sender verbinden sich nach ca. 1 Minute.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Radio</h3>
+          <p class="guide-card-text">DAB+ Radio mit CD, USB, Bluetooth und <strong>Fernbedienung</strong>. Kein WLAN im Chalet.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Feuerschale</h3>
+          <p class="guide-card-text"><strong>Nicht unter dem Balkon</strong> benutzen. Beim Sitzplatz auf die <strong>drei Backsteine</strong> stellen.</p>
         </div>
       </div>
     </div>
@@ -365,24 +321,16 @@
   <!-- ── HAUSORDNUNG ───────────────────────────────────────────── -->
   <section id="hausordnung" class="section-linen">
     <div class="container">
-      <div class="guide-section-row">
-        <div class="guide-section-text">
-          <p class="section-label">Miteinander &amp; Rücksicht</p>
-          <div class="divider"></div>
-          <h2 class="section-heading">Hausordnung</h2>
-          <p style="font-size:.95rem;color:var(--charcoal-light);line-height:1.75;margin-bottom:1.5rem">Damit alle Gäste das Chalet in bestem Zustand vorfinden, bitten wir Sie, folgende Regeln zu beachten:</p>
-          <ul class="guide-list guide-list--ul">
-            <li><strong>Rauchen:</strong> Das gesamte Chalet ist eine rauchfreie Zone. Bitte geniessen Sie Ihre Zigarette ausschliesslich im Freien.</li>
-            <li><strong>Haustiere:</strong> Das Mitbringen von Tieren ist nicht gestattet.</li>
-            <li><strong>Ruhezeiten:</strong> Bitte halten Sie zwischen 22:00 und 08:00 Uhr die Nachtruhe ein.</li>
-            <li><strong>Besucherzahl:</strong> Das Chalet ist für die bei der Buchung angegebene Personenzahl ausgelegt. Nicht angemeldete Übernachtungsgäste sind nicht erlaubt.</li>
-            <li><strong>Reinigung:</strong> Endreinigung gemäss Vereinbarung. Bitte hinterlassen Sie das Chalet in einem ordentlichen Zustand: Geschirr gespült, Kühlschrank geleert, Abfall entsorgt.</li>
-            <li><strong>Schäden:</strong> Bitte melden Sie Schäden oder Defekte umgehend an uns.</li>
-          </ul>
-        </div>
-        <div class="guide-section-img">
-          <img src="Bilder/aussenbereich/IMG_5696.jpeg" alt="Chalet Bambi Aussenansicht" loading="lazy" width="700" height="500">
-        </div>
+      <div class="sg-section">
+        <h2 class="sg-title">Hausordnung</h2>
+        <ul class="guide-list guide-list--ul">
+          <li><strong>Rauchen:</strong> Das gesamte Chalet ist rauchfrei. Bitte ausschliesslich im Freien.</li>
+          <li><strong>Haustiere:</strong> Nicht gestattet.</li>
+          <li><strong>Ruhezeiten:</strong> Nachtruhe 22:00–07:00 Uhr.</li>
+          <li><strong>Belegung:</strong> Nicht gemeldete Gäste bitte vor der Übernachtung nachmelden (Kurtaxe, keine Mehrkosten).</li>
+          <li><strong>Reinigung:</strong> Chalet ordentlich hinterlassen: Geschirr gespült, Backofen sauber, Kühlschrank geleert, Bettwäsche auf einem Haufen, Abfall entsorgt.</li>
+          <li><strong>Schäden:</strong> Bitte Schäden oder Defekte umgehend melden.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -390,37 +338,28 @@
   <!-- ── ABFALL & RECYCLING ────────────────────────────────── -->
   <section id="abfall" class="section-cream">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Umwelt &amp; Nachhaltigkeit</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">Abfall &amp; Recycling</h2>
-        <p class="text-intro">In der UNESCO Biosphäre Entlebuch liegt uns die Umwelt besonders am Herzen. Bitte helfen Sie mit.</p>
-      </div>
+      <h2 class="sg-title">Abfall &amp; Recycling</h2>
       <div class="stay-guide-grid stay-guide-grid--3">
         <div class="guide-card">
           <h3 class="guide-card-title">Recycling</h3>
-          <p class="guide-card-text">Eine umfassende Recyclingstation befindet sich 50 Meter vom Haus entfernt – neben der Tankstelle.</p>
+          <p class="guide-card-text">Recyclingstation 50 m entfernt – neben der Tankstelle. Glas, PET, Metall, Batterien, Papier, Karton und Restkehricht.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Kompost</h3>
-          <p class="guide-card-text">Küchenabfälle (Gemüse, Kaffeesatz, Eierschalen) können im Kompostbehälter im Garten entsorgt werden. Kein gekochtes Essen, kein Fleisch.</p>
+          <p class="guide-card-text">Kompostbehälter im Garten für Gemüse, Kaffeesatz, Eierschalen. Kein Fleisch, kein gekochtes Essen, keine Kohle oder halbverbrannte Holzteile.</p>
         </div>
         <div class="guide-card">
           <h3 class="guide-card-title">Kehricht</h3>
-          <p class="guide-card-text">Für den Restabfall werden Abfallmarken benötigt (erhältlich im Volg Sörenberg).</p>
+          <p class="guide-card-text">Für Restabfall werden Abfallmarken benötigt (erhältlich im Volg Sörenberg).</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ── NOTFALLNUMMERN ────────────────────────────────────── -->
-  <section id="notfall" class="section-cream">
+  <section id="notfall" class="section-linen">
     <div class="container">
-      <div class="section-header section-header--narrow">
-        <p class="section-label">Sicherheit</p>
-        <div class="divider divider--center"></div>
-        <h2 class="section-heading">Wichtige Nummern &amp; Kontakte</h2>
-      </div>
+      <h2 class="sg-title">Wichtige Nummern</h2>
       <div class="stay-guide-grid stay-guide-grid--2">
         <div class="guide-card guide-card--emergency">
           <h3 class="guide-card-title guide-card-title--emergency">Notfallnummern</h3>
@@ -471,12 +410,12 @@
               <a href="mailto:info@bambi-staub.ch" class="emergency-number" style="font-size:.9rem">info@bambi-staub.ch</a>
             </div>
           </div>
-          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75;margin-top:1rem">Die Telefonnummer erhalten Sie mit Ihrer Buchungsbestätigung.</p>
+          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75;margin-top:1rem">Die Mobilenummer erhalten Sie mit Ihrer Buchungsbestätigung.</p>
           <h3 class="guide-card-title" style="margin-top:1.5rem">Wichtige Standorte</h3>
           <div class="emergency-list">
             <div class="emergency-row">
               <a href="https://share.google/TgjptaWBlCLPxC905" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Tourismus-Büro (Kurtaxen)</a>
-              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">Posthaltestelle Dorf</span>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">Haltestelle Post</span>
             </div>
             <div class="emergency-row">
               <a href="https://www.arztpraxisfluehli.ch/" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Arztpraxis Flühli</a>
@@ -485,6 +424,10 @@
             <div class="emergency-row">
               <a href="https://maps.app.goo.gl/TgWmJ8JcF46fdbgt8" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Spital Wolhusen</a>
               <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">40 min mit Auto</span>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Luzerner Kantonsspital</span>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">60 min mit Auto</span>
             </div>
           </div>
         </div>
@@ -500,32 +443,14 @@
     <h2>Chalet Bambi wartet auf Sie</h2>
     <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="footer-cta-btn">Jetzt buchen</a>
   </div>
-  <div class="site-footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <h3>Chalet Bambi</h3>
-        <p class="footer-brand-sub">Sörenberg, Schweiz</p>
-        <p>Ein Familienferienhaus mit Geschichte – direkt in der UNESCO Biosphäre Entlebuch.</p>
-      </div>
-      <div>
-        <p class="footer-col-label">Navigation</p>
-        <nav class="footer-nav" aria-label="Footer-Navigation">
-          <a href="/bambi">Bambi</a>
-          <a href="/stay-guide">Stay Guide</a>
-          <a href="/lage">Umgebung &amp; Aktivitäten</a>
-          <a href="/ueber-uns">Über uns</a>
-        </nav>
-      </div>
-      <div class="footer-contact">
-        <p class="footer-col-label">Adresse</p>
-        <address class="footer-contact-text">Rothornstrasse 40<br>6174 Sörenberg<br>Schweiz</address>
-        <div class="footer-contact-mt">
-          <p class="footer-col-label">Kontakt</p>
-          <a href="mailto:info@bambi-staub.ch">info@bambi-staub.ch</a>
-        </div>
-      </div>
+  <div class="site-footer" style="text-align:center">
+    <div style="max-width:36rem;margin:0 auto;padding:2.5rem 1.5rem 1.5rem">
+      <h3 style="margin-bottom:.25rem">Chalet Bambi</h3>
+      <p class="footer-brand-sub">Sörenberg, Schweiz</p>
+      <p style="margin-top:1rem">Rothornstrasse 40 · 6174 Sörenberg · Schweiz</p>
+      <p style="margin-top:.5rem"><a href="mailto:info@bambi-staub.ch" style="color:inherit">info@bambi-staub.ch</a></p>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom" style="text-align:center">
       <p>© 2025 Chalet Bambi, Familie Staub. Alle Rechte vorbehalten.</p>
       <p>Sörenberg · UNESCO Biosphäre Entlebuch · <a href="/impressum" style="color:inherit;text-decoration:underline;margin-left:.25rem">Impressum</a> · <a href="/datenschutz" style="color:inherit;text-decoration:underline;margin-left:.25rem">Datenschutz</a></p>
     </div>
@@ -533,5 +458,15 @@
 </footer>
 
 <script src="assets/js/script.js" defer></script>
+<script>
+  (function () {
+    function setHeaderH() {
+      var h = document.querySelector('.site-header');
+      if (h) document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+    }
+    setHeaderH();
+    window.addEventListener('resize', setHeaderH);
+  })();
+</script>
 </body>
 </html>

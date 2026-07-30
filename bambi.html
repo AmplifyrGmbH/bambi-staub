@@ -40,50 +40,9 @@
       <span class="logo-sub">Sörenberg</span>
     </a>
     <nav class="main-nav" aria-label="Hauptnavigation">
-      <div class="nav-item">
-        <a href="/bambi" class="nav-link active" data-page="bambi">
-          Bambi
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="" data-hash="#raeumlichkeiten">Räumlichkeiten</button>
-          <button class="dropdown-item" data-href="" data-hash="#ausstattung">Ausstattung</button>
-          <button class="dropdown-item" data-href="/bambi" data-hash="#gaestebuch">Gästebuch</button>
-        </div>
-        </div>
-      </div>
-      <div class="nav-item">
-        <a href="/stay-guide" class="nav-link" data-page="stay-guide">
-          Stay Guide
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#anreise-abreise">An- &amp; Abreise</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#heizung">Heizung</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#warmwasser">Warmwasser &amp; Boiler</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#waesche">Bettwäsche</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#kueche">Küche &amp; Geräte</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#hausordnung">Hausordnung</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#abfall">Abfall &amp; Recycling</button>
-          <button class="dropdown-item" data-href="/stay-guide" data-hash="#notfall">Notfallnummern</button>
-        </div>
-        </div>
-      </div>
-      <div class="nav-item">
-        <a href="/lage" class="nav-link" data-page="lage">
-          Umgebung &amp; Aktivitäten
-          <svg class="dropdown-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-        </a>
-        <div class="dropdown">
-          <div class="dropdown-inner">
-          <button class="dropdown-item" data-href="/lage" data-hash="#biosphaere">UNESCO Biosphäre</button>
-          <button class="dropdown-item" data-href="/lage" data-hash="#winter">Aktivitäten</button>
-          <button class="dropdown-item" data-href="/lage" data-hash="#kulinarik">Kulinarik</button>
-        </div>
-        </div>
-      </div>
+      <a href="/bambi" class="nav-link active" data-page="bambi">Bambi</a>
+      <a href="/umgebung" class="nav-link" data-page="umgebung">Umgebung</a>
+      <a href="/aktivitaeten" class="nav-link" data-page="aktivitaeten">Aktivitäten</a>
       <a href="/ueber-uns" class="nav-link" data-page="ueber-uns">Über uns</a>
     </nav>
     <div class="header-actions">
@@ -97,59 +56,10 @@
   </div>
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation">
     <div class="mobile-menu-inner">
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/bambi" class="mobile-nav-link active">Bambi</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Bambi">
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-          </button>
-        </div>
-        <div class="mobile-sub">
-          <a href="#raeumlichkeiten" class="mobile-sub-link">Räumlichkeiten</a>
-          <a href="#ausstattung" class="mobile-sub-link">Ausstattung</a>
-          <a href="#gaestebuch" class="mobile-sub-link">Gästebuch</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/lage" class="mobile-nav-link">Umgebung &amp; Aktivitäten</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Lage">
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg>
-          </button>
-        </div>
-        <div class="mobile-sub">
-          <a href="/lage#biosphaere" class="mobile-sub-link">UNESCO Biosphäre</a>
-          <a href="/lage#winter" class="mobile-sub-link">Aktivitäten</a>
-          <a href="/lage#kulinarik" class="mobile-sub-link">Kulinarik</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row">
-          <a href="/stay-guide" class="mobile-nav-link">Stay Guide</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Stay Guide"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
-        </div>
-        <div class="mobile-sub">
-          <a href="/stay-guide#anreise-abreise" class="mobile-sub-link">An- &amp; Abreise</a>
-          <a href="/stay-guide#heizung" class="mobile-sub-link">Heizung</a>
-          <a href="/stay-guide#warmwasser" class="mobile-sub-link">Warmwasser &amp; Boiler</a>
-          <a href="/stay-guide#kueche" class="mobile-sub-link">Küche &amp; Geräte</a>
-          <a href="/stay-guide#hausordnung" class="mobile-sub-link">Hausordnung</a>
-          <a href="/stay-guide#notfall" class="mobile-sub-link">Notfallnummern</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row"><a href="/lage" class="mobile-nav-link">Umgebung &amp; Aktivitäten</a>
-          <button class="mobile-sub-toggle" aria-label="Untermenü Lage"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 4l4 4 4-4"/></svg></button>
-        </div>
-        <div class="mobile-sub">
-          <a href="/lage#biosphaere" class="mobile-sub-link">UNESCO Biosphäre</a>
-          <a href="/lage#winter" class="mobile-sub-link">Aktivitäten</a>
-          <a href="/lage#kulinarik" class="mobile-sub-link">Kulinarik</a>
-        </div>
-      </div>
-      <div class="mobile-nav-item">
-        <div class="mobile-nav-row"><a href="/ueber-uns" class="mobile-nav-link">Über uns</a></div>
-      </div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/bambi" class="mobile-nav-link active">Bambi</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/umgebung" class="mobile-nav-link">Umgebung</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/aktivitaeten" class="mobile-nav-link">Aktivitäten</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/ueber-uns" class="mobile-nav-link">Über uns</a></div></div>
       <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="mobile-cta">Jetzt buchen</a>
     </div>
   </div>
@@ -175,7 +85,7 @@
       <div class="section-header">
         <p class="section-label">Räumlichkeiten</p>
         <div class="divider"></div>
-        <h2 class="section-heading">Gemütliches Holz-Ambiente</h2>
+        <h2 class="section-heading">Chalet Ambiente</h2>
       </div>
 
       <div class="rooms-list">
@@ -184,12 +94,11 @@
         <article class="room-item">
           <div class="room-slider-wrap slider" aria-label="Eingangsbereich">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/eingangsbereich/04IMG_2359.jpg" alt="Eingangsbereich – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/eingangsbereich/05IMG_2358.jpg" alt="Eingangsbereich – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/eingangsbereich/06IMG_2311.jpg" alt="Eingangsbereich – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/eingangsbereich/06IMG_2314.jpg" alt="Eingangsbereich – Bild 4" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/eingangsbereich/Website/04IMG_2359.jpg" alt="Eingangsbereich – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/eingangsbereich/Website/06IMG_2311.jpg" alt="Eingangsbereich – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/eingangsbereich/Website/06IMG_2314.jpg" alt="Eingangsbereich – Bild 3" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
-                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button>
               </div>
             </div>
             <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
@@ -199,7 +108,7 @@
             <p class="room-number">01</p>
             <h3 class="room-name">Eingangsbereich</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Der Eingangsbereich empfängt Sie mit dem typischen Chalet-Charme – Holz, Stein und alpinem Flair.</p>
+            <p class="room-desc">Der Eingangsbereich empfängt Sie mit dem typischen Chalet-Charme – Holz und Flair.</p>
           </div>
         </article>
 
@@ -207,9 +116,9 @@
         <article class="room-item room-item--reverse">
           <div class="room-slider-wrap slider" aria-label="WC & Duschkabine">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/wc/07Badezimmer_2025_01.JPG" alt="Badezimmer – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wc/08IMG_6141.JPG" alt="Badezimmer – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wc/09Badezimmer_2025_02.JPG" alt="Badezimmer – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/wc/Website/07Badezimmer_2025_01.JPG" alt="Badezimmer – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/wc/Website/08IMG_6141.JPG" alt="Badezimmer – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/wc/Website/09Badezimmer_2025_02.JPG" alt="Badezimmer – Bild 3" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
                 <button class="dot active"></button><button class="dot"></button><button class="dot"></button>
               </div>
@@ -219,7 +128,7 @@
           </div>
           <div class="room-text-wrap">
             <p class="room-number">02</p>
-            <h3 class="room-name">WC &amp; Duschkabine</h3>
+            <h3 class="room-name">WC &amp; Dusche</h3>
             <div class="room-divider"></div>
             <p class="room-desc">WC mit Duschkabine – gepflegt und mit allem Notwendigen ausgestattet.</p>
           </div>
@@ -229,13 +138,12 @@
         <article class="room-item">
           <div class="room-slider-wrap slider" aria-label="Wohn- und Esszimmer">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/wohnzimmer/00IMG_0779 - Kopie.JPG" alt="Wohnzimmer – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wohnzimmer/02IMG_0780 - Kopie.JPG" alt="Wohnzimmer – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wohnzimmer/02IMG_0781.JPG" alt="Wohnzimmer – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wohnzimmer/02IMG_0782.JPG" alt="Wohnzimmer – Bild 4" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/wohnzimmer/03IMG_0570.jpg" alt="Wohnzimmer – Bild 5" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/wohnzimmer/Website/00IMG_0779 - Kopie.JPG" alt="Wohnzimmer – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/wohnzimmer/Website/02IMG_0780 - Kopie.JPG" alt="Wohnzimmer – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/wohnzimmer/Website/02IMG_0782.JPG" alt="Wohnzimmer – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/wohnzimmer/Website/03IMG_0570.jpg" alt="Wohnzimmer – Bild 4" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
-                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
               </div>
             </div>
             <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
@@ -245,7 +153,7 @@
             <p class="room-number">03</p>
             <h3 class="room-name">Wohn- &amp; Esszimmer</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Oelofen mit Thermostat, Esstisch mit Eckbank und ein gemütliches Sofa – der ideale Ort für gemeinsame Abende.</p>
+            <p class="room-desc">Warmluftofen mit Thermostat, Esstisch mit Eckbank, gemütliches Sofa und Schlafsofa – der ideale Ort für gemeinsame Abende.</p>
           </div>
         </article>
 
@@ -253,10 +161,10 @@
         <article class="room-item room-item--reverse">
           <div class="room-slider-wrap slider" aria-label="Küche">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/kueche/10IMG_2307.jpg" alt="Küche – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/kueche/11IMG_2308.jpg" alt="Küche – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/kueche/IMG_5741.jpeg" alt="Küche – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/kueche/IMG_5743.jpeg" alt="Küche – Bild 4" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/kueche/Website/10IMG_2307.jpg" alt="Küche – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/kueche/Website/11IMG_2308.jpg" alt="Küche – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/kueche/Website/IMG_5741.jpeg" alt="Küche – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/kueche/Website/IMG_5743.jpeg" alt="Küche – Bild 4" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
                 <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
               </div>
@@ -268,7 +176,7 @@
             <p class="room-number">04</p>
             <h3 class="room-name">Küche</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Vollausgestattete Küche mit allem was das Herz begehrt – inklusive Fondue-Set und Racletteofen für typisch schweizerische Abende.</p>
+            <p class="room-desc">Vollausgestattete Küche mit Nespresso-Kaffeemaschine und allem was das Herz begehrt – inklusive Fondue-Set und Racletteofen für typisch schweizerische Abende.</p>
           </div>
         </article>
 
@@ -276,15 +184,12 @@
         <article class="room-item">
           <div class="room-slider-wrap slider" aria-label="Schlafzimmer">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/schlafzimmer/04IMG_0573.jpg" alt="Schlafzimmer – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/12IMG_2330.jpg" alt="Schlafzimmer – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/IMG_0572.jpg" alt="Schlafzimmer – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/IMG_5776.jpeg" alt="Schlafzimmer – Bild 4" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/Treppe_Oben.jpg" alt="Treppe oben – Bild 5" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/Treppe_mit_Zimmer_Happyholiday.jpg" alt="Treppe mit Zimmer – Bild 6" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/schlafzimmer/IMG_8907.JPG" alt="Schlafzimmer – Bild 7" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/schlafzimmer/Website/12IMG_2330.jpg" alt="Schlafzimmer – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/schlafzimmer/Website/IMG_5776.jpeg" alt="Schlafzimmer – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/schlafzimmer/Website/IMG_8911.JPG" alt="Schlafzimmer – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/schlafzimmer/Website/Treppe_Oben.jpg" alt="Treppe oben" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
-                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
               </div>
             </div>
             <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
@@ -294,7 +199,7 @@
             <p class="room-number">05</p>
             <h3 class="room-name">Schlafzimmer</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Das Schlafzimmer bietet 4 Etagenbetten mit je einer Steckdose – ideal für Familien mit Kindern. Eine Falltüre führt ins gut ausgebaute Untergeschoss.</p>
+            <p class="room-desc">Das Schlafzimmer bietet 4 Etagenbetten mit je einer Steckdose – ideal für Familien mit Kindern. Eine Bodenklappe mit Wechselschritttreppe führt ins ausgebaute Untergeschoss.</p>
           </div>
         </article>
 
@@ -302,16 +207,13 @@
         <article class="room-item room-item--reverse">
           <div class="room-slider-wrap slider" aria-label="Untergeschoss">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/untergeschoss/01IMG_2376.jpg" alt="Untergeschoss – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/03IMG_2378.jpg" alt="Untergeschoss – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/IMG_0574.jpg" alt="Untergeschoss – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/IMG_0575.jpg" alt="Untergeschoss – Bild 4" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/IMG_0580.jpg" alt="Untergeschoss – Bild 5" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/Treppe_unten.JPG" alt="Treppe unten" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/IMG_8905.JPG" alt="Untergeschoss – Bild 7" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/untergeschoss/IMG_8904.JPG" alt="Untergeschoss – Bild 8" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/untergeschoss/Website/03IMG_2378.jpg" alt="Untergeschoss – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/untergeschoss/Website/IMG_9072.JPG" alt="Untergeschoss – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/untergeschoss/Website/IMG_9077.JPG" alt="Untergeschoss – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/untergeschoss/Website/IMG_9103.JPG" alt="Untergeschoss – Bild 4" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/untergeschoss/Website/IMG_9105.JPG" alt="Untergeschoss – Bild 5" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
-                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
               </div>
             </div>
             <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
@@ -321,25 +223,21 @@
             <p class="room-number">06</p>
             <h3 class="room-name">Untergeschoss</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Das gemütliche Untergeschoss bietet zusätzlichen Wohnraum mit einem Schlafsofa, Sesseln und TV. Der Zugang erfolgt vom Schlafzimmer aus über eine Bodenklappe mit Leiter – oder von aussen über die Gartentreppe.</p>
+            <p class="room-desc">Das Untergeschoss bietet zusätzlichen Wohnraum mit einem Sofa, Sesseln und TV. Der Zugang erfolgt vom Schlafzimmer aus über eine Bodenklappe mit Wechselschritttreppe – oder von aussen über die Gartentreppe.</p>
           </div>
         </article>
 
-        <!-- 07 Aussenbereich -->
+        <!-- 07 Sonnenterrasse -->
         <article class="room-item">
-          <div class="room-slider-wrap slider" aria-label="Aussenbereich">
+          <div class="room-slider-wrap slider" aria-label="Sonnenterrasse">
             <div class="slider-inner">
-              <div class="slide active"><img src="Bilder/aussenbereich/01IMG_2321.jpg" alt="Aussenbereich – Bild 1" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/02IMG_2429.jpg" alt="Aussenbereich – Bild 2" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/03IMG_2318.jpg" alt="Aussenbereich – Bild 3" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/04IMG_2432.jpg" alt="Aussenbereich – Bild 4" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/05IMG_2436.jpg" alt="Aussenbereich – Bild 5" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/IMG_5669.jpeg" alt="Aussenbereich – Bild 6" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/IMG_5675.jpeg" alt="Aussenbereich – Bild 7" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/IMG_5680.jpeg" alt="Aussenbereich – Bild 8" loading="lazy" width="800" height="600"></div>
-              <div class="slide"><img src="Bilder/aussenbereich/Chalet_Bambi_Titelseite_Neu_2025.JPG" alt="Chalet Bambi Aussenansicht 2025" loading="lazy" width="800" height="600"></div>
+              <div class="slide active"><img src="Bilder/Hausführung/Sonnenterrasse/Website/16IMG_2349.jpg" alt="Sonnenterrasse – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/Sonnenterrasse/Website/18IMG_2356.jpg" alt="Sonnenterrasse – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/Sonnenterrasse/Website/20IMG_2418.jpg" alt="Sonnenterrasse – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/Sonnenterrasse/Website/21IMG_2339.jpg" alt="Sonnenterrasse – Bild 4" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/Sonnenterrasse/Website/IMG_5679.jpeg" alt="Sonnenterrasse – Bild 5" loading="lazy" width="800" height="600"></div>
               <div class="slider-dots" aria-hidden="true">
-                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
               </div>
             </div>
             <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
@@ -347,9 +245,48 @@
           </div>
           <div class="room-text-wrap">
             <p class="room-number">07</p>
+            <h3 class="room-name">Sonnenterrasse</h3>
+            <div class="room-divider"></div>
+            <p class="room-desc">Die 20 m² grosse Sonnenterrasse zeigt Richtung Süden – mit Blick auf das Brienzer Rothorn und die Waldemme. Ideal für ein Frühstück in der Sonne oder entspannte Abende im Freien.</p>
+          </div>
+        </article>
+
+        <!-- 08 Aussenbereich -->
+        <article class="room-item room-item--reverse">
+          <div class="room-slider-wrap slider" aria-label="Aussenbereich">
+            <div class="slider-inner">
+              <div class="slide active"><img src="Bilder/Hausführung/aussenbereich/Website/03IMG_2318.jpg" alt="Aussenbereich – Bild 1" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/07IMG_2452.jpg" alt="Aussenbereich – Bild 2" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/09IMG_2438.jpg" alt="Aussenbereich – Bild 3" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/09IMG_2443.jpg" alt="Aussenbereich – Bild 4" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/12IMG_2393.jpg" alt="Aussenbereich – Bild 5" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/13IMG_2451.jpg" alt="Aussenbereich – Bild 6" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/24AEFECA-3477-4446-8892-4F02DDF6957C.jpeg" alt="Aussenbereich – Bild 7" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5675.jpeg" alt="Aussenbereich – Bild 8" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5677.jpeg" alt="Aussenbereich – Bild 9" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5685.jpeg" alt="Aussenbereich – Bild 10" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5700.jpeg" alt="Aussenbereich – Bild 11" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5701.jpeg" alt="Aussenbereich – Bild 12" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5711.jpeg" alt="Aussenbereich – Bild 13" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5713.jpeg" alt="Aussenbereich – Bild 14" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5714.jpeg" alt="Aussenbereich – Bild 15" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5715.jpeg" alt="Aussenbereich – Bild 16" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5717.jpeg" alt="Aussenbereich – Bild 17" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_5739.jpeg" alt="Aussenbereich – Bild 18" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_8989.JPG" alt="Aussenbereich – Bild 19" loading="lazy" width="800" height="600"></div>
+              <div class="slide"><img src="Bilder/Hausführung/aussenbereich/Website/IMG_8997.JPG" alt="Aussenbereich – Bild 20" loading="lazy" width="800" height="600"></div>
+              <div class="slider-dots" aria-hidden="true">
+                <button class="dot active"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button><button class="dot"></button>
+              </div>
+            </div>
+            <button class="slider-btn slider-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>
+            <button class="slider-btn slider-next" aria-label="Weiter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 5l5 5-5 5"/></svg></button>
+          </div>
+          <div class="room-text-wrap">
+            <p class="room-number">08</p>
             <h3 class="room-name">Aussenbereich</h3>
             <div class="room-divider"></div>
-            <p class="room-desc">Die 20 m² grosse Sonnenterrasse zeigt Richtung Süden – mit Blick auf das Brienzer Rothorn und die Waldemme. Dazu ein Sitzplatz mit Tisch und Gartenstühlen zum Draussen-Essen, Feuerschale und Cheminée. Das Grundstück bietet direkten Zugang zum Bach, an dem Kinder bei tiefem Wasserstand spielen können.</p>
+            <p class="room-desc">Auf 650 m² privatem Grundstück: Sitzplatz mit Tisch und Gartenstühlen zum Draussen-Essen, Feuerschale und Cheminée. Direkter Zugang zum Bach – Kinder können dort unter Aufsicht bei tiefem Wasserstand spielen.</p>
           </div>
         </article>
 
@@ -370,11 +307,11 @@
         <div class="ausstattung-category">
           <h3>Entertainment</h3>
           <ul class="ausstattung-list">
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Flachbildschirm-TV</li>
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Sat-TV</li>
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Radio</li>
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>CD-Player</li>
-                      </ul>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Flachbildschirm-TV mit Sat</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Kompakt Stereoanlage mit Bluetooth</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Gesellschaftsspiele</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Bücherwand</li>
+          </ul>
         </div>
         <div class="ausstattung-category">
           <h3>Küche</h3>
@@ -386,103 +323,42 @@
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Toaster</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Wasserkocher</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Kühlschrank &amp; Gefrierfach</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Wok-Pfanne</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Mixxer</li>
           </ul>
         </div>
         <div class="ausstattung-category">
-          <h3>Komfort</h3>
+          <h3>Sonnenterrasse</h3>
           <ul class="ausstattung-list">
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Oelofen mit Thermostat</li>
-                        <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Sonnenterrasse (20 m²)</li>
-                                  </ul>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Liegestühle</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Sonnenschirm</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Klapptisch</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Sitzbank</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Windstopper</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Aussensteckdose</li>
+          </ul>
         </div>
         <div class="ausstattung-category">
           <h3>Praktisches</h3>
           <ul class="ausstattung-list">
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Parkplätze – kostenlos vor dem Haus</li>
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Staubsauger</li>
-<li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>1 Trottinett</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Parkplätze vor dem Haus</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Staubsauger</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>1 Skivelo</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Holzschlitten</li>
-                      </ul>
+          </ul>
         </div>
         <div class="ausstattung-category">
-          <h3>Aussen</h3>
+          <h3>Aussenbereich</h3>
           <ul class="ausstattung-list">
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Privates Grundstück (650 m²)</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>2 Gartensitzplätze</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Feuerschale</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Cheminée</li>
-            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Outdoormöbel</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Kasten mit Grillzubehör</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Feuerholz zur freien Verfügung</li>
+            <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Kompostgitter</li>
             <li class="ausstattung-item"><svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6l3 3 5-5"/></svg>Direkter Zugang zur Waldemme</li>
-                      </ul>
+          </ul>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── GÄSTEBUCH ────────────────────────────────────────────── -->
-  <section id="gaestebuch" class="section-cream">
-    <div class="container">
-      <div class="section-header">
-        <p class="section-label">Stimmen unserer Gäste</p>
-        <div class="divider"></div>
-        <h2 class="section-heading">Was unsere Gäste sagen</h2>
-      </div>
-
-      <div class="reviews-grid" id="reviews-list">
-
-        <article class="review-card">
-          <div class="review-header">
-            <div class="stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-            </div>
-            <span class="review-date">Februar 2024</span>
-          </div>
-          <blockquote class="review-quote">„Wir haben Weihnachten und Neujahr in Chalet Bambi verbracht – absolut traumhaft! Das Holz-Ambiente ist genau so gemütlich wie auf den Fotos. Die Kinder haben täglich auf der Piste gestanden, abends gab es Fondue. Wir kommen definitiv wieder!"</blockquote>
-          <div class="review-footer">
-            <p class="review-name">Familie Müller</p>
-            <p class="review-stay">Winter – 10 Tage</p>
-          </div>
-        </article>
-
-        <article class="review-card">
-          <div class="review-header">
-            <div class="stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-            </div>
-            <span class="review-date">Juli 2023</span>
-          </div>
-          <blockquote class="review-quote">„Ein wunderschöner Sommerurlaub in der Biosphäre Entlebuch. Das Haus ist top ausgestattet, der Garten ein Traum. Wir haben täglich gewandert und am Abend auf der Terrasse die Stille genossen. Familie Staub war immer erreichbar und sehr hilfsbereit."</blockquote>
-          <div class="review-footer">
-            <p class="review-name">Peter &amp; Claudia W.</p>
-            <p class="review-stay">Sommer – 7 Tage</p>
-          </div>
-        </article>
-
-        <article class="review-card">
-          <div class="review-header">
-            <div class="stars" aria-label="5 von 5 Sternen">
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-              <svg viewBox="0 0 16 16" class="star star--filled"><path d="M8 1l1.85 3.75 4.15.6-3 2.93.7 4.1L8 10.4l-3.7 1.98.7-4.1-3-2.93 4.15-.6L8 1z"/></svg>
-            </div>
-            <span class="review-date">Januar 2023</span>
-          </div>
-          <blockquote class="review-quote">„Wir waren zu acht – drei Generationen! Das Haus hat uns alle aufgenommen. Die Pistenanbindung ist unschlagbar, der Skikeller sehr praktisch. Das Haus hat Charakter und Geschichte, das spürt man in jedem Winkel."</blockquote>
-          <div class="review-footer">
-            <p class="review-name">Die Zürcher Grossfamilie</p>
-            <p class="review-stay">Winter – 6 Tage</p>
-          </div>
-        </article>
-
       </div>
     </div>
   </section>
@@ -501,15 +377,14 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3>Chalet Bambi</h3>
-        <p class="footer-brand-sub">Sörenberg, Schweiz</p>
-        <p>Ein Familienferienhaus mit Geschichte – direkt in der UNESCO Biosphäre Entlebuch.</p>
+        <p class="footer-brand-tagline">Deine Auszeit in der<br>UNESCO Biosphäre Entlebuch</p>
       </div>
       <div>
         <p class="footer-col-label">Navigation</p>
         <nav class="footer-nav" aria-label="Footer-Navigation">
           <a href="/bambi">Bambi</a>
-          <a href="/stay-guide">Stay Guide</a>
-          <a href="/lage">Umgebung &amp; Aktivitäten</a>
+          <a href="/umgebung">Umgebung</a>
+          <a href="/aktivitaeten">Aktivitäten</a>
           <a href="/ueber-uns">Über uns</a>
         </nav>
       </div>

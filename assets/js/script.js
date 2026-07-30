@@ -137,6 +137,77 @@
   next.addEventListener('click', function () { goTo(current + 1); });
 })();
 
+/* ── LIGHTBOX ─────────────────────────────────────────────────── */
+(function () {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML =
+    '<button class="lightbox-close" aria-label="Schliessen">&times;</button>' +
+    '<button class="lightbox-nav lightbox-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>' +
+    '<img class="lightbox-img" src="" alt="">' +
+    '<button class="lightbox-nav lightbox-next" aria-label="Weiter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 5l5 5-5 5"/></svg></button>' +
+    '<p class="lightbox-counter"></p>';
+  document.body.appendChild(lb);
+
+  const lbImg     = lb.querySelector('.lightbox-img');
+  const lbClose   = lb.querySelector('.lightbox-close');
+  const lbPrev    = lb.querySelector('.lightbox-prev');
+  const lbNext    = lb.querySelector('.lightbox-next');
+  const lbCounter = lb.querySelector('.lightbox-counter');
+
+  let images = [];
+  let current = 0;
+
+  function show(index) {
+    current = ((index % images.length) + images.length) % images.length;
+    lbImg.src = images[current].src;
+    lbImg.alt = images[current].alt || '';
+    lbCounter.textContent = (current + 1) + ' / ' + images.length;
+    lbPrev.style.display = images.length > 1 ? '' : 'none';
+    lbNext.style.display = images.length > 1 ? '' : 'none';
+  }
+
+  function open(sliderImgs, startIndex) {
+    images = sliderImgs;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    show(startIndex);
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+    images = [];
+  }
+
+  document.querySelectorAll('.room-slider-wrap').forEach(function (wrap) {
+    const imgs = Array.from(wrap.querySelectorAll('img'));
+    imgs.forEach(function (img, i) {
+      img.addEventListener('click', function () { open(imgs, i); });
+    });
+  });
+
+  document.querySelectorAll('.slider').forEach(function (slider) {
+    const imgs = Array.from(slider.querySelectorAll('.slide img'));
+    imgs.forEach(function (img, i) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function () { open(imgs, i); });
+    });
+  });
+
+  lbPrev.addEventListener('click', function (e) { e.stopPropagation(); show(current - 1); });
+  lbNext.addEventListener('click', function (e) { e.stopPropagation(); show(current + 1); });
+  lbClose.addEventListener('click', close);
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+})();
+
 /* ── STAR RATING ──────────────────────────────────────────────── */
 (function () {
   const container = document.querySelector('.star-rating');
