@@ -1774,7 +1774,9 @@ h1, h2, h3, h4 {
   .footer-cta         { padding: 2rem var(--px); }
   .footer-cta h2      { font-size: 1.4rem; margin: .5rem 0 1rem; }
   .footer-grid        { padding: 2rem var(--px); gap: 1.5rem; }
-  .footer-grid > div:nth-child(2) { display: none; }
+  .footer-grid > div:nth-child(2),
+  .footer-grid > div:nth-child(3) { display: none; }
+  .footer-brand { text-align: center; }
   .footer-contact-mt  { margin-top: 1rem; }
   .footer-bottom      { padding: .875rem var(--px); gap: .4rem; }
 
