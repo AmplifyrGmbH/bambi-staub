@@ -1854,7 +1854,7 @@ h1, h2, h3, h4 {
   .activity-grid { grid-template-columns: repeat(3, 1fr); }
   .slider-inner { height: 380px; }
   .slider-inner--tall { height: 460px; }
-  .footer-grid { grid-template-columns: 1fr auto auto; padding: 2.5rem var(--px); gap: 4rem; align-items: start; }
+  .footer-grid { grid-template-columns: repeat(3, 1fr); padding: 2.5rem var(--px); gap: 2rem; align-items: start; }
   .footer-bottom { flex-direction: row; justify-content: space-between; }
 }
 
