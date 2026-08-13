@@ -3,12 +3,12 @@ Options -Indexes
 # Clean URLs: /bambi → bambi.html
 RewriteEngine On
 
+# /en and /en/ → en/index.html (before directory check, en/ is a real dir)
+RewriteRule ^en/?$ en/index.html [L,NC]
+
 # Allow direct access to existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Handle /en → en/index.html
-RewriteRule ^en/?$ en/index.html [L,NC]
 
 # Handle /en/page → en/page.html
 RewriteRule ^en/([a-z0-9_-]+)/?$ en/$1.html [L,NC]
