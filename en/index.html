@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2D3E33">
   <link rel="icon" type="image/x-icon" href="/favicons-braun-weiss/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicons-braun-weiss/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicons-braun-weiss/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicons-braun-weiss/apple-touch-icon.png">
+  <link rel="preload" as="image" href="/Bilder/hero/Hero_Main.JPG" fetchpriority="high">
   <title>Chalet Bambi Sörenberg – Holiday Home in the UNESCO Biosphere Entlebuch</title>
   <meta name="description" content="Chalet Bambi in Sörenberg – cosy family holiday home with wooden interior in the UNESCO Biosphere Entlebuch. Garden by the stream, ideal for 4 guests.">
   <link rel="canonical" href="https://bambi-staub.ch/en/">
@@ -20,6 +22,10 @@
   <meta property="og:description" content="Family holiday home in Sörenberg – garden by the stream, UNESCO Biosphere Entlebuch.">
   <meta property="og:image" content="https://bambi-staub.ch/assets/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:site_name" content="Chalet Bambi Sörenberg">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +38,7 @@
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
     "name": "Chalet Bambi",
-    "description": "Cosy family holiday home with wooden interior in Sörenberg, in the heart of the UNESCO Biosphere Entlebuch. Ski-in/ski-out, garden, up to 10 guests.",
+    "description": "Cosy family holiday home with wooden interior in Sörenberg, in the heart of the UNESCO Biosphere Entlebuch. Garden by the stream, ideal for 4 guests.",
     "url": "https://bambi-staub.ch",
     "email": "info@bambi-staub.ch",
     "address": {
@@ -43,7 +49,20 @@
       "addressCountry": "CH"
     },
     "geo": { "@type": "GeoCoordinates", "latitude": 46.8167, "longitude": 8.0316 },
-    "image": "https://bambi-staub.ch/images/hero/Hero_Main.JPG"
+    "areaServed": {
+      "@type": "Place",
+      "name": "Sörenberg, UNESCO Biosphere Entlebuch, Switzerland"
+    },
+    "amenityFeature": [
+      {"@type": "LocationFeatureSpecification", "name": "Garden by the stream", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Wood-burning stove", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Balcony with alpine panorama", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Fully equipped kitchen", "value": true}
+    ],
+    "sameAs": [
+      "https://booking.haus-bambi.ch"
+    ],
+    "image": "https://bambi-staub.ch/assets/og-image.png"
   }
   </script>
 </head>
