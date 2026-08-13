@@ -771,10 +771,6 @@ h1, h2, h3, h4 {
   gap: 1rem;
 }
 
-.distance-tile:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-}
-
 .distance-tile {
   text-align: center;
   background: var(--cream);
@@ -1773,6 +1769,7 @@ h1, h2, h3, h4 {
   .section-narrow     { padding: 3.5rem var(--px); }
   .section-forest     { padding: 3.5rem var(--px); }
   .section-distances  { padding: 2.5rem var(--px); }
+  .distance-tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .editorial          { padding: 3.5rem var(--px); }
   .footer-cta         { padding: 2rem var(--px); }
   .footer-cta h2      { font-size: 1.4rem; margin: .5rem 0 1rem; }
