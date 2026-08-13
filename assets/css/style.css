@@ -153,6 +153,7 @@ h1, h2, h3, h4 {
 .logo {
   display: flex;
   flex-direction: column;
+  align-items: center;
   line-height: 1;
 }
 
@@ -276,6 +277,26 @@ h1, h2, h3, h4 {
   transition: all 0.3s;
 }
 .header-cta:hover { background: rgba(251,249,244,0.25); }
+
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  color: rgba(251,249,244,0.9);
+}
+.lang-switcher a { color: rgba(251,249,244,0.45); text-decoration: none; transition: color .2s; }
+.lang-switcher a:hover { color: rgba(251,249,244,0.9); }
+.lang-switcher .lang-active { color: rgba(251,249,244,0.9); }
+.lang-switcher .lang-sep { color: rgba(251,249,244,0.2); }
+.site-header.scrolled .lang-switcher { color: var(--charcoal); }
+.site-header.scrolled .lang-switcher a { color: rgba(44,44,44,0.4); }
+.site-header.scrolled .lang-switcher a:hover { color: var(--charcoal); }
+.site-header.scrolled .lang-switcher .lang-active { color: var(--charcoal); }
+.site-header.scrolled .lang-switcher .lang-sep { color: rgba(44,44,44,0.2); }
 
 .site-header.scrolled .header-cta {
   background: var(--forest);

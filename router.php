@@ -12,6 +12,8 @@ if ($uri !== '' && file_exists($file) && !is_dir($file)) {
 // Map clean URLs to .html files
 if ($uri === '' || $uri === '/') {
     include __DIR__ . '/index.html';
+} elseif ($uri === '/en') {
+    include __DIR__ . '/en/index.html';
 } elseif (file_exists(__DIR__ . $uri . '.html')) {
     include __DIR__ . $uri . '.html';
 } else {

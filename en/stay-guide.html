@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+  <title>Stay Guide – Chalet Bambi Sörenberg</title>
+  <meta name="description" content="Everything you need to know for your stay at Chalet Bambi: arrival, heating, hot water, house rules, appliances and emergency numbers.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://bambi-staub.ch/en/stay-guide">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bambi-staub.ch/en/stay-guide">
+  <meta property="og:title" content="Stay Guide – Chalet Bambi Sörenberg">
+  <meta property="og:description" content="All the important information for your stay at Chalet Bambi: arrival, house rules, appliances and emergency numbers.">
+  <meta property="og:image" content="https://bambi-staub.ch/Bilder/hero/Hero_stayguide.JPG">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
+  <style>
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251,249,244,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(44,62,51,0.08);
+    }
+    .site-header .logo-name { color: var(--charcoal); }
+    .site-header .logo-sub  { color: var(--stone); }
+    .site-header .hamburger { color: var(--charcoal); }
+    .site-header .lang-switcher { color: var(--charcoal); }
+    .site-header .lang-switcher a { color: rgba(44,44,44,0.4); }
+    .site-header .lang-switcher a:hover { color: var(--charcoal); }
+    .site-header .lang-switcher .lang-sep { color: rgba(44,44,44,0.2); }
+    .mobile-menu.open { overflow-y: auto; max-height: calc(100dvh - var(--header-h, 88px)); }
+    .mobile-menu .mobile-nav-link { padding: .6rem 0; font-size: .9rem; }
+    .mobile-menu .mobile-menu-inner { padding-top: .5rem; padding-bottom: 1rem; }
+    .mobile-menu .mobile-cta { margin-top: .75rem; }
+    .site-header .header-cta {
+      background: var(--forest);
+      border-color: var(--forest);
+      color: var(--linen);
+    }
+    .site-header .header-cta:hover { background: var(--forest-light); }
+    .sg-fold {
+      height: calc(100vh - var(--header-h, 88px));
+      height: calc(100dvh - var(--header-h, 88px));
+      display: flex;
+      flex-direction: column;
+    }
+    .sg-fold .hero--short {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+    }
+    .toc-toggle { display: none; }
+    @media (max-width: 767px) {
+      .hero-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+      .guide-card { padding: 1.1rem 1.25rem; }
+      .sg-fold .hero--short { flex: 1; }
+      /* Mobile TOC dropdown */
+      .toc-nav { display: block; padding: 0; }
+      .toc-label { display: none; }
+      .toc-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(251,249,244,0.1);
+        cursor: pointer;
+        padding: 1rem var(--px);
+        color: rgba(251,249,244,0.6);
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+      .toc-toggle svg { transition: transform 0.25s; flex-shrink: 0; }
+      .toc-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+      .toc-toggle[aria-expanded="true"] { border-bottom-color: transparent; }
+      #toc-chips-list { display: none; flex-direction: column; gap: 0; padding: 0; }
+      #toc-chips-list.open { display: flex; }
+      #toc-chips-list .toc-chip {
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(251,249,244,0.08);
+        padding: .875rem var(--px);
+        font-size: .9rem;
+        background: rgba(0,0,0,0.15);
+        justify-content: flex-start;
+      }
+      #toc-chips-list .toc-chip:last-child { border-bottom: none; }
+      #toc-chips-list .toc-num { font-size: .65rem; margin-right: .75rem; opacity: .5; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://bambi-staub.ch/en/"},
+      {"@type": "ListItem", "position": 2, "name": "Stay Guide", "item": "https://bambi-staub.ch/en/stay-guide"}
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a href="/en/" class="logo" aria-label="Chalet Bambi – Home">
+      <span class="logo-name">Chalet Bambi</span>
+      <span class="logo-sub">Sörenberg</span>
+    </a>
+    <div class="header-actions">
+      <div class="lang-switcher" aria-label="Language">
+        <a href="/aufenthalts-guide" lang="de" hreflang="de">DE</a>
+        <span class="lang-sep">|</span>
+        <span class="lang-active">EN</span>
+      </div>
+      <a href="/en/" class="header-cta">To Website</a>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation">
+    <div class="mobile-menu-inner">
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#chalet-info" class="mobile-nav-link">Chalet at a Glance</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#arrival" class="mobile-nav-link">Arrival &amp; Departure</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#heating" class="mobile-nav-link">Heating</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#hotwater" class="mobile-nav-link">Hot Water &amp; Boiler</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#linen" class="mobile-nav-link">Bed Linen</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#kitchen" class="mobile-nav-link">Kitchen &amp; Appliances</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#houserules" class="mobile-nav-link">House Rules</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#waste" class="mobile-nav-link">Waste &amp; Recycling</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#emergency" class="mobile-nav-link">Important Numbers</a></div></div>
+      <a href="/en/" class="mobile-cta">To Website</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="sg-fold">
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <section class="hero hero--short" aria-label="Stay Guide">
+    <div class="hero-bg">
+      <img src="/Bilder/hero/Hero_Haus.JPG" alt="Living room Chalet Bambi – cosy wood interior" width="1920" height="1080" style="object-position: center 40%">
+      <div class="hero-gradient-full" aria-hidden="true"></div>
+    </div>
+    <div class="hero-content container" style="text-align:center">
+      <h1 class="hero-title" style="max-width:none">Your Stay Guide</h1>
+    </div>
+  </section>
+
+  <!-- ── TABLE OF CONTENTS ─────────────────────────────────────── -->
+  <nav class="toc-nav" aria-label="Table of Contents">
+    <div class="container">
+      <p class="toc-label">Contents</p>
+      <button class="toc-toggle" aria-expanded="false" aria-controls="toc-chips-list">
+        <span>Contents</span>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8l5 5 5-5"/></svg>
+      </button>
+      <div class="toc-chips" id="toc-chips-list">
+        <a href="#chalet-info" class="toc-chip"><span class="toc-num">01</span>Chalet at a Glance</a>
+        <a href="#arrival" class="toc-chip"><span class="toc-num">02</span>Arrival &amp; Departure</a>
+        <a href="#heating" class="toc-chip"><span class="toc-num">03</span>Heating</a>
+        <a href="#hotwater" class="toc-chip"><span class="toc-num">04</span>Hot Water &amp; Boiler</a>
+        <a href="#linen" class="toc-chip"><span class="toc-num">05</span>Bed Linen</a>
+        <a href="#kitchen" class="toc-chip"><span class="toc-num">06</span>Kitchen &amp; Appliances</a>
+        <a href="#houserules" class="toc-chip"><span class="toc-num">07</span>House Rules</a>
+        <a href="#waste" class="toc-chip"><span class="toc-num">08</span>Waste &amp; Recycling</a>
+        <a href="#emergency" class="toc-chip"><span class="toc-num">09</span>Important Numbers</a>
+      </div>
+    </div>
+  </nav>
+  </div><!-- /.sg-fold -->
+
+  <!-- ── CHALET INFO ───────────────────────────────────────────── -->
+  <section id="chalet-info" class="section-linen">
+    <div class="container">
+      <div class="sg-section">
+        <h2 class="sg-title">Chalet Bambi at a Glance</h2>
+        <p class="guide-card-text" style="margin-bottom:1.5rem">Built in 1972. Idyllically situated on a 650 m² plot directly on the Waldemme river – with a direct view of the Brienzer Rothorn.</p>
+        <div class="info-box">
+          <div class="info-row">
+            <span class="info-label">Living area</span>
+            <span class="info-value">35 m² living space + 27 m² finished basement</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Sleeping places</span>
+            <span class="info-value">4 bunk beds + 1 sofa bed (1.60 × 2.00 m)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Capacity</span>
+            <span class="info-value">Ideal for 4 persons</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Terrace</span>
+            <span class="info-value">Large sun terrace with views of the Waldemme and Brienzer Rothorn</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Postal address</span>
+            <span class="info-value">Rothornstrasse 40, Postfach 459, 6174 Sörenberg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ARRIVAL & DEPARTURE ───────────────────────────────────── -->
+  <section id="arrival" class="section-cream">
+    <div class="container">
+      <h2 class="sg-title">Arrival &amp; Departure</h2>
+      <h3 class="guide-subheading">Getting here</h3>
+      <div class="stay-guide-grid" style="margin-top:1rem">
+        <div class="guide-card">
+          <h3 class="guide-card-title">By car</h3>
+          <p class="guide-card-text">A2 towards Lucerne, exit Wolhusen, then via Entlebuch to Flühli and Sörenberg. Approx. 40 min from Lucerne.</p>
+          <a href="https://maps.app.goo.gl/TgWmJ8JcF46fdbgt8" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:.75rem;font-size:.85rem;color:var(--forest);text-decoration:underline">Open in Google Maps →</a>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">By public transport</h3>
+          <p class="guide-card-text">Train via Entlebuch to Schüpfheim, then Entlebuch rail towards Sörenberg, followed by PostBus to Sörenberg. Alight at stop <strong>Höchistrasse</strong> – just 50 m from the chalet.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Address &amp; Parking</h3>
+          <p class="guide-card-text">Rothornstrasse 40, 6174 Sörenberg. Two free outdoor parking spaces directly in front of the chalet.</p>
+        </div>
+      </div>
+      <h3 class="guide-subheading" style="margin-top:2.5rem">Check-in &amp; Check-out</h3>
+      <div class="stay-guide-grid stay-guide-grid--2" style="margin-top:1rem">
+        <div class="guide-card">
+          <h3 class="guide-card-title">Check-in from 15:00</h3>
+          <p class="guide-card-text">You will find the key in the key safe at the entrance. The code will be sent to you by e-mail in good time before your arrival.</p>
+          <p class="guide-card-text" style="margin-top:.75rem">Please pay the tourist tax within the first few days at the <strong>Sörenberg Tourist Office</strong> (stop: Post).</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Check-out by 12:00</h3>
+          <p class="guide-card-text">Return the key to the safe and reset the code to 0000.</p>
+          <ul class="guide-list guide-list--ul" style="margin-top:.75rem">
+            <li>Close all windows &amp; shutters, leave interior doors open</li>
+            <li>Turn off lights, switch off the TV</li>
+            <li>Set boiler to 0</li>
+            <li>Set fridge to 0 (leave door open)</li>
+            <li>Set both warm-air heaters to 5 degrees</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HEATING ───────────────────────────────────────────────── -->
+  <section id="heating" class="section-linen">
+    <div class="container">
+      <div class="sg-section">
+        <h2 class="sg-title">Heating</h2>
+        <p class="guide-card-text" style="margin-bottom:1.25rem">The oil-powered warm-air heaters regulate the temperature automatically – simply set your desired temperature.</p>
+        <div class="info-box" style="margin-bottom:1.75rem">
+          <div class="info-row">
+            <span class="info-label">Thermostat living room</span>
+            <span class="info-value">On the wall towards the entrance area</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Thermostat basement</span>
+            <span class="info-value">Inside the right heater door</span>
+          </div>
+        </div>
+        <h3 class="guide-subheading">If the heater makes noise but doesn't heat up:</h3>
+        <p class="guide-card-text" style="margin-bottom:.75rem">Open the right door (the manual is inside) and check the following:</p>
+        <ol class="guide-list" style="margin-bottom:1rem">
+          <li>Are all switches in the correct position?</li>
+          <li>Are all fuses in the heater door intact? (Glowing wire = intact)</li>
+          <li>Is the thin v-belt still running over the two drive wheels (large on top, small on bottom)?</li>
+          <li>At the arrow on the left side (rear bottom): is the regulator "flap" snapped downward? Move it up and down a few times and then press it down so it no longer springs up.</li>
+        </ol>
+        <p class="guide-card-text">If none of this helps, please contact Mr Kaufmann (see Important Numbers).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOT WATER & BOILER ─────────────────────────────────────── -->
+  <section id="hotwater" class="section-cream">
+    <div class="container">
+      <h2 class="sg-title">Hot Water &amp; Boiler</h2>
+      <div class="stay-guide-grid stay-guide-grid--2">
+        <div class="guide-card">
+          <h3 class="guide-card-title">Standard – "Night" setting</h3>
+          <p class="guide-card-text">The boiler (120 litres) heats up automatically between <strong>02:00 and 06:00</strong>. This is the normal setting – please leave it as is.</p>
+        </div>
+        <div class="guide-card guide-card--emergency">
+          <h3 class="guide-card-title">Extra demand – "Day" setting</h3>
+          <p class="guide-card-text">If hot water runs short: set the switch <strong>to the left of the hob</strong> to "Day" for 2–4 hours. Afterwards return it to "Night".</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Shower room – Electric wall heater</h3>
+          <p class="guide-card-text" style="margin-bottom:.75rem">Wall heater with timer: ON/OFF (6) → Timer (1) → Set hours with + (4) → Wait 3 seconds. Heating time approx. 1 hour.</p>
+          <p class="guide-card-text">Please <strong>ventilate thoroughly</strong> after showering.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BED LINEN ─────────────────────────────────────────────── -->
+  <section id="linen" class="section-linen">
+    <div class="container">
+      <h2 class="sg-title">Bed Linen</h2>
+      <div class="stay-guide-grid stay-guide-grid--3">
+        <div class="guide-card">
+          <h3 class="guide-card-title">Bed linen</h3>
+          <p class="guide-card-text">Kitchen linen is provided. All other linen please bring yourself. Duvets: Nordic 1.60 × 2.10 m, pillows 65 × 100 cm.<br><br>Bed linen on request: <strong>CHF 20.–/bed</strong> – please indicate when booking.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Sofa bed</h3>
+          <p class="guide-card-text">A sofa bed is available in the living room (<strong>1.60 × 2.00 m</strong>). Please bring your own fitted sheet and bed linen.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Woollen blankets</h3>
+          <p class="guide-card-text">If needed, you will find woollen blankets in the <strong>chest in the bedroom</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── KITCHEN & APPLIANCES ───────────────────────────────────── -->
+  <section id="kitchen" class="section-cream">
+    <div class="container">
+      <h2 class="sg-title">Kitchen &amp; Appliances</h2>
+      <div class="stay-guide-grid stay-guide-grid--3">
+        <div class="guide-card">
+          <h3 class="guide-card-title">Hob &amp; Oven</h3>
+          <p class="guide-card-text">Ceramic hob with 4 zones. Oven below – set temperature with the dial. Please clean after use.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Fridge</h3>
+          <p class="guide-card-text">Please empty before departure. <strong>Set fridge to 0</strong> (press for a few seconds) and leave the door open.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Fire safety</h3>
+          <p class="guide-card-text"><strong>Fire extinguisher</strong> in the basement next to the stairs. <strong>Fire blanket</strong> in the entrance area.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">TV</h3>
+          <p class="guide-card-text">Television with <strong>satellite reception (Astra)</strong>. To switch off: <strong>hold On/Off for several seconds</strong>. Swiss channels connect after approx. 1 minute.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Radio</h3>
+          <p class="guide-card-text">DAB+ radio with CD, USB, Bluetooth and <strong>remote control</strong>. No Wi-Fi in the chalet.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Fire bowl</h3>
+          <p class="guide-card-text"><strong>Do not use under the balcony.</strong> Place on the <strong>three bricks</strong> at the seating area.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOUSE RULES ───────────────────────────────────────────── -->
+  <section id="houserules" class="section-linen">
+    <div class="container">
+      <div class="sg-section">
+        <h2 class="sg-title">House Rules</h2>
+        <ul class="guide-list guide-list--ul">
+          <li><strong>Smoking:</strong> The entire chalet is non-smoking. Please smoke outside only.</li>
+          <li><strong>Pets:</strong> Not permitted.</li>
+          <li><strong>Quiet hours:</strong> 22:00–07:00.</li>
+          <li><strong>Occupancy:</strong> Unregistered guests staying overnight must be registered (tourist tax applies, no extra charge).</li>
+          <li><strong>Cleaning:</strong> Please leave the chalet tidy: dishes washed, oven clean, fridge emptied, bed linen piled up, rubbish disposed of.</li>
+          <li><strong>Damage:</strong> Please report any damage or defects promptly.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WASTE & RECYCLING ─────────────────────────────────────── -->
+  <section id="waste" class="section-cream">
+    <div class="container">
+      <h2 class="sg-title">Waste &amp; Recycling</h2>
+      <div class="stay-guide-grid stay-guide-grid--3">
+        <div class="guide-card">
+          <h3 class="guide-card-title">Recycling</h3>
+          <p class="guide-card-text">Recycling station 50 m away – next to the petrol station. Glass, PET, metal, batteries, paper, cardboard and general waste.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Compost</h3>
+          <p class="guide-card-text">Compost bin in the garden for vegetables, coffee grounds, eggshells. No meat, no cooked food, no coal or half-burnt wood.</p>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">General waste</h3>
+          <p class="guide-card-text">Waste stickers are required for general rubbish (available at Volg Sörenberg).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EMERGENCY NUMBERS ─────────────────────────────────────── -->
+  <section id="emergency" class="section-linen">
+    <div class="container">
+      <h2 class="sg-title">Important Numbers</h2>
+      <div class="stay-guide-grid stay-guide-grid--2">
+        <div class="guide-card guide-card--emergency">
+          <h3 class="guide-card-title guide-card-title--emergency">Emergency Numbers</h3>
+          <div class="emergency-list">
+            <div class="emergency-row">
+              <span class="emergency-service">Police</span>
+              <a href="tel:117" class="emergency-number">117</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Fire brigade</span>
+              <a href="tel:118" class="emergency-number">118</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Ambulance</span>
+              <a href="tel:144" class="emergency-number">144</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Rega (Air rescue)</span>
+              <a href="tel:1414" class="emergency-number">1414</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Tox Centre (Poisoning)</span>
+              <a href="tel:145" class="emergency-number">145</a>
+            </div>
+          </div>
+          <h3 class="guide-card-title guide-card-title--emergency" style="margin-top:1.5rem">Local tradespeople</h3>
+          <div class="emergency-list">
+            <div class="emergency-row">
+              <span class="emergency-service">Heating – Mr Kaufmann, Schüpfheim</span>
+              <a href="tel:0797862952" class="emergency-number">079 786 29 52</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Electrician – Erwin Bucher, Sörenberg</span>
+              <a href="tel:0414881609" class="emergency-number">041 488 16 09</a>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Plumber – Wicki Haustechnik, Flühli</span>
+              <a href="tel:0414881234" class="emergency-number">041 488 12 34</a>
+            </div>
+          </div>
+        </div>
+        <div class="guide-card">
+          <h3 class="guide-card-title">Contact hosts</h3>
+          <p class="guide-card-text" style="margin-bottom:1rem">For questions, problems or any matter, we are happy to help.</p>
+          <div class="emergency-list">
+            <div class="emergency-row">
+              <span class="emergency-service">Familie Staub</span>
+              <a href="mailto:info@bambi-staub.ch" class="emergency-number" style="font-size:.9rem">info@bambi-staub.ch</a>
+            </div>
+          </div>
+          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75;margin-top:1rem">You will receive a mobile number with your booking confirmation.</p>
+          <h3 class="guide-card-title" style="margin-top:1.5rem">Key locations</h3>
+          <div class="emergency-list">
+            <div class="emergency-row">
+              <a href="https://share.google/TgjptaWBlCLPxC905" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Tourist Office (tourist tax)</a>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">Stop: Post</span>
+            </div>
+            <div class="emergency-row">
+              <a href="https://www.arztpraxisfluehli.ch/" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Doctor's practice Flühli</a>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">10 min by car</span>
+            </div>
+            <div class="emergency-row">
+              <a href="https://maps.app.goo.gl/TgWmJ8JcF46fdbgt8" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Hospital Wolhusen</a>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">40 min by car</span>
+            </div>
+            <div class="emergency-row">
+              <span class="emergency-service">Cantonal Hospital Lucerne</span>
+              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">60 min by car</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-cta">
+    <p class="section-label section-label--light">Ready for your retreat?</p>
+    <h2>Chalet Bambi awaits you</h2>
+    <a href="https://booking.haus-bambi.ch" target="_blank" rel="noopener noreferrer" class="footer-cta-btn">Book now</a>
+  </div>
+  <div class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Chalet Bambi</h3>
+        <p class="footer-brand-tagline">Your retreat in the<br>UNESCO Biosphere Entlebuch</p>
+      </div>
+      <div>
+        <p class="footer-col-label">Contact</p>
+        <a href="mailto:info@bambi-staub.ch">info@bambi-staub.ch</a>
+      </div>
+      <div class="footer-contact">
+        <p class="footer-col-label">Address</p>
+        <address class="footer-contact-text">Rothornstrasse 40<br>6174 Sörenberg<br>Switzerland</address>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Chalet Bambi, Familie Staub. All rights reserved.</p>
+      <p>Sörenberg · UNESCO Biosphere Entlebuch · <a href="/en/legal" style="color:inherit;text-decoration:underline;margin-left:.25rem">Legal Notice</a> · <a href="/en/privacy" style="color:inherit;text-decoration:underline;margin-left:.25rem">Privacy Policy</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/script.js" defer></script>
+<script>
+  (function () {
+    function setHeaderH() {
+      var h = document.querySelector('.site-header');
+      if (h) document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+    }
+    setHeaderH();
+    window.addEventListener('resize', setHeaderH);
+  })();
+
+  // Mobile TOC toggle
+  var tocBtn = document.querySelector('.toc-toggle');
+  var tocList = document.getElementById('toc-chips-list');
+  if (tocBtn && tocList) {
+    tocBtn.addEventListener('click', function () {
+      var open = tocList.classList.toggle('open');
+      tocBtn.setAttribute('aria-expanded', open);
+    });
+    tocList.querySelectorAll('.toc-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        tocList.classList.remove('open');
+        tocBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>
+</body>
+</html>
