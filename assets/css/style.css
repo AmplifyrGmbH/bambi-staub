@@ -771,6 +771,10 @@ h1, h2, h3, h4 {
   gap: 1rem;
 }
 
+.distance-tile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .distance-tile {
   text-align: center;
   background: var(--cream);
@@ -1770,9 +1774,12 @@ h1, h2, h3, h4 {
   .section-forest     { padding: 3.5rem var(--px); }
   .section-distances  { padding: 2.5rem var(--px); }
   .editorial          { padding: 3.5rem var(--px); }
-  .footer-cta         { padding: 3rem var(--px); }
-  .footer-grid        { padding: 3rem var(--px); gap: 2rem; }
-  .footer-bottom      { padding: 1.25rem var(--px); }
+  .footer-cta         { padding: 2rem var(--px); }
+  .footer-cta h2      { font-size: 1.4rem; margin: .5rem 0 1rem; }
+  .footer-grid        { padding: 2rem var(--px); gap: 1.5rem; }
+  .footer-grid > div:nth-child(2) { display: none; }
+  .footer-contact-mt  { margin-top: 1rem; }
+  .footer-bottom      { padding: .875rem var(--px); gap: .4rem; }
 
   /* Typography */
   .section-heading    { font-size: 1.75rem; }
