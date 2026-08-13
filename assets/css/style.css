@@ -1855,6 +1855,8 @@ h1, h2, h3, h4 {
   .slider-inner { height: 380px; }
   .slider-inner--tall { height: 460px; }
   .footer-grid { grid-template-columns: repeat(3, 1fr); padding: 2.5rem var(--px); gap: 2rem; align-items: start; }
+  .footer-grid > div:nth-child(2) { text-align: center; }
+  .footer-grid > div.footer-contact { text-align: right; justify-self: end; }
   .footer-bottom { flex-direction: row; justify-content: space-between; }
 }
 
