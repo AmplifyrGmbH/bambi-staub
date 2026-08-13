@@ -54,11 +54,36 @@
       height: auto;
       min-height: 0;
     }
+    .toc-toggle { display: none; }
     @media (max-width: 767px) {
       .hero-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
       .guide-card { padding: 1.1rem 1.25rem; }
-      .toc-nav { display: none; }
       .sg-fold .hero--short { flex: 1; }
+      /* Mobile TOC dropdown */
+      .toc-nav { display: block; padding: 0; }
+      .toc-label { display: none; }
+      .toc-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(251,249,244,0.1);
+        cursor: pointer;
+        padding: 1rem var(--px);
+        color: rgba(251,249,244,0.6);
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+      .toc-toggle svg { transition: transform 0.25s; flex-shrink: 0; }
+      .toc-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+      .toc-toggle[aria-expanded="true"] { border-bottom-color: transparent; }
+      #toc-chips-list { display: none; padding: 1rem var(--px) 1.25rem; justify-content: flex-start; }
+      #toc-chips-list.open { display: flex; }
     }
   </style>
 
@@ -125,7 +150,11 @@
   <nav class="toc-nav" aria-label="Inhaltsverzeichnis">
     <div class="container">
       <p class="toc-label">Inhalt</p>
-      <div class="toc-chips">
+      <button class="toc-toggle" aria-expanded="false" aria-controls="toc-chips-list">
+        <span>Inhalt</span>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8l5 5 5-5"/></svg>
+      </button>
+      <div class="toc-chips" id="toc-chips-list">
         <a href="#chalet-info" class="toc-chip"><span class="toc-num">01</span>Chalet auf einen Blick</a>
         <a href="#anreise-abreise" class="toc-chip"><span class="toc-num">02</span>An- &amp; Abreise</a>
         <a href="#heizung" class="toc-chip"><span class="toc-num">03</span>Heizung</a>
@@ -476,6 +505,23 @@
     setHeaderH();
     window.addEventListener('resize', setHeaderH);
   })();
+
+  // Mobile TOC toggle
+  var tocBtn = document.querySelector('.toc-toggle');
+  var tocList = document.getElementById('toc-chips-list');
+  if (tocBtn && tocList) {
+    tocBtn.addEventListener('click', function () {
+      var open = tocList.classList.toggle('open');
+      tocBtn.setAttribute('aria-expanded', open);
+    });
+    // Close when a chip is clicked
+    tocList.querySelectorAll('.toc-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        tocList.classList.remove('open');
+        tocBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 </script>
 </body>
 </html>
