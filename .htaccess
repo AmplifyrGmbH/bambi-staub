@@ -7,7 +7,13 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Map /page to page.html
+# Handle /en → en/index.html
+RewriteRule ^en/?$ en/index.html [L,NC]
+
+# Handle /en/page → en/page.html
+RewriteRule ^en/([a-z0-9_-]+)/?$ en/$1.html [L,NC]
+
+# Map /page → page.html
 RewriteRule ^([a-z0-9_-]+)/?$ $1.html [L,NC]
 
 # Redirect www to non-www (optional, adjust domain)
