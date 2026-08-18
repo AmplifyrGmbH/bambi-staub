@@ -89,6 +89,16 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 3600) {
     }
 }
 
+// Manuelle Sperrtage einbeziehen
+$manualFile = __DIR__ . '/../config/manual-blocks.php';
+if (file_exists($manualFile)) {
+    foreach (require $manualFile as $block) {
+        if (!empty($block['start']) && !empty($block['end'])) {
+            $bookings[] = ['start' => $block['start'], 'end' => $block['end']];
+        }
+    }
+}
+
 $cur = $arrivalTs;
 while ($cur < $departureTs) {
     $d = date('Y-m-d', $cur);

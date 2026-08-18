@@ -86,6 +86,17 @@ foreach ($matches[0] as $event) {
     }
 }
 
+// Manuelle Sperrtage dazumergen
+$manualFile = __DIR__ . '/../config/manual-blocks.php';
+if (file_exists($manualFile)) {
+    $manual = require $manualFile;
+    foreach ($manual as $block) {
+        if (!empty($block['start']) && !empty($block['end'])) {
+            $bookings[] = ['start' => $block['start'], 'end' => $block['end']];
+        }
+    }
+}
+
 $json = json_encode([
     'bookings'  => $bookings,
     'cached_at' => date('c'),
