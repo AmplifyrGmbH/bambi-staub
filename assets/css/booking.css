@@ -279,7 +279,7 @@
 
 /* ── INQUIRY FORM ────────────────────────────────────────────── */
 #booking-form {
-  display: none;
+  display: block;
   margin-top: 3.5rem;
 }
 
@@ -300,6 +300,53 @@
 
 @media (min-width: 640px) {
   .form-grid--booking { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Form full-width group */
+.form-group--full {
+  margin-bottom: 0.75rem;
+}
+
+/* Radio option groups (Endreinigung, Bettwäsche) */
+.form-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.form-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(191,181,168,0.6);
+  background: var(--linen-dark, #F3EFE8);
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: var(--charcoal);
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.form-radio-label input[type="radio"] {
+  accent-color: var(--forest);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.form-radio-label:has(input:checked) {
+  border-color: var(--forest);
+  background: rgba(45,62,51,0.06);
+}
+
+.form-option-price {
+  color: var(--forest);
+  font-weight: 500;
+  font-size: 0.8rem;
+  margin-left: 0.2rem;
 }
 
 /* Discount */
@@ -364,6 +411,86 @@
   color: var(--forest-muted);
   text-decoration: underline;
 }
+
+/* ── STICKY SUMMARY BAR ──────────────────────────────────────── */
+#booking-sticky-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: var(--forest);
+  color: var(--linen);
+  padding: 0.9rem 1.5rem;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.18);
+}
+#booking-sticky-bar.visible { display: flex; }
+.sticky-bar-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+.sticky-bar-dates {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 300;
+  flex: 1;
+  min-width: 0;
+}
+.sticky-bar-dates strong {
+  display: block;
+  font-size: 0.7rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(251,249,244,0.6);
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.sticky-bar-price {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+.sticky-bar-price small {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(251,249,244,0.6);
+  margin-left: 0.3rem;
+}
+.sticky-bar-btn {
+  background: var(--linen);
+  color: var(--forest);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.sticky-bar-btn:hover { opacity: 0.85; }
+.sticky-bar-reset {
+  background: none;
+  border: none;
+  color: rgba(251,249,244,0.5);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+}
+.sticky-bar-reset:hover { color: var(--linen); }
+
+/* Platz für Sticky Bar am Seitenende */
+body.has-sticky-bar { padding-bottom: 80px; }
 
 /* ── SUCCESS MESSAGE ─────────────────────────────────────────── */
 #booking-success {

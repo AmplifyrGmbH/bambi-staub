@@ -34,13 +34,16 @@ $arrival       = trim($_POST['arrival']      ?? '');
 $departure     = trim($_POST['departure']    ?? '');
 $message       = esc($_POST['message']       ?? '');
 $discountCode  = strtoupper(trim($_POST['discount_code'] ?? ''));
+$cleaning      = ($_POST['cleaning'] ?? 'yes') === 'no' ? 'no' : 'yes';
+$linen         = ($_POST['linen']    ?? 'own') === 'rent' ? 'rent' : 'own';
+$linenBeds     = max(0, min(10, (int)($_POST['linen_beds'] ?? 0)));
 
 // ── Validierung ───────────────────────────────────────────────
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
 
 if (empty($name))                                       respond(false, 'Name fehlt.');
-if (!$email)                                            respond(false, 'Ungültige E-Mail-Adresse.');
 if ($persons < 1 || $persons > 10)                     respond(false, 'Ungültige Personenzahl (1–10).');
+if (!$email)                                            respond(false, 'Ungültige E-Mail-Adresse.');
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival))    respond(false, 'Ungültiges Anreisedatum.');
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure))  respond(false, 'Ungültiges Abreisedatum.');
 
@@ -165,7 +168,9 @@ if (!empty($discountCode)) {
     }
 }
 
-$finalPrice = $totalPrice - $discountAmount;
+$cleaningCost = ($cleaning === 'yes') ? 80 : 0;
+$linenCost    = ($linen   === 'rent') ? ($linenBeds * 20) : 0;
+$finalPrice   = $totalPrice - $discountAmount + $cleaningCost + $linenCost;
 
 // ── E-Mail-Text zusammenbauen ─────────────────────────────────
 $breakdownLines = '';
@@ -180,17 +185,22 @@ $body .= "KONTAKT\n";
 $body .= "Name:      {$name}\n";
 $body .= "E-Mail:    {$email}\n";
 $body .= "Telefon:   " . ($phone ?: '–') . "\n";
-$body .= "Personen:  {$persons}\n\n";
+$body .= "Personen:  {$persons}\n";
 $body .= "AUFENTHALT\n";
 $body .= "Anreise:   " . date('d.m.Y', $arrivalTs) . "\n";
 $body .= "Abreise:   " . date('d.m.Y', $departureTs) . "\n";
 $body .= "Nächte:    {$nights}\n\n";
 $body .= "PREIS (berechnet)\n";
 $body .= $breakdownLines;
+if ($cleaningCost > 0) $body .= "Endreinigung:  CHF {$cleaningCost}\n";
+if ($linenCost    > 0) $body .= "Bettwäsche ({$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . "): CHF {$linenCost}\n";
 if ($discountAmount > 0) {
     $body .= "Rabatt ({$discountLabel}): –CHF {$discountAmount}\n";
 }
 $body .= "TOTAL:     CHF {$finalPrice}\n";
+$body .= "\nOPTIONEN\n";
+$body .= "Endreinigung: " . ($cleaning === 'yes' ? 'Ja (+CHF 80)' : 'Nein (selbst reinigen)') . "\n";
+$body .= "Bettwäsche:   " . ($linen === 'rent' ? "Mieten – {$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . " (+CHF {$linenCost})" : 'Eigene') . "\n";
 if (!empty($message)) {
     $body .= "\nNACHRICHT\n{$message}\n";
 }

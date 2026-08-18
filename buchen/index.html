@@ -118,13 +118,17 @@
   <script>
     window.BOOKING_CONFIG = {
       minNights: 3,
+      cleaning: { price: 80 },
+      linen:    { pricePerBed: 20 },
       pricing: [
-        { from: '2026-08-18', to: '2026-08-30', price: 120, label: 'Hochsaison Sommer' },
-        { from: '2026-08-31', to: '2026-10-25', price: 110, label: 'Nebensaison Herbst' },
-        { from: '2026-10-26', to: '2026-12-20', price: 100, label: 'Nebensaison' },
-        { from: '2026-12-21', to: '2027-03-07', price: 170, label: 'Hochsaison Winter' },
-        { from: '2027-03-08', to: '2027-04-25', price: 105, label: 'Nebensaison Frühling' },
-        { from: '2027-04-26', to: '2027-08-31', price: 120, label: 'Hochsaison Sommer' },
+        { from: '2026-08-18', to: '2026-08-31', price: 120, label: 'Hochsaison Sommer' },
+        { from: '2026-09-01', to: '2026-10-31', price: 110, label: 'Nebensaison Herbst' },
+        { from: '2026-11-01', to: '2026-12-20', price: 100, label: 'Nebensaison' },
+        { from: '2026-12-21', to: '2027-01-07', price: 170, label: 'Hochsaison Winter' },
+        { from: '2027-01-08', to: '2027-01-21', price: 120, label: 'Januarwochen' },
+        { from: '2027-01-22', to: '2027-03-07', price: 170, label: 'Hochsaison Winter' },
+        { from: '2027-03-08', to: '2027-04-30', price: 105, label: 'Nebensaison Frühling' },
+        { from: '2027-05-01', to: '2027-10-31', price: 120, label: 'Hochsaison Sommer' },
       ],
     };
   </script>
@@ -321,9 +325,45 @@
               <input class="form-input" type="number" id="field-persons" name="persons"
                      required min="1" max="10" placeholder="z.B. 4">
             </div>
+
           </div>
 
-          <div class="form-group" style="margin-bottom: 0.75rem;">
+          <!-- Endreinigung -->
+          <div class="form-group form-group--full">
+            <p class="form-label">Endreinigung</p>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="cleaning" value="yes" checked>
+                <span>Mit Endreinigung <span class="form-option-price">+CHF 80</span></span>
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="cleaning" value="no">
+                <span>Selbst reinigen</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bettwäsche -->
+          <div class="form-group form-group--full">
+            <p class="form-label">Bettwäsche</p>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="linen" value="own" checked>
+                <span>Eigene Bettwäsche</span>
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="linen" value="rent">
+                <span>Mieten <span class="form-option-price">+CHF 20/Bett</span></span>
+              </label>
+            </div>
+            <div id="linen-beds-wrap" style="display:none; margin-top:0.6rem;">
+              <label class="form-label" for="field-linen-beds" style="font-size:0.8rem;">Anzahl Betten</label>
+              <input class="form-input" type="number" id="field-linen-beds" name="linen_beds"
+                     min="1" max="10" value="2" style="max-width:80px;">
+            </div>
+          </div>
+
+          <div class="form-group form-group--full" style="margin-bottom: 0.75rem;">
             <label class="form-label" for="field-message">Nachricht / Fragen</label>
             <textarea class="form-input form-textarea" id="field-message" name="message"
                       rows="4" placeholder="Habt ihr Kinder, Haustiere, besondere Wünsche?"></textarea>
@@ -367,6 +407,19 @@
   </section>
 
 </main>
+
+<!-- ── STICKY SUMMARY BAR ───────────────────────────────────── -->
+<div id="booking-sticky-bar" role="status" aria-live="polite">
+  <div class="sticky-bar-inner">
+    <div class="sticky-bar-dates">
+      <strong>Deine Auswahl</strong>
+      <span id="sticky-bar-dates-text"></span>
+    </div>
+    <div class="sticky-bar-price" id="sticky-bar-price"></div>
+    <button class="sticky-bar-btn" id="sticky-bar-cta" type="button">Zum Formular</button>
+    <button class="sticky-bar-reset" id="sticky-bar-reset" type="button" aria-label="Auswahl zurücksetzen">✕</button>
+  </div>
+</div>
 
 <!-- ── FOOTER ─────────────────────────────────────────────────── -->
 <footer>

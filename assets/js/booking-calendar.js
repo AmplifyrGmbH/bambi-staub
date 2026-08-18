@@ -2,8 +2,10 @@
   'use strict';
 
   // ── Config (injected per inline-script in buchen/index.html) ──
-  const cfg        = window.BOOKING_CONFIG || { pricing: [], minNights: 3 };
-  const MIN_NIGHTS = cfg.minNights || 3;
+  const cfg            = window.BOOKING_CONFIG || { pricing: [], minNights: 3 };
+  const MIN_NIGHTS     = cfg.minNights || 3;
+  const CLEANING_PRICE = (cfg.cleaning || {}).price || 80;
+  const LINEN_PER_BED  = (cfg.linen || {}).pricePerBed || 20;
   const MONTHS     = 14; // Monate voraus
 
   // ── State ──────────────────────────────────────────────────────
@@ -23,7 +25,9 @@
   };
 
   // ── Date helpers ───────────────────────────────────────────────
-  function toStr(d) { return d.toISOString().slice(0, 10); }
+  function toStr(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
 
   function fromStr(s) {
     const [y, m, d] = s.split('-').map(Number);
@@ -111,21 +115,24 @@
   }
 
   // ── DOM refs ───────────────────────────────────────────────────
-  let $cal, $pricePreview, $formWrap, $form, $success;
+  let $cal, $pricePreview, $formWrap, $form, $success, $stickyBar;
 
   function init() {
     $cal          = document.getElementById('booking-calendar');
     $pricePreview = document.getElementById('price-preview');
-    $formWrap     = document.getElementById('booking-form');   // äusserer div (show/hide)
-    $form         = document.getElementById('inquiry-form');   // das eigentliche <form>
+    $formWrap     = document.getElementById('booking-form');
+    $form         = document.getElementById('inquiry-form');
     $success      = document.getElementById('booking-success');
+    $stickyBar    = document.getElementById('booking-sticky-bar');
 
     if (!$cal) return;
 
-    renderCalendar(); // shows loading state
+    renderCalendar();
     fetchAvailability();
     bindDiscountBtn();
     bindForm();
+    bindStickyBar();
+    bindExtras();
   }
 
   // ── Fetch availability ─────────────────────────────────────────
@@ -169,20 +176,26 @@
     $cal.innerHTML = '';
     $cal.appendChild(grid);
 
-    // Re-attach hover listener on the whole grid (event delegation)
+    // Hover: nur CSS-Klassen aktualisieren, kein Re-Render
     grid.addEventListener('mouseover', e => {
       const btn = e.target.closest('.cal-day--available');
-      if (!btn) return;
-      if (S.arrival && !S.departure) {
-        S.hover = btn.dataset.date;
-        renderCalendar();
-      }
+      if (!btn || !S.arrival || S.departure) return;
+      S.hover = btn.dataset.date;
+      applyHoverClasses();
     });
     grid.addEventListener('mouseleave', () => {
-      if (S.arrival && !S.departure) {
-        S.hover = null;
-        renderCalendar();
-      }
+      if (!S.arrival || S.departure) return;
+      S.hover = null;
+      applyHoverClasses();
+    });
+  }
+
+  function applyHoverClasses() {
+    const all = $cal.querySelectorAll('.cal-day--available');
+    all.forEach(btn => {
+      const d = btn.dataset.date;
+      const inHover = S.arrival && !S.departure && S.hover && d > S.arrival && d <= S.hover;
+      btn.classList.toggle('cal-day--hover-range', !!inHover);
     });
   }
 
@@ -275,7 +288,6 @@
       S.arrival   = dateStr;
       S.departure = null;
       S.hover     = null;
-      hideForm();
       hidePricePreview();
       renderCalendar();
       updateHint();
@@ -355,13 +367,20 @@
 
     S.priceTotal   = total;
     S.discountAmt  = applyDiscount(total);
-    const final    = total - S.discountAmt;
+    const extras   = getExtrasCost();
+    const final    = total - S.discountAmt + extras;
 
     let linesHTML = '';
     breakdown.forEach(b => {
       const n = b.nights;
       linesHTML += `<div class="price-line"><span>${n} Nacht${n > 1 ? 'e' : ''} × CHF ${b.price}</span><span>CHF ${b.subtotal}</span></div>`;
     });
+
+    const cleaning = getCleaningCost();
+    const linen    = getLinenCost();
+    let extrasHTML = '';
+    if (cleaning > 0) extrasHTML += `<div class="price-line"><span>Endreinigung</span><span>CHF ${cleaning}</span></div>`;
+    if (linen > 0)    extrasHTML += `<div class="price-line"><span>Bettwäsche</span><span>CHF ${linen}</span></div>`;
 
     let discountHTML = '';
     if (S.discountAmt > 0) {
@@ -371,10 +390,10 @@
     $pricePreview.innerHTML = `
       <div class="price-breakdown">
         <div class="price-dates">${fmtDE(S.arrival)} &rarr; ${fmtDE(S.departure)} &middot; <strong>${nights} Nächte</strong></div>
-        <div class="price-lines">${linesHTML}</div>
+        <div class="price-lines">${linesHTML}${extrasHTML}</div>
         ${discountHTML}
         <div class="price-total"><span>Total (Anfrage)</span><span>CHF ${final}</span></div>
-        <p class="price-note">Preis inkl. aller Nebenkosten. Verbindlich nach deiner Bestätigung per E-Mail.</p>
+        <p class="price-note">Verbindlich nach Bestätigung per E-Mail.</p>
       </div>`;
     $pricePreview.style.display = 'block';
   }
@@ -386,20 +405,101 @@
   function applyDiscount(total) {
     if (!S.discountCode || S.discountValue === 0) return 0;
     if (S.discountType === 'percent') return Math.round(total * S.discountValue / 100);
-    return Math.min(S.discountValue, total); // fixed
+    return Math.min(S.discountValue, total);
+  }
+
+  function getCleaningCost() {
+    const el = document.querySelector('[name="cleaning"]:checked');
+    return el && el.value === 'yes' ? CLEANING_PRICE : 0;
+  }
+
+  function getLinenCost() {
+    const el = document.querySelector('[name="linen"]:checked');
+    if (!el || el.value !== 'rent') return 0;
+    const beds = parseInt(document.getElementById('field-linen-beds')?.value) || 0;
+    return beds * LINEN_PER_BED;
+  }
+
+  function getExtrasCost() {
+    return getCleaningCost() + getLinenCost();
   }
 
   // ── Form show/hide ─────────────────────────────────────────────
   function showForm() {
-    if (!$formWrap || !$form) return;
+    if (!$form) return;
     $form.querySelector('[name="arrival"]').value   = S.arrival;
     $form.querySelector('[name="departure"]').value = S.departure;
-    $formWrap.style.display = 'block';
-    setTimeout(() => $formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    updateStickyBar();
   }
 
   function hideForm() {
-    if ($formWrap) $formWrap.style.display = 'none';
+    updateStickyBar();
+  }
+
+  // ── Sticky Bar ─────────────────────────────────────────────────
+  function updateStickyBar() {
+    if (!$stickyBar) return;
+    if (S.arrival && S.departure) {
+      const nights = diffDays(S.arrival, S.departure);
+      const total  = calcTotal(S.arrival, S.departure);
+      document.getElementById('sticky-bar-dates-text').textContent =
+        `${fmtDE(S.arrival)} → ${fmtDE(S.departure)} · ${nights} Nächte`;
+      const priceEl = document.getElementById('sticky-bar-price');
+      if (total !== null) {
+        const final = total - applyDiscount(total) + getExtrasCost();
+        priceEl.innerHTML = `CHF ${final}<small>Total</small>`;
+      } else {
+        priceEl.textContent = '';
+      }
+      $stickyBar.classList.add('visible');
+      document.body.classList.add('has-sticky-bar');
+    } else {
+      $stickyBar.classList.remove('visible');
+      document.body.classList.remove('has-sticky-bar');
+    }
+  }
+
+  function bindExtras() {
+    // Bettwäsche: Betten-Anzahl ein-/ausblenden
+    document.querySelectorAll('[name="linen"]').forEach(r => {
+      r.addEventListener('change', () => {
+        const wrap = document.getElementById('linen-beds-wrap');
+        if (wrap) wrap.style.display = r.value === 'rent' ? 'block' : 'none';
+        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
+      });
+    });
+    // Betten-Anzahl geändert
+    const bedsInput = document.getElementById('field-linen-beds');
+    if (bedsInput) {
+      bedsInput.addEventListener('input', () => {
+        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
+      });
+    }
+    // Endreinigung
+    document.querySelectorAll('[name="cleaning"]').forEach(r => {
+      r.addEventListener('change', () => {
+        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
+      });
+    });
+  }
+
+  function bindStickyBar() {
+    const ctaBtn   = document.getElementById('sticky-bar-cta');
+    const resetBtn = document.getElementById('sticky-bar-reset');
+    if (ctaBtn) {
+      ctaBtn.addEventListener('click', () => {
+        if ($form) $form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        S.arrival = null; S.departure = null; S.hover = null;
+        hidePricePreview();
+        updateStickyBar();
+        renderCalendar();
+        updateHint();
+      });
+    }
   }
 
   // ── Discount ───────────────────────────────────────────────────
