@@ -8,14 +8,7 @@
 // Nach jeder neuen Buchung im Interhome Owner Portal hier eintragen, falls
 // sie nicht automatisch im Kalender erscheint.
 return [
-    // August 2026 – Buchungen aus dem Owner Portal (nicht im iCal-Export)
-    ['start' => '2026-08-01', 'end' => '2026-08-03', 'label' => 'Belegt'],
-    ['start' => '2026-08-03', 'end' => '2026-08-10', 'label' => 'Belegt'],
-    ['start' => '2026-08-10', 'end' => '2026-08-17', 'label' => 'Belegt'],
-    ['start' => '2026-08-17', 'end' => '2026-08-23', 'label' => 'Belegt'],
-    ['start' => '2026-08-24', 'end' => '2026-08-29', 'label' => 'Belegt'],
-
-    // September 2026
-    ['start' => '2026-09-06', 'end' => '2026-09-07', 'label' => 'Eigentümerbuchung'],
-    ['start' => '2026-09-08', 'end' => '2026-09-20', 'label' => 'Externe Buchung'],
+    // Nur als Fallback nötig, falls die Interhome iCal-URL eine Buchung nicht enthält.
+    // Beispiel:
+    // ['start' => '2026-12-24', 'end' => '2026-12-27', 'label' => 'Gesperrt'],
 ];
