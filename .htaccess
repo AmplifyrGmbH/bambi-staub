@@ -7,6 +7,9 @@ RewriteEngine On
 # /en and /en/ → en/index.html (before directory check, en/ is a real dir)
 RewriteRule ^en/?$ en/index.html [L,NC]
 
+# /buchen and /buchen/ → buchen/index.html
+RewriteRule ^buchen/?$ buchen/index.html [L,NC]
+
 # Allow direct access to existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

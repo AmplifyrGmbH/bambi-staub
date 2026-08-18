@@ -1,0 +1,396 @@
+/* ── BOOKING PAGE ────────────────────────────────────────────── */
+
+/* Hero */
+.booking-hero {
+  padding: 8rem 0 3.5rem;
+  background: var(--forest);
+  text-align: center;
+}
+
+.booking-hero .section-label--light {
+  margin-bottom: 0.75rem;
+}
+
+.booking-hero h1 {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+  color: var(--linen);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.booking-hero p {
+  color: rgba(251,249,244,0.65);
+  font-size: 1rem;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+/* ── BOOKING SECTION ─────────────────────────────────────────── */
+.booking-section {
+  padding: 4rem 0 5rem;
+}
+
+/* ── STEP INTRO ──────────────────────────────────────────────── */
+.booking-step {
+  margin-bottom: 2.5rem;
+}
+
+.booking-step-num {
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--forest-muted);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.7rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--forest-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ── CALENDAR LEGEND ─────────────────────────────────────────── */
+.cal-legend {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--charcoal-light);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.cal-legend-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.cal-legend-dot--available { background: var(--linen-dark); border: 1px solid var(--stone-light); }
+.cal-legend-dot--booked    { background: var(--stone-light); }
+.cal-legend-dot--selected  { background: var(--forest); }
+.cal-legend-dot--range     { background: rgba(45,62,51,0.15); }
+
+/* ── CALENDAR LOADING / ERROR ────────────────────────────────── */
+.cal-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--stone);
+  font-size: 0.875rem;
+}
+
+.cal-error {
+  color: var(--terracotta);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(160,92,59,0.07);
+  border-left: 3px solid var(--terracotta);
+}
+
+/* ── CALENDAR MONTHS GRID ────────────────────────────────────── */
+.cal-months-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 580px) {
+  .cal-months-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1100px) {
+  .cal-months-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── SINGLE MONTH ────────────────────────────────────────────── */
+.cal-month {
+  background: #fff;
+  border: 1px solid rgba(191,181,168,0.35);
+  padding: 1.1rem 1rem 1rem;
+}
+
+.cal-month-title {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--forest);
+  text-align: center;
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(191,181,168,0.3);
+}
+
+/* ── DAY GRID ────────────────────────────────────────────────── */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-day-name {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--stone);
+  padding: 0.35rem 0;
+  text-transform: uppercase;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  border: none;
+  background: transparent;
+  cursor: default;
+  border-radius: 2px;
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+  line-height: 1;
+}
+
+.cal-day--empty    { background: transparent; pointer-events: none; }
+
+.cal-day--past {
+  color: var(--stone-light);
+  opacity: 0.55;
+}
+
+.cal-day--booked {
+  background: var(--stone-light);
+  color: rgba(251,249,244,0.7);
+  text-decoration: line-through;
+  text-decoration-color: rgba(251,249,244,0.5);
+}
+
+.cal-day--available {
+  cursor: pointer;
+  color: var(--charcoal);
+  background: var(--linen-dark);
+}
+
+.cal-day--available:hover,
+.cal-day--available:focus-visible {
+  background: var(--forest);
+  color: var(--linen);
+  outline: none;
+}
+
+.cal-day--in-range {
+  background: rgba(45,62,51,0.13);
+  color: var(--forest);
+  border-radius: 0;
+}
+
+.cal-day--hover-range {
+  background: rgba(45,62,51,0.07);
+  color: var(--forest);
+}
+
+.cal-day--arrival,
+.cal-day--departure {
+  background: var(--forest) !important;
+  color: var(--linen) !important;
+  font-weight: 500;
+}
+
+/* ── SELECTION HINT ──────────────────────────────────────────── */
+.cal-hint {
+  margin-top: 1rem;
+  font-size: 0.825rem;
+  color: var(--forest-muted);
+  font-style: italic;
+}
+
+/* ── PRICE PREVIEW ───────────────────────────────────────────── */
+#price-preview {
+  display: none;
+  margin-top: 2.5rem;
+  background: var(--forest);
+  color: var(--linen);
+  padding: 1.75rem 2rem;
+}
+
+.price-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.price-dates {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(251,249,244,0.12);
+}
+
+.price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.price-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: rgba(251,249,244,0.75);
+}
+
+.price-line--discount {
+  color: #a8d8a2;
+}
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 300;
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid rgba(251,249,244,0.18);
+}
+
+.price-note {
+  font-size: 0.72rem;
+  color: rgba(251,249,244,0.45);
+  margin-top: 0.2rem;
+  letter-spacing: 0.01em;
+}
+
+/* ── INQUIRY FORM ────────────────────────────────────────────── */
+#booking-form {
+  display: none;
+  margin-top: 3.5rem;
+}
+
+.booking-form-title {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--charcoal);
+  margin-bottom: 1.5rem;
+}
+
+.form-grid--booking {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .form-grid--booking { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Discount */
+.discount-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.discount-row .form-input {
+  flex: 1;
+  min-width: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.discount-check-btn {
+  padding: 0.6rem 1.25rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--linen-dark);
+  border: 1px solid rgba(191,181,168,0.6);
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.discount-check-btn:hover  { background: var(--cream); }
+.discount-check-btn:disabled { opacity: 0.5; cursor: default; }
+
+.discount-result {
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  min-height: 1.1rem;
+}
+
+.discount-result--ok  { color: var(--forest); }
+.discount-result--err { color: var(--terracotta); }
+
+/* Honeypot – never visible */
+.booking-hp { display: none !important; visibility: hidden !important; }
+
+/* Submit row */
+.form-submit-wrap {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-privacy-note {
+  font-size: 0.75rem;
+  color: var(--stone);
+}
+
+.form-privacy-note a {
+  color: var(--forest-muted);
+  text-decoration: underline;
+}
+
+/* ── SUCCESS MESSAGE ─────────────────────────────────────────── */
+#booking-success {
+  display: none;
+  text-align: center;
+  padding: 3.5rem 2rem;
+  background: var(--forest);
+  color: var(--linen);
+  margin-top: 2.5rem;
+}
+
+#booking-success .section-label--light {
+  margin-bottom: 0.75rem;
+}
+
+#booking-success h3 {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 300;
+  color: var(--linen);
+  margin-bottom: 1rem;
+}
+
+#booking-success p {
+  color: rgba(251,249,244,0.7);
+  max-width: 34rem;
+  margin: 0 auto;
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
