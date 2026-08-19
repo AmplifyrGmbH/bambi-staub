@@ -430,12 +430,6 @@
     $form.querySelector('[name="arrival"]').value   = S.arrival;
     $form.querySelector('[name="departure"]').value = S.departure;
     updateStickyBar();
-    if (window.innerWidth < 960) {
-      const target = $pricePreview && $pricePreview.style.display !== 'none'
-        ? $pricePreview
-        : $formWrap;
-      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
-    }
   }
 
   function hideForm() {

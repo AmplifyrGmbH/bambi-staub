@@ -435,6 +435,94 @@
 }
 
 
+/* ── MOBILE STICKY BAR (nur < 960px) ────────────────────────── */
+#booking-sticky-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: var(--forest);
+  color: var(--linen);
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+}
+
+@media (min-width: 960px) {
+  #booking-sticky-bar { display: none !important; }
+}
+
+#booking-sticky-bar.visible { display: flex; }
+
+.sticky-bar-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sticky-bar-dates {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sticky-bar-dates strong {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(251,249,244,0.55);
+  font-weight: 500;
+}
+
+.sticky-bar-price {
+  font-family: 'Noto Serif', Georgia, serif;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.sticky-bar-price small {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.65rem;
+  color: rgba(251,249,244,0.55);
+  margin-left: 0.2rem;
+}
+
+.sticky-bar-btn {
+  background: var(--linen);
+  color: var(--forest);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.65rem 1.1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sticky-bar-reset {
+  background: none;
+  border: none;
+  color: rgba(251,249,244,0.45);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sticky-bar-reset:hover { color: var(--linen); }
+body.has-sticky-bar { padding-bottom: 72px; }
+
 /* ── SUCCESS MESSAGE ─────────────────────────────────────────── */
 #booking-success {
   display: none;
