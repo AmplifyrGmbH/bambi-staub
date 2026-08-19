@@ -3,7 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 $configFile = __DIR__ . '/../config/interhome.php';
 $cacheFile  = __DIR__ . '/../cache/availability.json';
-$cacheTTL   = 300; // 5 Minuten
+$cacheTTL   = 1800; // 30 Minuten
 
 // Cache frisch genug? Direkt zurückgeben.
 if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTTL) {
