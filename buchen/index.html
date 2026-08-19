@@ -232,63 +232,40 @@
 
 <main>
 
-  <!-- ── HERO ──────────────────────────────────────────────────── -->
+  <!-- ── HERO (kompakt) ────────────────────────────────────────── -->
   <section class="booking-hero" aria-label="Buchungsanfrage">
     <div class="container">
-      <p class="section-label section-label--light">Verfügbarkeit &amp; Buchung</p>
-      <h1>Deine Auszeit reservieren</h1>
-      <p>Wähle deinen Wunschzeitraum im Kalender, prüfe den Preis und schick uns deine Anfrage – wir melden uns innerhalb von 24 Stunden.</p>
+      <h1>Verfügbarkeit &amp; Buchung</h1>
     </div>
   </section>
 
   <!-- ── BOOKING ────────────────────────────────────────────────── -->
   <section class="booking-section" aria-label="Kalender und Buchungsformular">
     <div class="container">
+      <div class="booking-layout">
 
-      <!-- Schritt 1: Kalender -->
-      <div class="booking-step">
-        <div class="booking-step-num" aria-hidden="true">1</div>
-        <p class="section-label">Verfügbarkeit</p>
-        <h2 class="section-heading">Zeitraum wählen</h2>
-
-        <!-- Legende -->
-        <div class="cal-legend" aria-label="Kalender-Legende">
-          <div class="cal-legend-item">
-            <span class="cal-legend-dot cal-legend-dot--available" aria-hidden="true"></span>
-            Frei
+        <!-- LINKS: Kalender -->
+        <div class="booking-col-calendar">
+          <div class="cal-legend" aria-label="Kalender-Legende">
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--available" aria-hidden="true"></span>Frei</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--booked" aria-hidden="true"></span>Belegt</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--selected" aria-hidden="true"></span>Ausgewählt</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--range" aria-hidden="true"></span>Zeitraum</div>
           </div>
-          <div class="cal-legend-item">
-            <span class="cal-legend-dot cal-legend-dot--booked" aria-hidden="true"></span>
-            Belegt
-          </div>
-          <div class="cal-legend-item">
-            <span class="cal-legend-dot cal-legend-dot--selected" aria-hidden="true"></span>
-            Ausgewählt
-          </div>
-          <div class="cal-legend-item">
-            <span class="cal-legend-dot cal-legend-dot--range" aria-hidden="true"></span>
-            Zeitraum
+          <p class="cal-hint" id="cal-hint" aria-live="polite">Anreisedatum auswählen.</p>
+          <div id="booking-calendar" aria-label="Verfügbarkeitskalender" role="region">
+            <div class="cal-loading">Verfügbarkeit wird geladen…</div>
           </div>
         </div>
 
-        <!-- Hinweis-Text -->
-        <p class="cal-hint" id="cal-hint" aria-live="polite">Anreisedatum auswählen.</p>
+        <!-- RECHTS: Preisvorschau + Formular (sticky) -->
+        <div class="booking-col-form">
+          <div class="booking-form-sticky">
 
-        <!-- Kalender-Container -->
-        <div id="booking-calendar" aria-label="Verfügbarkeitskalender" role="region">
-          <div class="cal-loading">Verfügbarkeit wird geladen…</div>
-        </div>
-      </div>
+            <div id="price-preview" aria-live="polite" aria-label="Preisvorschau"></div>
 
-      <!-- Preisvorschau (wird eingeblendet nach Datumsauswahl) -->
-      <div id="price-preview" aria-live="polite" aria-label="Preisvorschau"></div>
-
-      <!-- Schritt 2: Anfrage-Formular (wird eingeblendet nach Datumsauswahl) -->
-      <div id="booking-form" aria-label="Buchungsanfrage-Formular">
-        <div class="divider"></div>
-        <div class="booking-step-num" aria-hidden="true">2</div>
-        <p class="section-label">Anfrage</p>
-        <h2 class="booking-form-title">Deine Kontaktdaten</h2>
+            <div id="booking-form" aria-label="Buchungsanfrage-Formular">
+              <h2 class="booking-form-title">Buchen</h2>
 
         <form id="inquiry-form" novalidate>
           <!-- Honeypot (für Bots unsichtbar) -->
@@ -348,12 +325,12 @@
             <p class="form-label">Bettwäsche</p>
             <div class="form-radio-group">
               <label class="form-radio-label">
-                <input type="radio" name="linen" value="own" checked>
-                <span>Eigene Bettwäsche</span>
-              </label>
-              <label class="form-radio-label">
                 <input type="radio" name="linen" value="rent">
                 <span>Mieten <span class="form-option-price">+CHF 20/Bett</span></span>
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="linen" value="own" checked>
+                <span>Selber mitbringen</span>
               </label>
             </div>
             <div id="linen-beds-wrap" style="display:none; margin-top:0.6rem;">
@@ -366,7 +343,7 @@
           <div class="form-group form-group--full" style="margin-bottom: 0.75rem;">
             <label class="form-label" for="field-message">Nachricht / Fragen</label>
             <textarea class="form-input form-textarea" id="field-message" name="message"
-                      rows="4" placeholder="Habt ihr Kinder, Haustiere, besondere Wünsche?"></textarea>
+                      rows="4" placeholder=""></textarea>
           </div>
 
           <!-- Rabattcode -->
@@ -391,35 +368,24 @@
             </p>
           </div>
         </form>
-      </div>
+            </div><!-- /#booking-form -->
 
-      <!-- Erfolgsmeldung -->
-      <div id="booking-success" aria-live="assertive">
-        <p class="section-label section-label--light">Anfrage gesendet</p>
-        <h3>Vielen Dank!</h3>
-        <p>
-          Wir haben deine Buchungsanfrage erhalten und melden uns innerhalb von 24 Stunden
-          bei dir per E-Mail. Bis bald in Sörenberg!
-        </p>
-      </div>
+            <!-- Erfolgsmeldung -->
+            <div id="booking-success" aria-live="assertive">
+              <p class="section-label section-label--light">Anfrage gesendet</p>
+              <h3>Vielen Dank!</h3>
+              <p>Wir haben deine Buchungsanfrage erhalten und melden uns innerhalb von 24 Stunden bei dir per E-Mail. Bis bald in Sörenberg!</p>
+            </div>
 
-    </div>
+          </div><!-- /.booking-form-sticky -->
+        </div><!-- /.booking-col-form -->
+
+      </div><!-- /.booking-layout -->
+    </div><!-- /.container -->
   </section>
 
 </main>
 
-<!-- ── STICKY SUMMARY BAR ───────────────────────────────────── -->
-<div id="booking-sticky-bar" role="status" aria-live="polite">
-  <div class="sticky-bar-inner">
-    <div class="sticky-bar-dates">
-      <strong>Deine Auswahl</strong>
-      <span id="sticky-bar-dates-text"></span>
-    </div>
-    <div class="sticky-bar-price" id="sticky-bar-price"></div>
-    <button class="sticky-bar-btn" id="sticky-bar-cta" type="button">Zum Formular</button>
-    <button class="sticky-bar-reset" id="sticky-bar-reset" type="button" aria-label="Auswahl zurücksetzen">✕</button>
-  </div>
-</div>
 
 <!-- ── FOOTER ─────────────────────────────────────────────────── -->
 <footer>

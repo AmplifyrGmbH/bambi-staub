@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2D3E33">
+  <link rel="icon" type="image/x-icon" href="/favicons_bambi/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicons_bambi/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicons_bambi/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicons_bambi/apple-touch-icon.png">
+  <title>Availability &amp; Booking – Chalet Bambi Sörenberg</title>
+  <meta name="description" content="Check availability and send a booking enquiry for Chalet Bambi in Sörenberg. Family holiday home in the UNESCO Biosphere Entlebuch.">
+  <link rel="canonical" href="https://bambi-staub.ch/en/buchen/">
+  <link rel="alternate" hreflang="de" href="https://bambi-staub.ch/buchen/">
+  <link rel="alternate" hreflang="en" href="https://bambi-staub.ch/en/buchen/">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/booking.css">
+
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
+
+  <style>
+    #access-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--forest);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    #access-gate.hidden { display: none; }
+    .gate-box {
+      background: var(--linen);
+      padding: 2.5rem 2rem;
+      max-width: 22rem;
+      width: 100%;
+      text-align: center;
+    }
+    .gate-box .logo-name {
+      font-family: 'Noto Serif', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--charcoal);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .gate-box .logo-sub {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone);
+      display: block;
+      margin-bottom: 1.75rem;
+    }
+    .gate-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--forest-muted);
+      margin-bottom: 0.75rem;
+    }
+    .gate-input {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: var(--linen-dark);
+      border: 1px solid rgba(191,181,168,0.6);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      outline: none;
+      text-align: center;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s;
+      margin-bottom: 0.75rem;
+      -webkit-appearance: none;
+    }
+    .gate-input:focus { border-color: var(--forest); }
+    .gate-input.gate-error { border-color: var(--terracotta); animation: gateshake 0.3s ease; }
+    .gate-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--forest);
+      color: var(--linen);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .gate-btn:hover { background: var(--forest-light); }
+    .gate-err-msg {
+      font-size: 0.8rem;
+      color: var(--terracotta);
+      margin-top: 0.6rem;
+      min-height: 1.1rem;
+    }
+    @keyframes gateshake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
+    }
+  </style>
+
+  <!-- Booking config (prices + min nights) -->
+  <script>
+    window.BOOKING_CONFIG = {
+      minNights: 3,
+      cleaning: { price: 80 },
+      linen:    { pricePerBed: 20 },
+      lang: 'en',
+      pricing: [
+        { from: '2026-08-18', to: '2026-08-31', price: 120, label: 'High season – Summer' },
+        { from: '2026-09-01', to: '2026-10-31', price: 110, label: 'Low season – Autumn' },
+        { from: '2026-11-01', to: '2026-12-20', price: 100, label: 'Low season' },
+        { from: '2026-12-21', to: '2027-01-07', price: 170, label: 'High season – Winter' },
+        { from: '2027-01-08', to: '2027-01-21', price: 120, label: 'January weeks' },
+        { from: '2027-01-22', to: '2027-03-07', price: 170, label: 'High season – Winter' },
+        { from: '2027-03-08', to: '2027-04-30', price: 105, label: 'Low season – Spring' },
+        { from: '2027-05-01', to: '2027-10-31', price: 120, label: 'High season – Summer' },
+      ],
+    };
+  </script>
+</head>
+<body>
+
+<!-- ── ACCESS GATE ────────────────────────────────────────────── -->
+<div id="access-gate" role="dialog" aria-modal="true" aria-label="Enter access code">
+  <div class="gate-box">
+    <span class="logo-name">Chalet Bambi</span>
+    <span class="logo-sub">Sörenberg</span>
+    <p class="gate-label">Booking area</p>
+    <input class="gate-input" type="password" id="gate-input"
+           placeholder="Access code" autocomplete="off" autocorrect="off"
+           spellcheck="false" aria-label="Access code">
+    <button class="gate-btn" id="gate-btn" type="button">Confirm</button>
+    <p class="gate-err-msg" id="gate-err" aria-live="polite"></p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var KEY  = 'bambi_access';
+    var CODE = 'bambi-liebe';
+    var gate = document.getElementById('access-gate');
+
+    function unlock() { gate.classList.add('hidden'); }
+    function shake()  {
+      var inp = document.getElementById('gate-input');
+      inp.classList.add('gate-error');
+      setTimeout(function () { inp.classList.remove('gate-error'); }, 400);
+      document.getElementById('gate-err').textContent = 'Wrong code – please try again.';
+    }
+
+    if (sessionStorage.getItem(KEY) === '1') { unlock(); }
+
+    document.getElementById('gate-btn').addEventListener('click', function () {
+      var val = document.getElementById('gate-input').value.trim();
+      if (val.toLowerCase() === CODE) {
+        sessionStorage.setItem(KEY, '1');
+        unlock();
+      } else {
+        shake();
+      }
+    });
+
+    document.getElementById('gate-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('gate-btn').click();
+    });
+
+    window.addEventListener('load', function () {
+      if (!gate.classList.contains('hidden')) {
+        document.getElementById('gate-input').focus();
+      }
+    });
+  })();
+</script>
+
+<!-- ── HEADER ─────────────────────────────────────────────────── -->
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a href="/en/" class="logo" aria-label="Chalet Bambi – Home">
+      <span class="logo-name">Chalet Bambi</span>
+      <span class="logo-sub">Sörenberg</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main Navigation">
+      <a href="/en/bambi" class="nav-link" data-page="bambi">Bambi</a>
+      <a href="/en/surroundings" class="nav-link" data-page="umgebung">Surroundings</a>
+      <a href="/en/activities" class="nav-link" data-page="aktivitaeten">Activities</a>
+      <a href="/en/about" class="nav-link" data-page="ueber-uns">About</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="lang-switcher" aria-label="Language">
+        <a href="/buchen/" lang="de" hreflang="de">DE</a>
+        <span class="lang-sep">|</span>
+        <span class="lang-active">EN</span>
+      </div>
+      <a href="/en/buchen/" class="header-cta active">Book now</a>
+      <button class="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation">
+    <div class="mobile-menu-inner">
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/en/bambi" class="mobile-nav-link" data-page="bambi">Bambi</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/en/surroundings" class="mobile-nav-link" data-page="umgebung">Surroundings</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/en/activities" class="mobile-nav-link" data-page="aktivitaeten">Activities</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="/en/about" class="mobile-nav-link" data-page="ueber-uns">About</a></div></div>
+      <a href="/en/buchen/" class="mobile-cta">Book now</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── HERO (compact) ─────────────────────────────────────────── -->
+  <section class="booking-hero" aria-label="Booking enquiry">
+    <div class="container">
+      <h1>Availability &amp; Booking</h1>
+    </div>
+  </section>
+
+  <!-- ── BOOKING ────────────────────────────────────────────────── -->
+  <section class="booking-section" aria-label="Calendar and booking form">
+    <div class="container">
+      <div class="booking-layout">
+
+        <!-- LEFT: Calendar -->
+        <div class="booking-col-calendar">
+          <div class="cal-legend" aria-label="Calendar legend">
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--available" aria-hidden="true"></span>Available</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--booked" aria-hidden="true"></span>Booked</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--selected" aria-hidden="true"></span>Selected</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot cal-legend-dot--range" aria-hidden="true"></span>Period</div>
+          </div>
+          <p class="cal-hint" id="cal-hint" aria-live="polite">Select your arrival date.</p>
+          <div id="booking-calendar" aria-label="Availability calendar" role="region">
+            <div class="cal-loading">Loading availability…</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Price preview + Form (sticky) -->
+        <div class="booking-col-form">
+          <div class="booking-form-sticky">
+
+            <div id="price-preview" aria-live="polite" aria-label="Price summary"></div>
+
+            <div id="booking-form" aria-label="Booking enquiry form">
+              <h2 class="booking-form-title">Book</h2>
+
+              <form id="inquiry-form" novalidate>
+                <!-- Honeypot -->
+                <div class="booking-hp" aria-hidden="true">
+                  <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" name="arrival"   value="">
+                <input type="hidden" name="departure" value="">
+                <input type="hidden" name="discount_code" id="discount-code-hidden" value="">
+
+                <div class="form-grid form-grid--booking">
+                  <div class="form-group">
+                    <label class="form-label" for="field-name">Name *</label>
+                    <input class="form-input" type="text" id="field-name" name="name"
+                           required autocomplete="name" placeholder="First Last">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="field-email">E-Mail *</label>
+                    <input class="form-input" type="email" id="field-email" name="email"
+                           required autocomplete="email" placeholder="your@email.com">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="field-phone">Phone</label>
+                    <input class="form-input" type="tel" id="field-phone" name="phone"
+                           autocomplete="tel" placeholder="+41 79 123 45 67">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="field-persons">Number of guests *</label>
+                    <input class="form-input" type="number" id="field-persons" name="persons"
+                           required min="1" max="10" placeholder="e.g. 4">
+                  </div>
+                </div>
+
+                <!-- Cleaning -->
+                <div class="form-group form-group--full">
+                  <p class="form-label">Final cleaning</p>
+                  <div class="form-radio-group">
+                    <label class="form-radio-label">
+                      <input type="radio" name="cleaning" value="yes" checked>
+                      <span>With cleaning <span class="form-option-price">+CHF 80</span></span>
+                    </label>
+                    <label class="form-radio-label">
+                      <input type="radio" name="cleaning" value="no">
+                      <span>Self-clean</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Bed linen -->
+                <div class="form-group form-group--full">
+                  <p class="form-label">Bed linen</p>
+                  <div class="form-radio-group">
+                    <label class="form-radio-label">
+                      <input type="radio" name="linen" value="rent">
+                      <span>Rent <span class="form-option-price">+CHF 20/bed</span></span>
+                    </label>
+                    <label class="form-radio-label">
+                      <input type="radio" name="linen" value="own" checked>
+                      <span>Bring own</span>
+                    </label>
+                  </div>
+                  <div id="linen-beds-wrap" style="display:none; margin-top:0.6rem;">
+                    <label class="form-label" for="field-linen-beds" style="font-size:0.8rem;">Number of beds</label>
+                    <input class="form-input" type="number" id="field-linen-beds" name="linen_beds"
+                           min="1" max="10" value="2" style="max-width:80px;">
+                  </div>
+                </div>
+
+                <div class="form-group form-group--full" style="margin-bottom: 0.75rem;">
+                  <label class="form-label" for="field-message">Message / Questions</label>
+                  <textarea class="form-input form-textarea" id="field-message" name="message"
+                            rows="4" placeholder=""></textarea>
+                </div>
+
+                <!-- Discount code -->
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                  <label class="form-label" for="discount-input">Discount code (optional)</label>
+                  <div class="discount-row">
+                    <input class="form-input" type="text" id="discount-input"
+                           name="_discount_display" placeholder="CODE" autocomplete="off" spellcheck="false">
+                    <button type="button" id="discount-check-btn" class="discount-check-btn">Apply</button>
+                  </div>
+                  <p id="discount-result" class="discount-result" aria-live="polite"></p>
+                </div>
+
+                <div class="form-submit-wrap">
+                  <button type="submit" class="btn btn-primary" style="align-self: flex-start; padding: 1rem 2.5rem;">
+                    Send enquiry
+                  </button>
+                  <p class="form-privacy-note">
+                    By submitting you agree to our
+                    <a href="/en/privacy">Privacy Policy</a>.
+                    Your data will only be used to process your enquiry.
+                  </p>
+                </div>
+              </form>
+            </div><!-- /#booking-form -->
+
+            <!-- Success message -->
+            <div id="booking-success" aria-live="assertive">
+              <p class="section-label section-label--light">Enquiry sent</p>
+              <h3>Thank you!</h3>
+              <p>We have received your booking enquiry and will get back to you within 24 hours by e-mail. See you soon in Sörenberg!</p>
+            </div>
+
+          </div><!-- /.booking-form-sticky -->
+        </div><!-- /.booking-col-form -->
+
+      </div><!-- /.booking-layout -->
+    </div><!-- /.container -->
+  </section>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-cta">
+    <p class="section-label section-label--light">Ready for your retreat?</p>
+    <h2>Chalet Bambi is waiting for you</h2>
+    <a href="/en/buchen/" class="footer-cta-btn">Book now</a>
+  </div>
+  <div class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Chalet Bambi</h3>
+        <p class="footer-brand-tagline">Your retreat in the<br>UNESCO Biosphere Entlebuch</p>
+      </div>
+      <div>
+        <p class="footer-col-label">Contact</p>
+        <a href="mailto:info@bambi-staub.ch">info@bambi-staub.ch</a>
+      </div>
+      <div class="footer-contact">
+        <p class="footer-col-label">Address</p>
+        <address class="footer-contact-text">Rothornstrasse 40<br>6174 Sörenberg<br>Switzerland</address>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Chalet Bambi, Familie Staub. All rights reserved.</p>
+      <p>
+        Sörenberg · UNESCO Biosphere Entlebuch ·
+        <a href="/en/legal" style="color:inherit;text-decoration:underline;margin-left:.25rem">Legal notice</a> ·
+        <a href="/en/privacy" style="color:inherit;text-decoration:underline;margin-left:.25rem">Privacy</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/script.js" defer></script>
+<script src="/assets/js/booking-calendar-en.js" defer></script>
+
+<!-- Sync discount code input → hidden field -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var displayInput = document.getElementById('discount-input');
+    var hiddenInput  = document.getElementById('discount-code-hidden');
+    var form         = document.getElementById('inquiry-form');
+    if (displayInput && hiddenInput && form) {
+      form.addEventListener('submit', function () {
+        hiddenInput.value = displayInput.value.trim().toUpperCase();
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

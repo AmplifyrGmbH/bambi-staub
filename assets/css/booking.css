@@ -1,54 +1,52 @@
 /* ── BOOKING PAGE ────────────────────────────────────────────── */
 
-/* Hero */
+/* Hero (kompakt) */
 .booking-hero {
-  padding: 8rem 0 3.5rem;
+  padding: 5rem 0 2rem;
   background: var(--forest);
   text-align: center;
 }
 
 .booking-hero .section-label--light {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .booking-hero h1 {
   font-family: 'Noto Serif', Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 300;
   color: var(--linen);
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   line-height: 1.2;
-}
-
-.booking-hero p {
-  color: rgba(251,249,244,0.65);
-  font-size: 1rem;
-  max-width: 34rem;
-  margin: 0 auto;
 }
 
 /* ── BOOKING SECTION ─────────────────────────────────────────── */
 .booking-section {
-  padding: 4rem 0 5rem;
+  padding: 3rem 0 5rem;
 }
 
-/* ── STEP INTRO ──────────────────────────────────────────────── */
-.booking-step {
-  margin-bottom: 2.5rem;
+/* ── ZWEI-SPALTEN LAYOUT ─────────────────────────────────────── */
+.booking-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: start;
 }
 
-.booking-step-num {
-  display: inline-block;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 1px solid var(--forest-muted);
-  border-radius: 50%;
-  text-align: center;
-  line-height: 1.7rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--forest-muted);
-  margin-bottom: 0.75rem;
+@media (min-width: 960px) {
+  .booking-layout {
+    grid-template-columns: 1fr 380px;
+    gap: 4rem;
+  }
+}
+
+.booking-col-calendar {
+  min-width: 0;
+}
+
+.booking-form-sticky {
+  position: sticky;
+  top: 2rem;
 }
 
 /* ── CALENDAR LEGEND ─────────────────────────────────────────── */
@@ -221,10 +219,11 @@
 /* ── PRICE PREVIEW ───────────────────────────────────────────── */
 #price-preview {
   display: none;
-  margin-top: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
   background: var(--forest);
   color: var(--linen);
-  padding: 1.75rem 2rem;
+  padding: 1.5rem 1.75rem;
 }
 
 .price-breakdown {
@@ -280,15 +279,15 @@
 /* ── INQUIRY FORM ────────────────────────────────────────────── */
 #booking-form {
   display: block;
-  margin-top: 3.5rem;
+  margin-top: 0;
 }
 
 .booking-form-title {
   font-family: 'Noto Serif', Georgia, serif;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 300;
   color: var(--charcoal);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-grid--booking {
@@ -310,7 +309,8 @@
 /* Radio option groups (Endreinigung, Bettwäsche) */
 .form-radio-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   margin-top: 0.35rem;
 }
