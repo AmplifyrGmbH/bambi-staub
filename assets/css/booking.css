@@ -457,31 +457,29 @@
 
 .sticky-bar-inner {
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
   align-items: center;
-  gap: 0.75rem;
 }
 
 .sticky-bar-dates {
-  flex: 1;
-  min-width: 0;
+  grid-column: 1;
+  grid-row: 1;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.sticky-bar-dates strong {
-  display: block;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(251,249,244,0.55);
-  font-weight: 500;
-}
+.sticky-bar-dates strong { display: none; }
 
 .sticky-bar-price {
+  grid-column: 2;
+  grid-row: 1;
   font-family: 'Noto Serif', Georgia, serif;
   font-size: 1rem;
   white-space: nowrap;
@@ -494,22 +492,9 @@
   margin-left: 0.2rem;
 }
 
-.sticky-bar-btn {
-  background: var(--linen);
-  color: var(--forest);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border: none;
-  padding: 0.65rem 1.1rem;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 .sticky-bar-reset {
+  grid-column: 3;
+  grid-row: 1;
   background: none;
   border: none;
   color: rgba(251,249,244,0.45);
@@ -517,11 +502,27 @@
   cursor: pointer;
   padding: 0.25rem;
   line-height: 1;
-  flex-shrink: 0;
 }
 
 .sticky-bar-reset:hover { color: var(--linen); }
-body.has-sticky-bar { padding-bottom: 72px; }
+
+.sticky-bar-btn {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  background: var(--linen);
+  color: var(--forest);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+body.has-sticky-bar { padding-bottom: 90px; }
 
 /* ── SUCCESS MESSAGE ─────────────────────────────────────────── */
 #booking-success {

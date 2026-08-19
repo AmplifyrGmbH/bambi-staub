@@ -442,8 +442,9 @@
     if (S.arrival && S.departure) {
       const nights = diffDays(S.arrival, S.departure);
       const total  = calcTotal(S.arrival, S.departure);
+      const short = s => { const [y,m,d] = s.split('-'); return `${d}.${m}.`; };
       document.getElementById('sticky-bar-dates-text').textContent =
-        `${fmtDE(S.arrival)} → ${fmtDE(S.departure)} · ${nights} Nächte`;
+        `${short(S.arrival)} → ${short(S.departure)} · ${nights} Nächte`;
       const priceEl = document.getElementById('sticky-bar-price');
       if (total !== null) {
         const final = total - applyDiscount(total) + getExtrasCost();
