@@ -50,6 +50,7 @@
 
 .booking-col-calendar {
   min-width: 0;
+  overflow: hidden;
 }
 
 .booking-form-sticky {
