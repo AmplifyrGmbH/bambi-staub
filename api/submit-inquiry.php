@@ -187,7 +187,23 @@ $linenCost    = ($linen   === 'rent') ? ($linenBeds * 20) : 0;
 $finalPrice   = $totalPrice - $discountAmount + $cleaningCost + $linenCost;
 
 // ── E-Mail-Text zusammenbauen ─────────────────────────────────
-$ticket = 'BAM-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 4));
+$dir    = dirname(__DIR__, 3) . '/bambi-data';   // ausserhalb des Webroots
+
+// Fortlaufende Nummer ab 1000, Zähler in bambi-data (gesperrt, damit zwei gleichzeitige Anfragen nicht dieselbe bekommen).
+// Vergeben erst hier, nach allen Prüfungen, damit abgelehnte Eingaben keine Lücken hinterlassen.
+function naechsteNummer(string $dir): ?int {
+    if (!(@is_dir($dir) || @mkdir($dir, 0700, true)) || !($fh = @fopen($dir . '/nummer.txt', 'c+'))) return null;
+    flock($fh, LOCK_EX);
+    $nr = max(1000, (int)stream_get_contents($fh) + 1);
+    ftruncate($fh, 0);
+    rewind($fh);
+    fwrite($fh, (string)$nr);
+    flock($fh, LOCK_UN);
+    fclose($fh);
+    @chmod($dir . '/nummer.txt', 0600);
+    return $nr;
+}
+$ticket = 'BAM-' . (naechsteNummer($dir) ?? date('ymdHi'));
 $von    = date('d.m.Y', $arrivalTs);
 $bis    = date('d.m.Y', $departureTs);
 
@@ -310,7 +326,6 @@ $hits[] = time();
 
 // ── Kopie ausserhalb des Webroots ─────────────────────────────
 // Eine Datei pro Monat, nur für den Betreiber lesbar; Dateien ohne Eintrag seit 12 Monaten werden gelöscht.
-$dir = dirname(__DIR__, 3) . '/bambi-data';
 if (@is_dir($dir) || @mkdir($dir, 0700, true)) {
     $kopie = $dir . '/anfragen-' . date('Y-m') . '.jsonl';
     $log = ['ticket' => $ticket, 'zeit' => date('c'), 'sprache' => $en ? 'en' : 'de', 'name' => $name, 'email' => $email, 'telefon' => $phone,
