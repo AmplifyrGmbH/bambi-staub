@@ -43,7 +43,6 @@ if (function_exists('curl_init')) {
     if (curl_errno($ch)) {
         $icalData = false;
     }
-    curl_close($ch);
 }
 
 // Fallback: file_get_contents
