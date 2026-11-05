@@ -53,6 +53,7 @@
     'January','February','March','April','May','June',
     'July','August','September','October','November','December',
   ];
+  const LOADED_AT = Date.now();
   const DAY_NAMES = ['Mo','Tu','We','Th','Fr','Sa','Su'];
 
   // ── Availability helpers ───────────────────────────────────────
@@ -575,8 +576,14 @@
       submitBtn.disabled  = true;
       submitBtn.textContent = 'Sending…';
 
-      fetch('/api/submit-inquiry.php', { method: 'POST', body: new FormData($form) })
-        .then(r => r.json())
+      const fd = new FormData($form);
+      // Ausfülldauer in Sekunden, der Server lehnt zu schnelle (Bot-)Einsendungen ab
+      fd.append('dauer', Math.round((Date.now() - LOADED_AT) / 1000));
+
+      fetch('/api/submit-inquiry.php', { method: 'POST', body: fd })
+        .then(r => r.text().then(t => {
+          try { return JSON.parse(t); } catch (err) { throw new Error('keine JSON-Antwort'); }
+        }))
         .then(data => {
           S.submitting         = false;
           submitBtn.disabled   = false;
@@ -585,7 +592,7 @@
           if (data.ok) {
             onSuccess();
           } else {
-            showFormError(data.error || 'Ein Fehler ist aufgetreten.');
+            showFormError(data.message || 'An error occurred.');
           }
         })
         .catch(() => {

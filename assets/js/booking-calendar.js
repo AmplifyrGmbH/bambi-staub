@@ -53,6 +53,7 @@
     'Januar','Februar','März','April','Mai','Juni',
     'Juli','August','September','Oktober','November','Dezember',
   ];
+  const LOADED_AT = Date.now();
   const DAY_NAMES = ['Mo','Di','Mi','Do','Fr','Sa','So'];
 
   // ── Availability helpers ───────────────────────────────────────
@@ -373,7 +374,7 @@
     let linesHTML = '';
     breakdown.forEach(b => {
       const n = b.nights;
-      linesHTML += `<div class="price-line"><span>${n} Nacht${n > 1 ? 'e' : ''} × CHF ${b.price}</span><span>CHF ${b.subtotal}</span></div>`;
+      linesHTML += `<div class="price-line"><span>${n} ${n > 1 ? 'Nächte' : 'Nacht'} × CHF ${b.price}</span><span>CHF ${b.subtotal}</span></div>`;
     });
 
     const cleaning = getCleaningCost();
@@ -575,8 +576,14 @@
       submitBtn.disabled  = true;
       submitBtn.textContent = 'Wird gesendet…';
 
-      fetch('/api/submit-inquiry.php', { method: 'POST', body: new FormData($form) })
-        .then(r => r.json())
+      const fd = new FormData($form);
+      // Ausfülldauer in Sekunden, der Server lehnt zu schnelle (Bot-)Einsendungen ab
+      fd.append('dauer', Math.round((Date.now() - LOADED_AT) / 1000));
+
+      fetch('/api/submit-inquiry.php', { method: 'POST', body: fd })
+        .then(r => r.text().then(t => {
+          try { return JSON.parse(t); } catch (err) { throw new Error('keine JSON-Antwort'); }
+        }))
         .then(data => {
           S.submitting         = false;
           submitBtn.disabled   = false;
@@ -585,7 +592,7 @@
           if (data.ok) {
             onSuccess();
           } else {
-            showFormError(data.error || 'Ein Fehler ist aufgetreten.');
+            showFormError(data.message || 'Ein Fehler ist aufgetreten.');
           }
         })
         .catch(() => {

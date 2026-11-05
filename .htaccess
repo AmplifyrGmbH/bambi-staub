@@ -28,6 +28,12 @@ RewriteRule ^([a-z0-9_-]+)/?$ $1.html [L,NC]
 # RewriteCond %{HTTPS} off
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+# Interne Dateien nicht ausliefern (Entwicklungsserver, Notizen, PHP-Konfiguration)
+<FilesMatch "(^\.|\.(md|py|sh|ini|jsonl|rtf|log|bak)$|^(router|server)\.(php|py)$)">
+  Require all denied
+</FilesMatch>
+RedirectMatch 404 ^/(config|cache|\.github)(/|$)
+
 # Security headers
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
