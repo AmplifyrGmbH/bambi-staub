@@ -238,6 +238,73 @@ $bestaetigung = $en
       "Nummer: {$ticket}\nAufenthalt: {$von} bis {$bis} ({$nights} Nächte, {$persons} Personen)\nVoraussichtlicher Preis: CHF {$finalPrice}\n\n" .
       "Das ist eine Anfrage, noch keine bestätigte Buchung.\n\nHerzliche Grüsse\nFamilie Staub\n" . NAME . "\nRothornstrasse 40, 6174 Sörenberg\n" . MAIL_TO . "\n";
 
+// ── Bestätigung als HTML ──────────────────────────────────────
+// Tabellen und Inline-Stile, damit Outlook und Gmail sie gleich zeigen; Chalet-Foto als eingebettetes Bild.
+// Farben und Schriften wie auf der Website (forest, linen, cream, terracotta; Noto Serif bzw. Georgia).
+$x = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+$serif = "font-family:'Noto Serif',Georgia,'Times New Roman',serif;";
+$sans  = "font-family:Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;";
+$zeilen = [
+    [t('Nummer', 'Reference'), $ticket],
+    [t('Anreise', 'Arrival'), $von],
+    [t('Abreise', 'Departure'), $bis],
+    [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
+    [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . ' (CHF 80)' : t('Selbst reinigen', 'Self-cleaning')],
+    [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? t('Mieten, ', 'Rental, ') . $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " (CHF {$linenCost})" : t('Eigene', 'Own')],
+];
+if ($discountAmount > 0) $zeilen[] = [t('Rabatt', 'Discount'), "– CHF {$discountAmount}"];
+$tabelle = '';
+foreach ($zeilen as [$k, $v]) {
+    $tabelle .= '<tr><td style="padding:7px 0;border-bottom:1px solid #E2DCD0;color:#5A7263;font-size:14px;">' . $x($k) . '</td>'
+        . '<td align="right" style="padding:7px 0;border-bottom:1px solid #E2DCD0;color:#2C2C2C;font-size:14px;">' . $x($v) . '</td></tr>';
+}
+$tabelle .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">' . t('Voraussichtlicher Preis', 'Estimated total') . '</td>'
+    . '<td align="right" style="padding:14px 0 0;' . $serif . 'color:#2D3E33;font-size:22px;">CHF ' . $x($finalPrice) . '</td></tr>';
+
+$bestaetigungHtml = '<!doctype html><html lang="' . t('de', 'en') . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    . '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Chalet Bambi</title></head>'
+    . '<body style="margin:0;padding:0;background:#F0EDE4;">'
+    . '<div style="display:none;max-height:0;overflow:hidden;">' . t('Wir haben deine Anfrage erhalten und melden uns innerhalb von 24 Stunden.', 'We have received your enquiry and will get back to you within 24 hours.') . '</div>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F0EDE4;"><tr><td align="center" style="padding:32px 16px;">'
+    . '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FBF9F4;border-radius:14px;overflow:hidden;">'
+    // Kopf mit Schriftzug wie auf der Website
+    . '<tr><td align="center" style="background:#2D3E33;padding:26px 24px 22px;">'
+    . '<div style="' . $serif . 'font-size:28px;font-weight:300;letter-spacing:0.5px;color:#ffffff;">Chalet Bambi</div>'
+    . '<div style="' . $sans . 'font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#BFB5A8;margin-top:4px;">Sörenberg</div>'
+    . '</td></tr>'
+    . '<tr><td><img src="cid:chalet@bambi-staub.ch" width="600" alt="Chalet Bambi" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>'
+    // Inhalt
+    . '<tr><td style="padding:34px 40px 8px;' . $sans . 'font-size:16px;line-height:1.6;color:#2C2C2C;">'
+    . '<p style="margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">' . t('Anfrage erhalten', 'Enquiry received') . '</p>'
+    . '<h1 style="margin:8px 0 22px;' . $serif . 'font-size:30px;font-weight:300;font-style:italic;line-height:1.2;color:#2D3E33;">' . t('Danke für deine Anfrage.', 'Thank you for your enquiry.') . '</h1>'
+    . '<p style="margin:0 0 14px;">' . t('Hallo ', 'Hello ') . $x($name) . '</p>'
+    . '<p style="margin:0 0 26px;">' . t('Wir haben deine Buchungsanfrage erhalten und melden uns innerhalb von 24&nbsp;Stunden per E-Mail bei dir.', 'We have received your booking enquiry and will get back to you by email within 24&nbsp;hours.') . '</p>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EDE8DF;border-radius:10px;"><tr><td style="padding:16px 22px 20px;">'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="' . $sans . '">' . $tabelle . '</table>'
+    . '</td></tr></table>'
+    . '<p style="margin:18px 0 0;font-size:13px;color:#8C7B6B;">' . t('Das ist eine Anfrage, noch keine bestätigte Buchung. Die Bestätigung erhältst du von uns persönlich.', 'This is an enquiry, not yet a confirmed booking. We will confirm it with you personally.') . '</p>'
+    . '<p style="margin:28px 0 30px;">' . t('Herzliche Grüsse', 'Kind regards') . '<br><span style="' . $serif . 'font-style:italic;font-size:19px;color:#2D3E33;">Familie Staub</span></p>'
+    . '</td></tr>'
+    // Fuss
+    . '<tr><td align="center" style="background:#2D3E33;padding:22px 24px;' . $sans . 'font-size:12px;line-height:1.7;color:#BFB5A8;">'
+    . 'Chalet Bambi · Rothornstrasse 40 · 6174 Sörenberg<br>'
+    . '<a href="mailto:' . MAIL_TO . '" style="color:#ffffff;text-decoration:none;">' . MAIL_TO . '</a> · <a href="https://bambi-staub.ch' . t('', '/en/') . '" style="color:#ffffff;text-decoration:none;">bambi-staub.ch</a>'
+    . '</td></tr>'
+    . '</table></td></tr></table></body></html>';
+
+// multipart/alternative: Text für einfache Programme, HTML mit eingebettetem Foto (multipart/related) für alle anderen
+$alt  = 'a_' . bin2hex(random_bytes(12));
+$rel  = 'r_' . bin2hex(random_bytes(12));
+$foto = @file_get_contents(__DIR__ . '/../assets/mail-chalet.jpg');
+$bHeaders = 'From: ' . enc(NAME) . ' <' . MAIL_FROM . ">\r\nMIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary=\"$alt\"\r\n";
+$bMsg = "--$alt\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($bestaetigung)) .
+    "--$alt\r\nContent-Type: multipart/related; boundary=\"$rel\"; type=\"text/html\"\r\n\r\n" .
+    "--$rel\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($bestaetigungHtml)) .
+    ($foto ? "--$rel\r\nContent-Type: image/jpeg; name=\"chalet-bambi.jpg\"\r\nContent-Transfer-Encoding: base64\r\nContent-ID: <chalet@bambi-staub.ch>\r\n" .
+        "Content-Disposition: inline; filename=\"chalet-bambi.jpg\"\r\n\r\n" . chunk_split(base64_encode($foto)) : '') .
+    "--$rel--\r\n--$alt--\r\n";
+$bBetreff = enc(t('Deine Buchungsanfrage für Chalet Bambi', 'Your booking enquiry for Chalet Bambi') . " ($ticket)");
+
 $hits[] = time();
 @file_put_contents($rl, json_encode(array_values($hits)));
 
@@ -258,7 +325,7 @@ if (@is_dir($dir) || @mkdir($dir, 0700, true)) {
 // Lokaler Test (php -S mit BAMBI_DEV=Ordner): Mail als .eml ablegen statt versenden
 if ($dev = getenv('BAMBI_DEV')) {
     file_put_contents("$dev/$ticket.eml", "To: " . MAIL_TO . "\r\nSubject: " . enc($betreff) . "\r\n$headers\r\n$msg");
-    file_put_contents("$dev/$ticket-bestaetigung.txt", "To: $email\n\n$bestaetigung");
+    file_put_contents("$dev/$ticket-bestaetigung.eml", "To: $email\r\nSubject: $bBetreff\r\n$bHeaders\r\n$bMsg");
     respond(true, '', ['nights' => $nights, 'price' => $finalPrice]);
 }
 
@@ -267,7 +334,6 @@ if (!mail(MAIL_TO, enc($betreff), $msg, $headers, '-f' . MAIL_FROM)) {
 }
 
 // Bestätigung an den Gast (Fehler hier blockieren nichts)
-$h = 'From: ' . enc(NAME) . ' <' . MAIL_FROM . ">\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n";
-@mail($email, enc(t('Deine Buchungsanfrage für Chalet Bambi', 'Your booking enquiry for Chalet Bambi') . " ($ticket)"), chunk_split(base64_encode($bestaetigung)), $h, '-f' . MAIL_FROM);
+@mail($email, $bBetreff, $bMsg, $bHeaders, '-f' . MAIL_FROM);
 
 respond(true, '', ['nights' => $nights, 'price' => $finalPrice]);
