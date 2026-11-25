@@ -113,16 +113,10 @@
 /* ── CALENDAR MONTHS GRID ────────────────────────────────────── */
 .cal-months-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  /* Spaltenzahl nach der tatsächlich verfügbaren Breite, nicht nach dem Fenster:
+     neben dem Formular ist der Kalender schmaler, als das Fenster vermuten lässt */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
   gap: 1.25rem;
-}
-
-@media (min-width: 580px) {
-  .cal-months-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 1100px) {
-  .cal-months-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ── SINGLE MONTH ────────────────────────────────────────────── */
