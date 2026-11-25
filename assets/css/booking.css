@@ -558,3 +558,20 @@ body.has-sticky-bar { padding-bottom: 90px; }
 @media (max-width: 767px) {
   input:not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: 16px; }
 }
+
+/* Handy: «Weitere Monate anzeigen» */
+.cal-more {
+  display: block;
+  width: 100%;
+  margin-top: 1.25rem;
+  min-height: 48px;
+  padding: .85rem 1rem;
+  background: #fff;
+  border: 1px solid rgba(191,181,168,0.6);
+  color: var(--forest, #2D3E33);
+  font: 500 .8rem/1 'Inter', system-ui, sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.cal-more:hover { background: rgba(191,181,168,0.12); }

@@ -7,6 +7,7 @@
   const CLEANING_PRICE = (cfg.cleaning || {}).price || 80;
   const LINEN_PER_BED  = (cfg.linen || {}).pricePerBed || 20;
   const MONTHS     = 14; // Monate voraus
+  const MOBILE_STEP = 3;  // Handy: so viele Monate pro Schritt
 
   // ── State ──────────────────────────────────────────────────────
   const S = {
@@ -169,13 +170,38 @@
     const grid = document.createElement('div');
     grid.className = 'cal-months-grid';
 
-    for (let i = 0; i < MONTHS; i++) {
+    // Handy: erst wenige Monate zeigen, damit das Formular nicht 14 Monate
+    // weiter unten liegt. Gewählte Daten bleiben immer sichtbar.
+    const mobile = window.matchMedia('(max-width: 579px)').matches;
+    let count = MONTHS;
+    if (mobile) {
+      const monthIdx = s => { const d = fromStr(s); return (d.getFullYear() - start.getFullYear()) * 12 + d.getMonth() - start.getMonth(); };
+      let need = MOBILE_STEP;
+      if (S.arrival)   need = Math.max(need, monthIdx(S.arrival) + 1);
+      if (S.departure) need = Math.max(need, monthIdx(S.departure) + 1);
+      S.shownMonths = Math.max(S.shownMonths || MOBILE_STEP, need);
+      count = Math.min(MONTHS, S.shownMonths);
+    }
+
+    for (let i = 0; i < count; i++) {
       const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
       grid.appendChild(buildMonth(d.getFullYear(), d.getMonth(), today));
     }
 
     $cal.innerHTML = '';
     $cal.appendChild(grid);
+
+    if (count < MONTHS) {
+      const more = document.createElement('button');
+      more.type = 'button';
+      more.className = 'cal-more';
+      more.textContent = 'Weitere Monate anzeigen';
+      more.addEventListener('click', () => {
+        S.shownMonths = Math.min(MONTHS, count + MOBILE_STEP);
+        renderCalendar();
+      });
+      $cal.appendChild(more);
+    }
 
     // Hover: nur CSS-Klassen aktualisieren, kein Re-Render
     grid.addEventListener('mouseover', e => {
