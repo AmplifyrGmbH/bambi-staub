@@ -10,3 +10,10 @@ cache/*.json
 
 # Gutschein-Vorlage (13 MB, nicht auf den Server)
 Gutschein-Chalet-Bambi.pdf
+
+# Foto-Originale (JPG) bleiben nur lokal; die Website nutzt ausschliesslich die WebP-Fassungen
+Bilder/**/*.jpg
+Bilder/**/*.JPG
+Bilder/**/*.jpeg
+Bilder/**/*.JPEG
+**/.DS_Store
