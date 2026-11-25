@@ -7,3 +7,6 @@ site/
 # Booking – sensitive files (NIEMALS committen)
 config/interhome.php
 cache/*.json
+
+# Gutschein-Vorlage (13 MB, nicht auf den Server)
+Gutschein-Chalet-Bambi.pdf
