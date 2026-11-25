@@ -241,10 +241,93 @@ if ($message !== '') {
 }
 
 $betreff = "Buchungsanfrage {$von} bis {$bis} – {$name} ({$ticket})";
+
+// ── Interne Mail als HTML (gleicher Stil wie die Bestätigung an den Gast) ──
+$x     = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+$serif = "font-family:'Noto Serif',Georgia,'Times New Roman',serif;";
+$sans  = "font-family:Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;";
+$wochentag = fn(int $ts) => ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][(int)date('w', $ts)];
+
+$iZeile = fn(string $k, string $vHtml) =>
+    '<tr><td valign="top" style="padding:8px 12px 8px 0;border-bottom:1px solid #E2DCD0;color:#5A7263;font-size:14px;white-space:nowrap;">' . $x($k) . '</td>'
+    . '<td align="right" valign="top" style="padding:8px 0;border-bottom:1px solid #E2DCD0;color:#2C2C2C;font-size:14px;">' . $vHtml . '</td></tr>';
+$iBlock = fn(string $titel, string $rows) =>
+    '<p style="margin:28px 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">' . $x($titel) . '</p>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="' . $sans . '">' . $rows . '</table>';
+
+$kontaktRows = $iZeile('Name', '<strong>' . $x($name) . '</strong>')
+    . $iZeile('E-Mail', '<a href="mailto:' . $x($email) . '" style="color:#2D3E33;">' . $x($email) . '</a>')
+    . $iZeile('Telefon', $phone !== '' ? '<a href="tel:' . $x(preg_replace('/[^\d+]/', '', $phone)) . '" style="color:#2D3E33;">' . $x($phone) . '</a>' : '–')
+    . $iZeile('Sprache', $en ? 'Englisch (englische Seite)' : 'Deutsch');
+
+$preisRows = '';
+foreach ($breakdown as $b) {
+    $n = $b['nights'];
+    $preisRows .= $iZeile($n . ($n > 1 ? ' Nächte' : ' Nacht') . ' × CHF ' . $b['price'], 'CHF ' . $x($b['subtotal']));
+}
+$preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? 'CHF 80' : 'selbst reinigen');
+$preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '')) . " · CHF {$linenCost}" : 'eigene');
+if ($discountAmount > 0) $preisRows .= $iZeile('Rabatt', $x("{$discountLabel} · Code {$discountCode}") . "<br>– CHF {$discountAmount}");
+$preisRows .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">Total (berechnet)</td>'
+    . '<td align="right" style="padding:14px 0 0;' . $serif . 'color:#2D3E33;font-size:22px;">CHF ' . $x($finalPrice) . '</td></tr>';
+
+$antwortLink = 'mailto:' . rawurlencode($email) . '?subject=' . rawurlencode(($en ? 'Your booking enquiry ' : 'Ihre Buchungsanfrage ') . "{$von} – {$bis} ({$ticket})");
+$knopf = fn(string $href, string $label, bool $hell = false) =>
+    '<td style="padding:0 6px 0 0;"><a href="' . $x($href) . '" style="display:inline-block;padding:12px 20px;border-radius:6px;' . $sans . 'font-size:13px;font-weight:600;letter-spacing:.5px;text-decoration:none;'
+    . ($hell ? 'background:#ffffff;color:#2D3E33;border:1px solid #BFB5A8;' : 'background:#2D3E33;color:#ffffff;border:1px solid #2D3E33;') . '">' . $label . '</a></td>';
+
+$kachel = fn(string $label, string $wert) =>
+    '<td width="33%" valign="top" style="padding:14px 10px;text-align:center;">'
+    . '<div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8C7B6B;">' . $label . '</div>'
+    . '<div style="' . $serif . 'font-size:20px;color:#2D3E33;margin-top:4px;">' . $wert . '</div></td>';
+
+$internHtml = '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    . '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Buchungsanfrage</title></head>'
+    . '<body style="margin:0;padding:0;background:#F0EDE4;">'
+    . '<div style="display:none;max-height:0;overflow:hidden;">' . $x("{$name}: {$von} – {$bis}, {$nights} Nächte, {$persons} Pers., CHF {$finalPrice}") . '</div>'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F0EDE4;"><tr><td align="center" style="padding:32px 16px;">'
+    . '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FBF9F4;border-radius:14px;overflow:hidden;">'
+    // Kopf
+    . '<tr><td style="background:#2D3E33;padding:22px 32px;' . $sans . '">'
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+    . '<td style="' . $serif . 'font-size:22px;font-weight:300;color:#ffffff;">Chalet Bambi</td>'
+    . '<td align="right" style="font-size:12px;letter-spacing:2px;color:#BFB5A8;">' . $x($ticket) . '</td>'
+    . '</tr></table></td></tr>'
+    // Inhalt
+    . '<tr><td style="padding:30px 32px 8px;' . $sans . 'font-size:15px;line-height:1.55;color:#2C2C2C;">'
+    . '<p style="margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">Neue Buchungsanfrage</p>'
+    . '<h1 style="margin:6px 0 4px;' . $serif . 'font-size:28px;font-weight:300;font-style:italic;line-height:1.2;color:#2D3E33;">' . $x($name) . '</h1>'
+    . '<p style="margin:0 0 20px;color:#5A7263;">' . $x($wochentag($arrivalTs) . " {$von}") . ' &rarr; ' . $x($wochentag($departureTs) . " {$bis}") . '</p>'
+    // Übersicht
+    . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EDE8DF;border-radius:10px;' . $sans . '"><tr>'
+    . $kachel('Nächte', $x($nights)) . $kachel('Personen', $x($persons)) . $kachel('Total', 'CHF&nbsp;' . $x($finalPrice))
+    . '</tr></table>'
+    // Knöpfe
+    . '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0 0;"><tr>'
+    . $knopf($antwortLink, 'Gast antworten')
+    . ($phone !== '' ? $knopf('tel:' . preg_replace('/[^\d+]/', '', $phone), 'Anrufen', true) : '')
+    . '</tr></table>'
+    . $iBlock('Kontakt', $kontaktRows)
+    . $iBlock('Preis', $preisRows)
+    . ($message !== ''
+        ? '<p style="margin:28px 0 8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">Nachricht des Gastes</p>'
+          . '<div style="background:#ffffff;border-left:3px solid #A05C3B;border-radius:4px;padding:14px 18px;font-size:15px;line-height:1.6;color:#2C2C2C;">' . nl2br($x($message)) . '</div>'
+        : '')
+    . '<p style="margin:26px 0 28px;font-size:13px;color:#8C7B6B;">Der Preis ist automatisch berechnet. Die Anfrage ist noch nicht bestätigt; der Gast hat eine Eingangsbestätigung erhalten.</p>'
+    . '</td></tr>'
+    // Fuss
+    . '<tr><td align="center" style="background:#2D3E33;padding:16px 24px;' . $sans . 'font-size:12px;color:#BFB5A8;">'
+    . 'Eingegangen am ' . date('d.m.Y') . ' um ' . date('H:i') . ' Uhr über bambi-staub.ch' . ($en ? '/en' : '')
+    . '</td></tr>'
+    . '</table></td></tr></table></body></html>';
+
+$iAlt    = 'i_' . bin2hex(random_bytes(12));
 $headers = 'From: ' . enc('Website ' . NAME) . ' <' . MAIL_FROM . ">\r\n" .
     'Reply-To: ' . enc($name) . ' <' . $email . ">\r\n" .
-    "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n";
-$msg = chunk_split(base64_encode($body));
+    "MIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary=\"$iAlt\"\r\n";
+$msg = "--$iAlt\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($body)) .
+    "--$iAlt\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($internHtml)) .
+    "--$iAlt--\r\n";
 
 $bestaetigung = $en
     ? "Hello {$name}\n\nThank you for your booking enquiry. We have received it and will get back to you by email within 24 hours.\n\n" .
@@ -257,21 +340,20 @@ $bestaetigung = $en
 // ── Bestätigung als HTML ──────────────────────────────────────
 // Tabellen und Inline-Stile, damit Outlook und Gmail sie gleich zeigen; Chalet-Foto als eingebettetes Bild.
 // Farben und Schriften wie auf der Website (forest, linen, cream, terracotta; Noto Serif bzw. Georgia).
-$x = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
-$serif = "font-family:'Noto Serif',Georgia,'Times New Roman',serif;";
-$sans  = "font-family:Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;";
 $zeilen = [
     [t('Nummer', 'Reference'), $ticket],
     [t('Anreise', 'Arrival'), $von],
     [t('Abreise', 'Departure'), $bis],
     [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
     [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . ' (CHF 80)' : t('Selbst reinigen', 'Self-cleaning')],
-    [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? t('Mieten, ', 'Rental, ') . $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " (CHF {$linenCost})" : t('Eigene', 'Own')],
+    [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " · CHF {$linenCost}" : t('Eigene', 'Own')],
 ];
 if ($discountAmount > 0) $zeilen[] = [t('Rabatt', 'Discount'), "– CHF {$discountAmount}"];
 $tabelle = '';
 foreach ($zeilen as [$k, $v]) {
-    $tabelle .= '<tr><td style="padding:7px 0;border-bottom:1px solid #E2DCD0;color:#5A7263;font-size:14px;">' . $x($k) . '</td>'
+    // Geschützte Leerzeichen: «CHF 40» oder «2 Personen» nie auseinanderreissen, Umbruch nur nach «·»
+    $v = str_replace("\u{00A0}·\u{00A0}", "\u{00A0}· ", str_replace(' ', "\u{00A0}", $v));
+    $tabelle .= '<tr><td style="padding:7px 12px 7px 0;border-bottom:1px solid #E2DCD0;color:#5A7263;font-size:14px;white-space:nowrap;">' . $x($k) . '</td>'
         . '<td align="right" style="padding:7px 0;border-bottom:1px solid #E2DCD0;color:#2C2C2C;font-size:14px;">' . $x($v) . '</td></tr>';
 }
 $tabelle .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">' . t('Voraussichtlicher Preis', 'Estimated total') . '</td>'
@@ -290,7 +372,7 @@ $bestaetigungHtml = '<!doctype html><html lang="' . t('de', 'en') . '"><head><me
     . '</td></tr>'
     . '<tr><td><img src="cid:chalet@bambi-staub.ch" width="600" alt="Chalet Bambi" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>'
     // Inhalt
-    . '<tr><td style="padding:34px 40px 8px;' . $sans . 'font-size:16px;line-height:1.6;color:#2C2C2C;">'
+    . '<tr><td style="padding:34px 28px 8px;' . $sans . 'font-size:16px;line-height:1.6;color:#2C2C2C;">'
     . '<p style="margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">' . t('Anfrage erhalten', 'Enquiry received') . '</p>'
     . '<h1 style="margin:8px 0 22px;' . $serif . 'font-size:30px;font-weight:300;font-style:italic;line-height:1.2;color:#2D3E33;">' . t('Vielen Dank für Ihre Anfrage.', 'Thank you for your enquiry.') . '</h1>'
     . '<p style="margin:0 0 14px;">' . t('Guten Tag ', 'Hello ') . $x($name) . '</p>'
