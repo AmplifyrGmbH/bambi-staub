@@ -5,9 +5,12 @@
   const mobileMenu = document.querySelector('.mobile-menu');
   const mobileSubToggles = document.querySelectorAll('.mobile-sub-toggle');
 
-  // Scroll → glass header
+  // Scroll → glass header. Seiten ohne Hero-Bild (Impressum, Datenschutz, 404)
+  // haben hellen Hintergrund: dort ist der Header immer deckend, sonst wären
+  // Logo und Menü-Knopf weiss auf hell unsichtbar.
+  const solid = !document.querySelector('.hero');
   function onScroll() {
-    if (window.scrollY > 20) {
+    if (solid || window.scrollY > 20) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
@@ -72,6 +75,27 @@
   });
 })();
 
+/* ── SLIDER-HILFEN: Wischen + Nachbarbild vorladen ─────────────── */
+function addSwipe(el, onPrev, onNext) {
+  let x0 = null, y0 = null;
+  el.addEventListener('touchstart', function (e) {
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    const dy = e.changedTouches[0].clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) onNext(); else onPrev();
+    }
+  }, { passive: true });
+}
+function preloadSlide(slide) {
+  const img = slide && slide.querySelector('img');
+  if (img && img.loading === 'lazy') img.loading = 'eager';
+}
+
 /* ── SLIDERS ──────────────────────────────────────────────────── */
 (function () {
   document.querySelectorAll('.slider').forEach(function (slider) {
@@ -93,10 +117,19 @@
       current = ((n % slides.length) + slides.length) % slides.length;
       slides[current].classList.add('active');
       if (dots[current]) dots[current].classList.add('active');
+      preloadSlide(slides[(current + 1) % slides.length]);
     }
 
     if (prev) prev.addEventListener('click', function () { goTo(current - 1); });
     if (next) next.addEventListener('click', function () { goTo(current + 1); });
+    addSwipe(slider, function () { goTo(current - 1); }, function () { goTo(current + 1); });
+    // Erstes Folgebild vorladen, sobald der Slider in Sichtweite kommt
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { preloadSlide(slides[1]); io.disconnect(); }
+      }, { rootMargin: '200px' });
+      io.observe(slider);
+    }
 
     dots.forEach(function (dot, i) {
       dot.addEventListener('click', function () { goTo(i); });
@@ -131,10 +164,18 @@
     current = ((n % slides.length) + slides.length) % slides.length;
     slides[current].classList.add('active');
     dots[current].classList.add('active');
+    preloadSlide(slides[(current + 1) % slides.length]);
   }
 
   prev.addEventListener('click', function () { goTo(current - 1); });
   next.addEventListener('click', function () { goTo(current + 1); });
+  addSwipe(slider, function () { goTo(current - 1); }, function () { goTo(current + 1); });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { preloadSlide(slides[1]); io.disconnect(); }
+    }, { rootMargin: '200px' });
+    io.observe(slider);
+  }
 })();
 
 /* ── LIGHTBOX ─────────────────────────────────────────────────── */
@@ -144,7 +185,7 @@
   lb.innerHTML =
     '<button class="lightbox-close" aria-label="Schliessen">&times;</button>' +
     '<button class="lightbox-nav lightbox-prev" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 15l-5-5 5-5"/></svg></button>' +
-    '<img class="lightbox-img" src="" alt="">' +
+    '<img class="lightbox-img" alt="">' +
     '<button class="lightbox-nav lightbox-next" aria-label="Weiter"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 5l5 5-5 5"/></svg></button>' +
     '<p class="lightbox-counter"></p>';
   document.body.appendChild(lb);

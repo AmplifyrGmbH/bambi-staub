@@ -1969,3 +1969,25 @@ h1, h2, h3, h4 {
   margin: 0;
 }
 .room-slider-wrap img { cursor: zoom-in; }
+
+/* ── MOBILE & PERFORMANCE (25.11.2026) ───────────────────────── */
+/* Lange Wörter (z. B. «Datenschutzerklärung») sprengen sonst die Handy-Breite */
+h1, h2, h3, h4 { overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+p, li, dd, td { overflow-wrap: break-word; }
+.ausstattung-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Slider: nur das sichtbare Bild ist eingeblendet. Ausgeblendete Bilder
+   mit loading="lazy" lädt der Browser so erst beim Umschalten. */
+.slide, .familie-slide { display: none; }
+.slide.active, .familie-slide.active { display: block; opacity: 1; animation: slideFade .4s ease; }
+@keyframes slideFade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .slide.active, .familie-slide.active { animation: none; }
+}
+
+/* Tippflächen mind. 44 px, ohne die Optik zu ändern */
+.dot { position: relative; }
+.dot::after { content: ''; position: absolute; inset: -19px -6px; }
+.slider-dots { gap: 0.75rem; }
+.lang-switcher a { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 44px; margin: 0 -6px; }
+.footer-bottom a { display: inline-block; padding: .6rem .25rem; }
