@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond(false, 'Method not allowed', 
 
 // ── Spamschutz ────────────────────────────────────────────────
 if (!empty($_POST['website'])) respond(true, '', ['nights' => 0, 'price' => 0]);   // Honeypot: still erfolgreich antworten
-if ((int)($_POST['dauer'] ?? 0) < 4) respond(false, t('Bitte fülle das Formular vollständig aus.', 'Please fill in the form completely.'), [], 422);
+if ((int)($_POST['dauer'] ?? 0) < 4) respond(false, t('Bitte füllen Sie das Formular vollständig aus.', 'Please fill in the form completely.'), [], 422);
 
 // Höchstens 8 Anfragen pro Stunde und IP (gezählt wird erst beim Versand, abgelehnte Eingaben zählen nicht)
 $rl   = sys_get_temp_dir() . '/bambi_rl_' . md5($_SERVER['REMOTE_ADDR'] ?? '0');
 $hits = array_filter(json_decode(@file_get_contents($rl) ?: '[]', true) ?: [], fn($ts) => $ts > time() - 3600);
-if (count($hits) >= MAX_PRO_STUNDE) respond(false, t('Zu viele Anfragen. Bitte schreib uns direkt an ', 'Too many requests. Please email us directly at ') . MAIL_TO . '.', [], 429);
+if (count($hits) >= MAX_PRO_STUNDE) respond(false, t('Zu viele Anfragen. Bitte schreiben Sie uns direkt an ', 'Too many requests. Please email us directly at ') . MAIL_TO . '.', [], 429);
 
 // ── Eingaben einlesen ─────────────────────────────────────────
 $name          = clean($_POST['name']        ?? '', 120);
@@ -56,9 +56,9 @@ $linenBeds     = max(0, min(10, (int)($_POST['linen_beds'] ?? 0)));
 // ── Validierung ───────────────────────────────────────────────
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
 
-if ($name === '')                                       respond(false, t('Bitte gib deinen Namen an.', 'Please enter your name.'), [], 422);
+if ($name === '')                                       respond(false, t('Bitte geben Sie Ihren Namen an.', 'Please enter your name.'), [], 422);
 if ($persons < 1 || $persons > 10)                     respond(false, t('Ungültige Personenzahl (1–10).', 'Invalid number of guests (1–10).'), [], 422);
-if (!$email)                                            respond(false, t('Bitte prüfe die E-Mail-Adresse.', 'Please check your email address.'), [], 422);
+if (!$email)                                            respond(false, t('Bitte prüfen Sie die E-Mail-Adresse.', 'Please check your email address.'), [], 422);
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival))    respond(false, t('Ungültiges Anreisedatum.', 'Invalid arrival date.'), [], 422);
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure))  respond(false, t('Ungültiges Abreisedatum.', 'Invalid departure date.'), [], 422);
 
@@ -121,7 +121,7 @@ while ($cur < $departureTs) {
     $d = date('Y-m-d', $cur);
     foreach ($bookings as $b) {
         if ($d >= $b['start'] && $d < $b['end']) {
-            respond(false, t('Der gewählte Zeitraum ist leider nicht mehr verfügbar. Bitte wähle andere Daten.', 'Unfortunately the selected period is no longer available. Please choose other dates.'), [], 409);
+            respond(false, t('Der gewählte Zeitraum ist leider nicht mehr verfügbar. Bitte wählen Sie andere Daten.', 'Unfortunately the selected period is no longer available. Please choose other dates.'), [], 409);
         }
     }
     $cur = strtotime('+1 day', $cur);
@@ -143,7 +143,7 @@ while ($cur < $departureTs) {
         }
     }
     if ($nightPrice === null) {
-        respond(false, t('Für einen Teil des gewählten Zeitraums kann kein Preis berechnet werden. Bitte kontaktiere uns direkt unter ', 'No price is available for part of the selected period. Please contact us directly at ') . MAIL_TO . '.', [], 422);
+        respond(false, t('Für einen Teil des gewählten Zeitraums kann kein Preis berechnet werden. Bitte kontaktieren Sie uns direkt unter ', 'No price is available for part of the selected period. Please contact us directly at ') . MAIL_TO . '.', [], 422);
     }
     $totalPrice += $nightPrice;
 
@@ -250,7 +250,7 @@ $bestaetigung = $en
     ? "Hello {$name}\n\nThank you for your booking enquiry. We have received it and will get back to you by email within 24 hours.\n\n" .
       "Reference: {$ticket}\nStay: {$von} to {$bis} ({$nights} nights, {$persons} guests)\nEstimated total: CHF {$finalPrice}\n\n" .
       "This is an enquiry, not yet a confirmed booking.\n\nKind regards\nFamilie Staub\n" . NAME . "\nRothornstrasse 40, 6174 Sörenberg\n" . MAIL_TO . "\n"
-    : "Hallo {$name}\n\nDanke für deine Buchungsanfrage. Wir haben sie erhalten und melden uns innerhalb von 24 Stunden per E-Mail bei dir.\n\n" .
+    : "Guten Tag {$name}\n\nVielen Dank für Ihre Buchungsanfrage. Wir haben sie erhalten und melden uns innerhalb von 24 Stunden per E-Mail bei Ihnen.\n\n" .
       "Nummer: {$ticket}\nAufenthalt: {$von} bis {$bis} ({$nights} Nächte, {$persons} Personen)\nVoraussichtlicher Preis: CHF {$finalPrice}\n\n" .
       "Das ist eine Anfrage, noch keine bestätigte Buchung.\n\nHerzliche Grüsse\nFamilie Staub\n" . NAME . "\nRothornstrasse 40, 6174 Sörenberg\n" . MAIL_TO . "\n";
 
@@ -280,7 +280,7 @@ $tabelle .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-w
 $bestaetigungHtml = '<!doctype html><html lang="' . t('de', 'en') . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     . '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Chalet Bambi</title></head>'
     . '<body style="margin:0;padding:0;background:#F0EDE4;">'
-    . '<div style="display:none;max-height:0;overflow:hidden;">' . t('Wir haben deine Anfrage erhalten und melden uns innerhalb von 24 Stunden.', 'We have received your enquiry and will get back to you within 24 hours.') . '</div>'
+    . '<div style="display:none;max-height:0;overflow:hidden;">' . t('Wir haben Ihre Anfrage erhalten und melden uns innerhalb von 24 Stunden.', 'We have received your enquiry and will get back to you within 24 hours.') . '</div>'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F0EDE4;"><tr><td align="center" style="padding:32px 16px;">'
     . '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FBF9F4;border-radius:14px;overflow:hidden;">'
     // Kopf mit Schriftzug wie auf der Website
@@ -292,13 +292,13 @@ $bestaetigungHtml = '<!doctype html><html lang="' . t('de', 'en') . '"><head><me
     // Inhalt
     . '<tr><td style="padding:34px 40px 8px;' . $sans . 'font-size:16px;line-height:1.6;color:#2C2C2C;">'
     . '<p style="margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A05C3B;">' . t('Anfrage erhalten', 'Enquiry received') . '</p>'
-    . '<h1 style="margin:8px 0 22px;' . $serif . 'font-size:30px;font-weight:300;font-style:italic;line-height:1.2;color:#2D3E33;">' . t('Danke für deine Anfrage.', 'Thank you for your enquiry.') . '</h1>'
-    . '<p style="margin:0 0 14px;">' . t('Hallo ', 'Hello ') . $x($name) . '</p>'
-    . '<p style="margin:0 0 26px;">' . t('Wir haben deine Buchungsanfrage erhalten und melden uns innerhalb von 24&nbsp;Stunden per E-Mail bei dir.', 'We have received your booking enquiry and will get back to you by email within 24&nbsp;hours.') . '</p>'
+    . '<h1 style="margin:8px 0 22px;' . $serif . 'font-size:30px;font-weight:300;font-style:italic;line-height:1.2;color:#2D3E33;">' . t('Vielen Dank für Ihre Anfrage.', 'Thank you for your enquiry.') . '</h1>'
+    . '<p style="margin:0 0 14px;">' . t('Guten Tag ', 'Hello ') . $x($name) . '</p>'
+    . '<p style="margin:0 0 26px;">' . t('Wir haben Ihre Buchungsanfrage erhalten und melden uns innerhalb von 24&nbsp;Stunden per E-Mail bei Ihnen.', 'We have received your booking enquiry and will get back to you by email within 24&nbsp;hours.') . '</p>'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EDE8DF;border-radius:10px;"><tr><td style="padding:16px 22px 20px;">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="' . $sans . '">' . $tabelle . '</table>'
     . '</td></tr></table>'
-    . '<p style="margin:18px 0 0;font-size:13px;color:#8C7B6B;">' . t('Das ist eine Anfrage, noch keine bestätigte Buchung. Die Bestätigung erhältst du von uns persönlich.', 'This is an enquiry, not yet a confirmed booking. We will confirm it with you personally.') . '</p>'
+    . '<p style="margin:18px 0 0;font-size:13px;color:#8C7B6B;">' . t('Das ist eine Anfrage, noch keine bestätigte Buchung. Die Bestätigung erhalten Sie von uns persönlich.', 'This is an enquiry, not yet a confirmed booking. We will confirm it with you personally.') . '</p>'
     . '<p style="margin:28px 0 30px;">' . t('Herzliche Grüsse', 'Kind regards') . '<br><span style="' . $serif . 'font-style:italic;font-size:19px;color:#2D3E33;">Familie Staub</span></p>'
     . '</td></tr>'
     // Fuss
@@ -319,7 +319,7 @@ $bMsg = "--$alt\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-E
     ($foto ? "--$rel\r\nContent-Type: image/jpeg; name=\"chalet-bambi.jpg\"\r\nContent-Transfer-Encoding: base64\r\nContent-ID: <chalet@bambi-staub.ch>\r\n" .
         "Content-Disposition: inline; filename=\"chalet-bambi.jpg\"\r\n\r\n" . chunk_split(base64_encode($foto)) : '') .
     "--$rel--\r\n--$alt--\r\n";
-$bBetreff = enc(t('Deine Buchungsanfrage für Chalet Bambi', 'Your booking enquiry for Chalet Bambi') . " ($ticket)");
+$bBetreff = enc(t('Ihre Buchungsanfrage für Chalet Bambi', 'Your booking enquiry for Chalet Bambi') . " ($ticket)");
 
 $hits[] = time();
 @file_put_contents($rl, json_encode(array_values($hits)));
@@ -345,7 +345,7 @@ if ($dev = getenv('BAMBI_DEV')) {
 }
 
 if (!mail(MAIL_TO, enc($betreff), $msg, $headers, '-f' . MAIL_FROM)) {
-    respond(false, t('Die Anfrage konnte nicht gesendet werden. Bitte schreib uns direkt an ', 'Your enquiry could not be sent. Please email us directly at ') . MAIL_TO . '.', [], 500);
+    respond(false, t('Die Anfrage konnte nicht gesendet werden. Bitte schreiben Sie uns direkt an ', 'Your enquiry could not be sent. Please email us directly at ') . MAIL_TO . '.', [], 500);
 }
 
 // Bestätigung an den Gast (Fehler hier blockieren nichts)

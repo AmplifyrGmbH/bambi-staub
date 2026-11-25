@@ -568,7 +568,7 @@
 
       // Basic client-side check
       if (!S.arrival || !S.departure) {
-        showFormError('Bitte wähle zuerst Anreise- und Abreisedatum im Kalender.');
+        showFormError('Bitte wählen Sie zuerst Anreise- und Abreisedatum im Kalender.');
         return;
       }
 
