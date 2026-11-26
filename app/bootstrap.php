@@ -43,6 +43,20 @@ function qv(string $sql, array $p = []): mixed { $r = q($sql, $p)->fetchColumn()
 function meta_get(string $k): ?string { return qv('SELECT wert FROM meta WHERE schluessel = ?', [$k]); }
 function meta_set(string $k, string $v): void { q('INSERT INTO meta (schluessel, wert) VALUES (?, ?) ON CONFLICT(schluessel) DO UPDATE SET wert = excluded.wert', [$k, $v]); }
 
+/* Einstellungen aus dem Admin-Center (Türcode, IBAN …), in der DB statt im Repo */
+const EINSTELLUNGEN = [
+    'tuercode'        => ['Code Schlüsselsafe', ''],
+    'kontoinhaber'    => ['Kontoinhaber', ''],
+    'iban'            => ['IBAN', ''],
+    'bank'            => ['Bank (optional)', ''],
+    'zahlungsfrist'   => ['Zahlungsfrist: Tage vor Anreise', '30'],
+    'auto_code'       => ['Code-Mail 3 Tage vor Anreise automatisch senden', '1'],
+    'auto_info_ih'    => ['Interhome-Gästen Infos senden, sobald die E-Mail eingetragen ist', '1'],
+    'auto_dank'       => ['Dankesmail nach Abreise (Direktbuchungen)', '1'],
+    'bewertung_url'   => ['Link Google-Bewertung', 'https://search.google.com/local/writereview?placeid=ChIJz_lYkKqVj0cRk7wulb7lMSs'],
+];
+function einst(string $k): string { return meta_get('einst_' . $k) ?? (EINSTELLUNGEN[$k][1] ?? ''); }
+
 function jetzt(): string { return date('Y-m-d H:i:s'); }
 function heute(): string { return date('Y-m-d'); }
 function h(mixed $s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
@@ -97,3 +111,7 @@ const QUELLE = [
     'eigentuemer' => 'Eigentümer (Interhome)',
     'manuell'     => 'Von Hand',
 ];
+
+/* Check-in/-out: direkt 15:00/12:00 (wie im Guide); Interhome-Inserat heute 16:00/10:00 */
+function zeiten(array $b): array { return $b['quelle'] === 'interhome' ? ['ein' => '16:00', 'aus' => '10:00'] : ['ein' => '15:00', 'aus' => '12:00']; }
+function ist_direkt(array $b): bool { return in_array($b['quelle'], ['website', 'manuell'], true); }

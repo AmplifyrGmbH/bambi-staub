@@ -1,6 +1,6 @@
 # Admin-Center Chalet Bambi – Umsetzungsplan
 
-Stand: 26.11.2026 · Status: Etappe 0 und 1 umgesetzt (live unter /admin)
+Stand: 26.11.2026 · Status: Etappen 0–5 umgesetzt (live unter /admin)
 
 Umsetzungsnotizen Etappe 0/1:
 - Hostpoint läuft mit PHP 8.3 (nicht 8.5), die IMAP-Erweiterung ist vorhanden. SQLite liegt in `bambi-data/admin.sqlite`, Sicherungen täglich in `bambi-data/sicherungen/`.
@@ -8,6 +8,15 @@ Umsetzungsnotizen Etappe 0/1:
 - Interhome gibt allen Sperren dieselbe UID. Darum gilt für Sperren der Schlüssel UID + Daten.
 - Website und Formular lesen die Belegung aus der Datenbank. Fällt sie aus, greift der alte Weg (`app/availability_legacy.php`).
 - Cron-Adresse für den späteren Mail-Abruf: `/admin/cron?token=…` (Token in `config/admin.php`). Bis dahin gleicht jeder Aufruf von Website oder Admin-Center höchstens alle 30 Minuten ab.
+Umsetzungsnotizen Etappen 2–5:
+- Annehmen, Ablehnen, Stornieren, Zahlungserinnerung, Infos, Code und Dank laufen über `/admin/buchung/{id}/mail/{art}`: Vorlage (DE/EN) wird angezeigt, ist anpassbar und geht als gestaltete Mail raus (Bcc an info@). Fehlt etwas (IBAN, Code), steht ‹…› im Text und das Senden ist gesperrt.
+- Code, Kontoinhaber, IBAN, Zahlungsfrist und die Automatik-Schalter stehen unter **Einstellungen** (in der Datenbank, nicht im Repo).
+- Die Direktbuchung wird automatisch mit der Eigentümerbuchung im Interhome-Kalender verknüpft (gleiche Daten). Bis dahin steht die Aufgabe «Im Interhome-Portal eintragen».
+- Postfach: IMAP über Sockets (ohne Erweiterung), nur lesend (`BODY.PEEK`). Auswertung mit `claude-opus-5-5` (strukturierte Ausgabe), Rückfall auf Regeln. Leere Felder werden gefüllt, Widersprüche, Daten und Storno werden **Vorschläge**. Interhome-Storno per Mail ist bewusst auch nur ein Vorschlag, bis echte Beispiel-Mails vorliegen.
+- Automatik (`app/automatik.php`) über `/admin/cron?token=…` alle 10 Min. (Crontab von `claude-ops` auf dem Hetzner-Server), als Rückfall nach Seitenaufrufen im Admin-Center: Postfach, Infos an Interhome-Gäste, Code 3 Tage vorher (Direktbuchung nur bezahlt), Dank nach Abreise, Anonymisierung nach 2 Jahren.
+- Kalender-Abo: Adressen unter Einstellungen (alle Buchungen; Wechseltage für Margrit, auch auf ihrer Seite).
+- Datenschutzerklärung DE/EN ergänzt (Buchungsverwaltung, Mail-Auswertung mit Anthropic).
+
 Festgelegt am 26.11.:
 - Konten: ein Admin-Konto (alles) und ein Konto für die Putzfrau (nur Reinigungsansicht).
 - Das Postfach info@bambi-staub.ch wird eingebunden, ausgelesen und ausgewertet.
@@ -200,10 +209,8 @@ Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und dana
 
 ## 12. Offene Punkte
 
-1. **Beispiel-Mails von Interhome:** je eine Buchung, Änderung, Storno und Monatsabrechnung, weitergeleitet oder als .eml (für Etappe 3)
-2. **Vorauskasse:** Zahlungsfrist (Vorschlag: 30 Tage vor Anreise, bei kurzfristiger Buchung sofort), Kontoinhaber und IBAN für die Bestätigungsmail
-3. **Code:** Er wird im Admin-Center eingetragen, nicht im Repo.
-4. **Interhome-Inserat:** Dort stehen 16:00/10:00. An 15:00/12:00 anpassen lassen?
-5. **Interhome-Mails an info@:** Absenderadresse im Interhome-Konto ändern oder Weiterleitung einrichten (heute ist keine Interhome-Mail im Postfach)
-6. **Putzfrau:** Name und Sprache der Ansicht (DE). Hat sie ein Smartphone?
-7. **API-Schlüssel Anthropic** (Etappe 3), siehe Antwort im Chat
+1. **Einstellungen ausfüllen:** Code Schlüsselsafe, Kontoinhaber, IBAN (Zahlungsfrist steht auf 30 Tage). Ohne IBAN lässt sich keine Anfrage mit Mail annehmen, ohne Code geht keine Code-Mail raus.
+2. **Erste echte Interhome-Mails prüfen:** Sobald welche bei info@ eingehen, Auswertung kontrollieren und danach entscheiden, ob Interhome-Stornos automatisch statt als Vorschlag übernommen werden.
+3. **Interhome-Inserat:** Dort stehen 16:00/10:00. An 15:00/12:00 anpassen lassen?
+4. **Passwörter** von Admin und Margrit ändern (wurden im Chat geteilt).
+5. **Zwei-Faktor-Anmeldung** (TOTP) ist noch nicht umgesetzt.

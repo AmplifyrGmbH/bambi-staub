@@ -4,7 +4,40 @@ declare(strict_types=1);
 
 function schema_migrieren(PDO $db): void {
     $v = (int)$db->query('PRAGMA user_version')->fetchColumn();
-    if ($v >= 1) return;
+    if ($v < 1) schema_v1($db);
+    if ($v < 2) schema_v2($db);
+}
+
+/* Etappen 2–5: Annehmen/Ablehnen, Interhome-Verknüpfung, Gast-Mails, Postfach, Vorschläge, Geld */
+function schema_v2(PDO $db): void {
+    $db->exec('BEGIN IMMEDIATE');
+    if ((int)$db->query('PRAGMA user_version')->fetchColumn() >= 2) { $db->exec('COMMIT'); return; }
+    foreach ([
+        'bestaetigt_am TEXT', 'zahlung_faellig TEXT', 'zahlung_erinnert_am TEXT', 'partner_id INTEGER', 'ih_eingetragen_am TEXT',
+        'info_gesendet_am TEXT', 'code_gesendet_am TEXT', 'dank_gesendet_am TEXT', 'ertrag_interhome REAL', 'anonymisiert_am TEXT',
+    ] as $spalte) $db->exec("ALTER TABLE buchung ADD COLUMN $spalte");
+    $db->exec(<<<SQL
+    CREATE TABLE IF NOT EXISTS mail (
+        id INTEGER PRIMARY KEY,
+        richtung TEXT NOT NULL,            -- ein | aus
+        imap_schluessel TEXT UNIQUE,       -- ordner|uidvalidity|uid
+        message_id TEXT, von TEXT, von_name TEXT, an TEXT, betreff TEXT, datum TEXT,
+        kurztext TEXT, kategorie TEXT,     -- interhome_buchung | interhome_aenderung | interhome_storno | interhome_abrechnung | interhome | gast | formular | intern | sonstiges | gesendet
+        buchung_id INTEGER, ergebnis TEXT, verarbeitet_mit TEXT, erledigt INTEGER NOT NULL DEFAULT 0, erstellt TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS mail_buchung ON mail (buchung_id);
+    CREATE TABLE IF NOT EXISTS vorschlag (
+        id INTEGER PRIMARY KEY, buchung_id INTEGER NOT NULL, mail_id INTEGER, feld TEXT NOT NULL, alt TEXT, neu TEXT,
+        status TEXT NOT NULL DEFAULT 'offen', erstellt TEXT NOT NULL
+    );
+    SQL);
+    // Bereits bestätigte Direktbuchungen gelten als bestätigt am Tag der letzten Änderung
+    $db->exec("UPDATE buchung SET bestaetigt_am = geaendert WHERE status = 'bestaetigt' AND quelle IN ('website','manuell')");
+    $db->exec('PRAGMA user_version = 2');
+    $db->exec('COMMIT');
+}
+
+function schema_v1(PDO $db): void {
     $db->exec('BEGIN IMMEDIATE');   // zwei gleichzeitige Erstaufrufe: nur einer migriert
     if ((int)$db->query('PRAGMA user_version')->fetchColumn() >= 1) { $db->exec('COMMIT'); return; }
 

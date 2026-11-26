@@ -63,6 +63,25 @@ function sync_interhome(bool $erzwingen = false): array {
     }
 }
 
+/* Direktbuchung ↔ Eigentümerbuchung in Interhome (dort zum Sperren eingetragen) über identische Daten verknüpfen.
+   Fällt die Eigentümerbuchung weg, wird die Verknüpfung gelöst. */
+function interhome_verknuepfen(): void {
+    foreach (q("SELECT d.id, d.nummer, e.id AS eid, e.nummer AS enr FROM buchung d JOIN buchung e ON e.quelle = 'eigentuemer' AND e.status = 'bestaetigt' AND e.ih_fehlt = 0
+                AND e.anreise = d.anreise AND e.abreise = d.abreise AND e.partner_id IS NULL
+                WHERE d.quelle IN ('website','manuell') AND d.status = 'bestaetigt' AND d.partner_id IS NULL")->fetchAll() as $p) {
+        q('UPDATE buchung SET partner_id = ?, ih_eingetragen_am = COALESCE(ih_eingetragen_am, ?) WHERE id = ?', [$p['eid'], jetzt(), $p['id']]);
+        q('UPDATE buchung SET partner_id = ? WHERE id = ?', [$p['id'], $p['eid']]);
+        verlauf((int)$p['id'], 'sync', 'in Interhome gesperrt', "Eigentümerbuchung {$p['enr']} gefunden und verknüpft");
+        verlauf((int)$p['eid'], 'sync', 'verknüpft', "gehört zur Direktbuchung {$p['nummer']}");
+    }
+    // Eigentümerbuchung verschwunden oder Daten geändert → Verknüpfung lösen
+    foreach (q("SELECT d.id, e.id AS eid FROM buchung d JOIN buchung e ON e.id = d.partner_id
+                WHERE d.quelle IN ('website','manuell') AND (e.ih_fehlt = 1 OR e.status != 'bestaetigt' OR e.anreise != d.anreise OR e.abreise != d.abreise)")->fetchAll() as $p) {
+        q('UPDATE buchung SET partner_id = NULL WHERE id IN (?, ?)', [$p['id'], $p['eid']]);
+        verlauf((int)$p['id'], 'sync', 'Interhome-Sperre fehlt', 'die verknüpfte Eigentümerbuchung ist nicht mehr passend im Interhome-Kalender');
+    }
+}
+
 function sync_abgleichen(array $events): array {
     $r = ['neu' => [], 'geaendert' => [], 'fehlt' => [], 'zurueck' => []];
     $gesehenB = []; $gesehenS = [];
@@ -83,6 +102,11 @@ function sync_abgleichen(array $events): array {
         $name = ($e['description'] !== '' && strtolower($e['description']) !== 'n.a.') ? $e['description'] : null;
 
         $alt = q1('SELECT * FROM buchung WHERE ih_uid = ?', [$e['uid']]);
+        if (!$alt && ($ausMail = q1('SELECT * FROM buchung WHERE nummer = ? AND ih_uid IS NULL', ['IH-' . $ihNr]))) {
+            // Buchung entstand schon aus der Interhome-Mail: mit dem Kalendereintrag verknüpfen
+            q('UPDATE buchung SET ih_uid = ?, ih_status = ? WHERE id = ?', [$e['uid'], $ihStatus, $ausMail['id']]);
+            $alt = q1('SELECT * FROM buchung WHERE id = ?', [$ausMail['id']]);
+        }
         if (!$alt) {
             $id = buchung_anlegen(['nummer' => 'IH-' . $ihNr, 'quelle' => $quelle, 'status' => 'bestaetigt', 'anreise' => $e['start'], 'abreise' => $e['end'],
                 'name' => $name, 'ih_uid' => $e['uid'], 'ih_status' => $ihStatus, 'reinigung' => 'yes'], 'sync');
@@ -113,6 +137,7 @@ function sync_abgleichen(array $events): array {
         }
         q("DELETE FROM sperre WHERE quelle = 'interhome' AND ih_uid NOT IN (" . $platz($gesehenS) . ')', $gesehenS);
     }
+    interhome_verknuepfen();
     $db->commit();
 
     // Hinweis an info@ bei Neuem / Änderungen
