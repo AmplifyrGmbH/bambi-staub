@@ -18,106 +18,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112503">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112503">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112601">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112601">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
-  <style>
-    #access-gate {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: var(--forest);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    #access-gate.hidden { display: none; }
-    .gate-box {
-      background: var(--linen);
-      padding: 2.5rem 2rem;
-      max-width: 22rem;
-      width: 100%;
-      text-align: center;
-    }
-    .gate-box .logo-name {
-      font-family: 'Noto Serif', Georgia, serif;
-      font-size: 1.75rem;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      color: var(--charcoal);
-      display: block;
-      margin-bottom: 0.2rem;
-    }
-    .gate-box .logo-sub {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--stone);
-      display: block;
-      margin-bottom: 1.75rem;
-    }
-    .gate-label {
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--forest-muted);
-      margin-bottom: 0.75rem;
-    }
-    .gate-input {
-      width: 100%;
-      padding: 0.65rem 0.9rem;
-      background: var(--linen-dark);
-      border: 1px solid rgba(191,181,168,0.6);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.95rem;
-      color: var(--charcoal);
-      outline: none;
-      text-align: center;
-      letter-spacing: 0.04em;
-      transition: border-color 0.2s;
-      margin-bottom: 0.75rem;
-      -webkit-appearance: none;
-    }
-    .gate-input:focus { border-color: var(--forest); }
-    .gate-input.gate-error { border-color: var(--terracotta); animation: gateshake 0.3s ease; }
-    .gate-btn {
-      width: 100%;
-      padding: 0.875rem;
-      background: var(--forest);
-      color: var(--linen);
-      font-family: 'Inter', system-ui, sans-serif;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .gate-btn:hover { background: var(--forest-light); }
-    .gate-err-msg {
-      font-size: 0.8rem;
-      color: var(--terracotta);
-      margin-top: 0.6rem;
-      min-height: 1.1rem;
-    }
-    @keyframes gateshake {
-      0%,100% { transform: translateX(0); }
-      25%      { transform: translateX(-6px); }
-      75%      { transform: translateX(6px); }
-    }
-  </style>
 
   <!-- Buchungs-Konfiguration (Preise + Mindestaufenthalt) -->
   <script>
     window.BOOKING_CONFIG = {
       minNights: 3,
+      highSeason: { from: '01-15', to: '03-15', minNights: 7 }, // MM-TT, jedes Jahr
       cleaning: { price: 80 },
       linen:    { pricePerBed: 20 },
       pricing: [
@@ -134,60 +45,6 @@
   </script>
 </head>
 <body>
-
-<!-- ── ZUGANGSCODE-GATE ───────────────────────────────────────── -->
-<div id="access-gate" role="dialog" aria-modal="true" aria-label="Zugangscode eingeben">
-  <div class="gate-box">
-    <span class="logo-name">Chalet Bambi</span>
-    <span class="logo-sub">Sörenberg</span>
-    <p class="gate-label">Buchungsbereich</p>
-    <input class="gate-input" type="password" id="gate-input"
-           placeholder="Zugangscode" autocomplete="off" autocorrect="off"
-           spellcheck="false" aria-label="Zugangscode">
-    <button class="gate-btn" id="gate-btn" type="button">Bestätigen</button>
-    <p class="gate-err-msg" id="gate-err" aria-live="polite"></p>
-  </div>
-</div>
-
-<script>
-  (function () {
-    var KEY  = 'bambi_access';
-    var CODE = 'bambi-liebe';
-    var gate = document.getElementById('access-gate');
-
-    function unlock() { gate.classList.add('hidden'); }
-    function shake()  {
-      var inp = document.getElementById('gate-input');
-      inp.classList.add('gate-error');
-      setTimeout(function () { inp.classList.remove('gate-error'); }, 400);
-      document.getElementById('gate-err').textContent = 'Falscher Code – bitte erneut versuchen.';
-    }
-
-    // Bereits freigeschaltet?
-    if (sessionStorage.getItem(KEY) === '1') { unlock(); }
-
-    document.getElementById('gate-btn').addEventListener('click', function () {
-      var val = document.getElementById('gate-input').value.trim();
-      if (val.toLowerCase() === CODE) {
-        sessionStorage.setItem(KEY, '1');
-        unlock();
-      } else {
-        shake();
-      }
-    });
-
-    document.getElementById('gate-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') document.getElementById('gate-btn').click();
-    });
-
-    // Auto-Focus
-    window.addEventListener('load', function () {
-      if (!gate.classList.contains('hidden')) {
-        document.getElementById('gate-input').focus();
-      }
-    });
-  })();
-</script>
 
 <!-- ── HEADER ─────────────────────────────────────────────────── -->
 <header class="site-header" role="banner">
@@ -300,7 +157,7 @@
             <div class="form-group">
               <label class="form-label" for="field-persons">Anzahl Personen *</label>
               <input class="form-input" type="number" id="field-persons" name="persons"
-                     required min="1" max="10" placeholder="z.B. 4">
+                     required min="1" max="4" placeholder="z.B. 4">
             </div>
 
           </div>
@@ -336,8 +193,9 @@
             <div id="linen-beds-wrap" style="display:none; margin-top:0.6rem;">
               <label class="form-label" for="field-linen-beds" style="font-size:0.8rem;">Anzahl Betten</label>
               <input class="form-input" type="number" id="field-linen-beds" name="linen_beds"
-                     min="1" max="10" value="2" style="max-width:80px;">
+                     min="1" max="4" value="2" style="max-width:80px;">
             </div>
+            <p class="form-note">Die Betten beziehen Sie in jedem Fall selbst, auch wenn Sie die Bettwäsche mieten.</p>
           </div>
 
           <div class="form-group form-group--full" style="margin-bottom: 0.75rem;">
@@ -432,8 +290,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112503" defer></script>
-<script src="/assets/js/booking-calendar.js?v=2026112503" defer></script>
+<script src="/assets/js/script.js?v=2026112601" defer></script>
+<script src="/assets/js/booking-calendar.js?v=2026112601" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>

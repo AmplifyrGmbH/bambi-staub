@@ -4,6 +4,8 @@
   // ── Config (injected per inline-script in buchen/index.html) ──
   const cfg            = window.BOOKING_CONFIG || { pricing: [], minNights: 3 };
   const MIN_NIGHTS     = cfg.minNights || 3;
+  // Hochsaison (Mitte Januar bis Mitte März, jedes Jahr): längerer Mindestaufenthalt
+  const HS             = cfg.highSeason || { from: '01-15', to: '03-15', minNights: 7 };
   const CLEANING_PRICE = (cfg.cleaning || {}).price || 80;
   const LINEN_PER_BED  = (cfg.linen || {}).pricePerBed || 20;
   const MONTHS     = 14; // Monate voraus
@@ -43,6 +45,18 @@
 
   function diffDays(a, b) {
     return Math.round((fromStr(b) - fromStr(a)) / 86400000);
+  }
+
+  // Fällt eine der Nächte von arrival bis vor departure in die Hochsaison?
+  function inHighSeason(dateStr) {
+    const md = dateStr.slice(5);
+    return md >= HS.from && md <= HS.to;
+  }
+  function minNightsFor(arrival, departure) {
+    for (let d = arrival; d < departure; d = addDays(d, 1)) {
+      if (inHighSeason(d)) return HS.minNights;
+    }
+    return MIN_NIGHTS;
   }
 
   function fmtDE(s) {
@@ -331,8 +345,11 @@
     }
 
     const nights = diffDays(S.arrival, dateStr);
-    if (nights < MIN_NIGHTS) {
-      showError(`Mindestaufenthalt: ${MIN_NIGHTS} Nächte.`);
+    const minN = minNightsFor(S.arrival, dateStr);
+    if (nights < minN) {
+      showError(minN > MIN_NIGHTS
+        ? `Zwischen Mitte Januar und Mitte März beträgt der Mindestaufenthalt ${minN} Nächte.`
+        : `Mindestaufenthalt: ${minN} Nächte.`);
       return;
     }
 
@@ -355,7 +372,7 @@
     if (!S.arrival) {
       $hint.textContent = 'Anreisedatum auswählen.';
     } else if (!S.departure) {
-      $hint.textContent = `Anreise: ${fmtDE(S.arrival)} – jetzt Abreisedatum wählen (mind. ${MIN_NIGHTS} Nächte).`;
+      $hint.textContent = `Anreise: ${fmtDE(S.arrival)} – jetzt Abreisedatum wählen (mind. ${inHighSeason(S.arrival) ? HS.minNights : MIN_NIGHTS} Nächte).`;
     } else {
       $hint.textContent = `${fmtDE(S.arrival)} → ${fmtDE(S.departure)} · ${diffDays(S.arrival, S.departure)} Nächte`;
     }

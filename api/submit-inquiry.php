@@ -51,13 +51,13 @@ $message       = text($_POST['message']      ?? '');
 $discountCode  = strtoupper(clean($_POST['discount_code'] ?? '', 40));
 $cleaning      = ($_POST['cleaning'] ?? 'yes') === 'no' ? 'no' : 'yes';
 $linen         = ($_POST['linen']    ?? 'own') === 'rent' ? 'rent' : 'own';
-$linenBeds     = max(0, min(10, (int)($_POST['linen_beds'] ?? 0)));
+$linenBeds     = max(0, min(4, (int)($_POST['linen_beds'] ?? 0)));
 
 // ── Validierung ───────────────────────────────────────────────
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
 
 if ($name === '')                                       respond(false, t('Bitte geben Sie Ihren Namen an.', 'Please enter your name.'), [], 422);
-if ($persons < 1 || $persons > 10)                     respond(false, t('Ungültige Personenzahl (1–10).', 'Invalid number of guests (1–10).'), [], 422);
+if ($persons < 1 || $persons > 4)                      respond(false, t('Das Chalet bietet Platz für 1 bis 4 Personen.', 'The chalet sleeps 1 to 4 guests.'), [], 422);
 if (!$email)                                            respond(false, t('Bitte prüfen Sie die E-Mail-Adresse.', 'Please check your email address.'), [], 422);
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival))    respond(false, t('Ungültiges Anreisedatum.', 'Invalid arrival date.'), [], 422);
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure))  respond(false, t('Ungültiges Abreisedatum.', 'Invalid departure date.'), [], 422);
@@ -68,8 +68,17 @@ $todayTs     = strtotime(date('Y-m-d'));
 $nights      = (int)round(($departureTs - $arrivalTs) / 86400);
 
 if ($arrivalTs < $todayTs)  respond(false, t('Das Anreisedatum liegt in der Vergangenheit.', 'The arrival date is in the past.'), [], 422);
-if ($nights < 3)            respond(false, t('Mindestaufenthalt: 3 Nächte.', 'Minimum stay: 3 nights.'), [], 422);
-if ($nights > 90)           respond(false, t('Aufenthalt zu lang (max. 90 Nächte).', 'Stay too long (max. 90 nights).'), [], 422);
+// Keine Höchstdauer. Nur unsinnige Daten abfangen (Abreise mehr als 3 Jahre voraus), damit die Schleifen unten begrenzt bleiben
+if ($departureTs > strtotime('+3 years', $todayTs)) respond(false, t('Ungültiges Abreisedatum.', 'Invalid departure date.'), [], 422);
+// Mindestaufenthalt: 3 Nächte, 7 Nächte sobald eine Nacht zwischen 15.01. und 15.03. liegt
+$minNights = 3;
+for ($d = new DateTime($arrival); $d->format('Y-m-d') < $departure; $d->modify('+1 day')) {
+    $md = $d->format('m-d');
+    if ($md >= '01-15' && $md <= '03-15') { $minNights = 7; break; }
+}
+if ($nights < $minNights) respond(false, $minNights > 3
+    ? t('Zwischen Mitte Januar und Mitte März beträgt der Mindestaufenthalt 7 Nächte.', 'Between mid-January and mid-March the minimum stay is 7 nights.')
+    : t('Mindestaufenthalt: 3 Nächte.', 'Minimum stay: 3 nights.'), [], 422);
 
 // ── Verfügbarkeit serverseitig prüfen ─────────────────────────
 $cacheFile = __DIR__ . '/../cache/availability.json';
