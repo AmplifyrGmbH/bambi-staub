@@ -148,11 +148,27 @@ function chf($n): string { return floor($n) == $n ? (string)(int)$n : number_for
 $totalPrice = 0;
 $breakdown  = [];
 
+// Rabattcode mit festem Preis pro Nacht (z. B. STAUBRABATT): ersetzt die Tagessätze, alle Zusatzkosten fallen weg
+$nightRate = null;
+if ($discountCode !== '') {
+    foreach ((require __DIR__ . '/../config/discounts.php') as $dc) {
+        if (strtoupper($dc['code']) !== $discountCode || ($dc['type'] ?? '') !== 'night_rate') continue;
+        $today = date('Y-m-d');
+        if ((isset($dc['valid_from']) && $today < $dc['valid_from']) || (isset($dc['valid_to']) && $today > $dc['valid_to'])) break;
+        $nightRate   = (int)$dc['value'];
+        $cleaning    = 'no';
+        $linen       = 'own';
+        $linenBeds   = 0;
+        $energyPrice = 0;
+        break;
+    }
+}
+
 $cur = $arrivalTs;
 while ($cur < $departureTs) {
     $d          = date('Y-m-d', $cur);
-    $nightPrice = null;
-    foreach ($periods as $p) {
+    $nightPrice = $nightRate;
+    if ($nightPrice === null) foreach ($periods as $p) {
         if ($d >= $p['from'] && $d <= $p['to']) {
             $nightPrice = $p['price'];
             break;
@@ -186,7 +202,9 @@ if (!empty($discountCode)) {
         if (isset($dc['valid_from']) && $today < $dc['valid_from']) $valid = false;
         if (isset($dc['valid_to'])   && $today > $dc['valid_to'])   $valid = false;
         if ($valid) {
-            if ($dc['type'] === 'percent') {
+            if ($dc['type'] === 'night_rate') {
+                $discountLabel = "CHF {$dc['value']} pro Nacht, ohne Zusatzkosten";
+            } elseif ($dc['type'] === 'percent') {
                 $discountAmount = (int)round($totalPrice * $dc['value'] / 100);
                 $discountLabel  = $dc['value'] . '% Rabatt';
             } else {
@@ -206,6 +224,10 @@ $energyCost   = chf($energyCost);
 $energyPriceTxt = chf($energyPrice);
 $kurtaxe = t("Nicht im Preis enthalten: Kurtaxe CHF {$tax['adult']}.– pro Person ab {$tax['from_age']} Jahren und Nacht (Zwischensaison die Hälfte), jünger gratis. Bitte in den ersten Tagen beim Tourismus-Büro Sörenberg, Rothornstrasse 21, bezahlen.",
     "Not included: tourist tax CHF {$tax['adult']}.– per person aged {$tax['from_age']}+ per night (half in the off-season), younger guests free. Please pay within the first few days at the Sörenberg Tourist Office, Rothornstrasse 21.");
+if ($nightRate !== null) {
+    $kurtaxe = t('Mit diesem Code fallen alle Zusatzkosten weg. Bitte reinigen Sie das Chalet vor der Abreise selbst, bringen Sie Ihre Bettwäsche mit und nehmen Sie sie wieder mit. ',
+                 'With this code there are no extra costs. Please clean the chalet yourself before leaving and bring your own bed linen and take it home again. ') . $kurtaxe;
+}
 
 // ── E-Mail-Text zusammenbauen ─────────────────────────────────
 $dir    = dirname(__DIR__, 3) . '/bambi-data';   // ausserhalb des Webroots
@@ -248,7 +270,8 @@ $body .= "Abreise:   {$bis}\n";
 $body .= "Nächte:    {$nights}\n\n";
 $body .= "PREIS (berechnet)\n";
 $body .= $breakdownLines;
-$body .= "Energiekosten ({$nights} × CHF {$energyPriceTxt}): CHF {$energyCost}\n";
+if ($energyCost > 0) $body .= "Energiekosten ({$nights} × CHF {$energyPriceTxt}): CHF {$energyCost}\n";
+if ($nightRate !== null) $body .= "Rabattcode {$discountCode}: CHF {$nightRate} pro Nacht, ohne Zusatzkosten. Reinigung und Bettwäsche durch die Gäste.\n";
 if ($cleaningCost > 0) $body .= "Endreinigung:  CHF {$cleaningCost}\n";
 if ($linenCost    > 0) $body .= "Bettwäsche ({$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . "): CHF {$linenCost}\n";
 if ($discountAmount > 0) {
@@ -287,7 +310,8 @@ foreach ($breakdown as $b) {
     $n = $b['nights'];
     $preisRows .= $iZeile($n . ($n > 1 ? ' Nächte' : ' Nacht') . ' × CHF ' . $b['price'], 'CHF ' . $x($b['subtotal']));
 }
-$preisRows .= $iZeile('Energiekosten', $x("{$nights} × CHF {$energyPriceTxt}") . " · CHF {$energyCost}");
+if ($energyCost > 0) $preisRows .= $iZeile('Energiekosten', $x("{$nights} × CHF {$energyPriceTxt}") . " · CHF {$energyCost}");
+if ($nightRate !== null) $preisRows .= $iZeile('Rabattcode', $x("{$discountCode} · CHF {$nightRate} pro Nacht, ohne Zusatzkosten"));
 $preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? "CHF {$cleanPrice}" : 'selbst reinigen');
 $preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '')) . " · CHF {$linenCost}" : 'eigene');
 if ($discountAmount > 0) $preisRows .= $iZeile('Rabatt', $x("{$discountLabel} · Code {$discountCode}") . "<br>– CHF {$discountAmount}");
@@ -368,11 +392,14 @@ $zeilen = [
     [t('Anreise', 'Arrival'), $von],
     [t('Abreise', 'Departure'), $bis],
     [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
-    [t('Energiekosten', 'Energy costs'), "CHF {$energyCost}"],
     [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . " (CHF {$cleanPrice})" : t('Selbst reinigen', 'Self-cleaning')],
     [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " · CHF {$linenCost}" : t('Eigene', 'Own')],
 ];
 if ($discountAmount > 0) $zeilen[] = [t('Rabatt', 'Discount'), "– CHF {$discountAmount}"];
+if ($energyCost > 0) array_splice($zeilen, 4, 0, [[t('Energiekosten', 'Energy costs'), "CHF {$energyCost}"]]);
+if ($nightRate !== null) {
+    $zeilen[] = [t('Rabattcode', 'Discount code'), $discountCode . t(" · CHF {$nightRate} pro Nacht", " · CHF {$nightRate} per night")];
+}
 $tabelle = '';
 foreach ($zeilen as [$k, $v]) {
     // Geschützte Leerzeichen: «CHF 40» oder «2 Personen» nie auseinanderreissen, Umbruch nur nach «·»

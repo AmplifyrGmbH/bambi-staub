@@ -13,7 +13,7 @@
   let TAX              = null;
   // CHF-Betrag: ganze Franken ohne, sonst mit Rappen (19.50)
   const chf = n => Number.isInteger(n) ? String(n) : n.toFixed(2);
-  const energyCost = nights => Math.round(nights * ENERGY_PER_NIGHT * 100) / 100;
+  const energyCost = nights => isFlat() ? 0 : Math.round(nights * ENERGY_PER_NIGHT * 100) / 100;
   const MONTHS     = 14; // Monate voraus
   const MOBILE_STEP = 3;  // Handy: so viele Monate pro Schritt
 
@@ -101,7 +101,11 @@
   }
 
   // ── Pricing helpers ────────────────────────────────────────────
+  // Rabattcode mit festem Preis pro Nacht (z. B. STAUBRABATT): keine Zusatzkosten
+  const isFlat = () => !!S.discountCode && S.discountType === 'night_rate';
+
   function nightPrice(dateStr) {
+    if (isFlat()) return S.discountValue;
     const p = cfg.pricing.find(p => dateStr >= p.from && dateStr <= p.to);
     return p ? p.price : null;
   }
@@ -452,6 +456,7 @@
         ${discountHTML}
         <div class="price-total"><span>Total (Anfrage)</span><span>CHF ${final}</span></div>
         <p class="price-note">Verbindlich nach Bestätigung per E-Mail.</p>
+        ${isFlat() ? `<p class="price-note">Mit diesem Code reinigen Sie das Chalet selbst und bringen Ihre Bettwäsche mit (und nehmen sie wieder mit).</p>` : ''}
         ${TAX ? `<p class="price-note price-note--tax">${`Nicht im Preis enthalten: Kurtaxe CHF ${TAX.adult}.– pro Person ab ${TAX.from_age} Jahren und Nacht (Zwischensaison die Hälfte), jünger gratis. Sie bezahlen sie vor Ort beim Tourismus-Büro Sörenberg.`}</p>` : ''}
       </div>`;
     $pricePreview.style.display = 'block';
@@ -462,17 +467,19 @@
   }
 
   function applyDiscount(total) {
-    if (!S.discountCode || S.discountValue === 0) return 0;
+    if (!S.discountCode || S.discountValue === 0 || isFlat()) return 0;
     if (S.discountType === 'percent') return Math.round(total * S.discountValue / 100);
     return Math.min(S.discountValue, total);
   }
 
   function getCleaningCost() {
+    if (isFlat()) return 0;
     const el = document.querySelector('[name="cleaning"]:checked');
     return el && el.value === 'yes' ? CLEANING_PRICE : 0;
   }
 
   function getLinenCost() {
+    if (isFlat()) return 0;
     const el = document.querySelector('[name="linen"]:checked');
     if (!el || el.value !== 'rent') return 0;
     const beds = parseInt(document.getElementById('field-linen-beds')?.value) || 0;
@@ -562,6 +569,26 @@
     }
   }
 
+  // Fester Nachtpreis: Endreinigung und Bettwäsche-Miete sind nicht wählbar, Hinweis anzeigen
+  function setFlatMode(on) {
+    const set = (name, val) => { const el = document.querySelector(`[name="${name}"][value="${val}"]`); if (el) el.checked = true; };
+    if (on) { set('cleaning', 'no'); set('linen', 'own'); }
+    document.querySelectorAll('[name="cleaning"][value="yes"], [name="linen"][value="rent"]').forEach(el => {
+      el.disabled = on;
+      const label = el.closest('label'); if (label) label.style.opacity = on ? '.45' : '';
+    });
+    const wrap = document.getElementById('linen-beds-wrap');
+    if (wrap && on) wrap.style.display = 'none';
+    let n = document.getElementById('flat-note');
+    if (on && !n) {
+      n = document.createElement('p'); n.id = 'flat-note'; n.className = 'form-note';
+      n.textContent = 'Mit diesem Code reinigen Sie das Chalet selbst und bringen Ihre Bettwäsche mit (und nehmen sie wieder mit).';
+      const res = document.getElementById('discount-result'); if (res) res.after(n);
+    }
+    if (!on && n) n.remove();
+    if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
+  }
+
   // ── Discount ───────────────────────────────────────────────────
   function bindDiscountBtn() {
     const btn    = document.getElementById('discount-check-btn');
@@ -589,16 +616,21 @@
             S.discountCode  = code;
             S.discountType  = data.type;
             S.discountValue = data.value;
-            S.discountLabel = data.type === 'percent'
+            S.discountLabel = data.type === 'night_rate'
+              ? 'CHF ' + data.value + ' pro Nacht, ohne Zusatzkosten'
+              : data.type === 'percent'
               ? data.value + '% Rabatt'
               : 'CHF ' + data.value + ' Rabatt';
             result.textContent = '\u2713 ' + S.discountLabel + ' angewendet';
             result.className   = 'discount-result discount-result--ok';
+            setFlatMode(isFlat());
             if (S.arrival && S.departure) updatePricePreview();
           } else {
             S.discountCode  = null;
             S.discountValue = 0;
             S.discountAmt   = 0;
+            S.discountType  = null;
+            setFlatMode(false);
             result.textContent = data.message || 'Ungültiger Code.';
             result.className   = 'discount-result discount-result--err';
             if (S.arrival && S.departure) updatePricePreview();
