@@ -174,7 +174,7 @@
         LINEN_PER_BED  = prices.linenPerBed;
         ENERGY_PER_NIGHT = prices.energyPerNight || 0;
         TAX            = prices.touristTax || null;
-        document.querySelectorAll('[data-price="cleaning"]').forEach(el => { el.textContent = `+CHF ${CLEANING_PRICE}`; });
+        document.querySelectorAll('[data-price="cleaning-amount"]').forEach(el => { el.textContent = `(CHF ${CLEANING_PRICE})`; });
         document.querySelectorAll('[data-price="linen"]').forEach(el => { el.textContent = `+CHF ${LINEN_PER_BED}/${el.dataset.unit}`; });
         S.booked  = data.bookings || [];
         S.loading = false;
@@ -472,10 +472,9 @@
     return Math.min(S.discountValue, total);
   }
 
+  // Endreinigung: ohne Familiencode immer im Preis, mit Code reinigen die Gäste selbst
   function getCleaningCost() {
-    if (isFlat()) return 0;
-    const el = document.querySelector('[name="cleaning"]:checked');
-    return el && el.value === 'yes' ? CLEANING_PRICE : 0;
+    return isFlat() ? 0 : CLEANING_PRICE;
   }
 
   function getLinenCost() {
@@ -542,12 +541,6 @@
         if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
       });
     }
-    // Endreinigung
-    document.querySelectorAll('[name="cleaning"]').forEach(r => {
-      r.addEventListener('change', () => {
-        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
-      });
-    });
   }
 
   function bindStickyBar() {
@@ -572,11 +565,13 @@
   // Fester Nachtpreis: Endreinigung und Bettwäsche-Miete sind nicht wählbar, Hinweis anzeigen
   function setFlatMode(on) {
     const set = (name, val) => { const el = document.querySelector(`[name="${name}"][value="${val}"]`); if (el) el.checked = true; };
-    if (on) { set('cleaning', 'no'); set('linen', 'own'); }
-    document.querySelectorAll('[name="cleaning"][value="yes"], [name="linen"][value="rent"]').forEach(el => {
+    if (on) set('linen', 'own');
+    document.querySelectorAll('[name="linen"][value="rent"]').forEach(el => {
       el.disabled = on;
       const label = el.closest('label'); if (label) label.style.opacity = on ? '.45' : '';
     });
+    const ci = document.getElementById('cleaning-info');
+    if (ci) ci.textContent = on ? 'You do the final cleaning yourself – with the family code there is no cleaning charge.' : `The final cleaning (CHF ${CLEANING_PRICE}) is included in the price.`;
     const wrap = document.getElementById('linen-beds-wrap');
     if (wrap && on) wrap.style.display = 'none';
     let n = document.getElementById('flat-note');

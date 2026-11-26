@@ -18,8 +18,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112605">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112605">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112606">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112606">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
@@ -162,19 +162,10 @@
 
           </div>
 
-          <!-- Endreinigung -->
+          <!-- Endreinigung: keine Auswahl, nur Hinweis (Text wechselt mit Familiencode) -->
           <div class="form-group form-group--full">
             <p class="form-label">Endreinigung</p>
-            <div class="form-radio-group">
-              <label class="form-radio-label">
-                <input type="radio" name="cleaning" value="yes" checked>
-                <span>Mit Endreinigung <span class="form-option-price" data-price="cleaning"></span></span>
-              </label>
-              <label class="form-radio-label">
-                <input type="radio" name="cleaning" value="no">
-                <span>Selbst reinigen</span>
-              </label>
-            </div>
+            <p class="form-note" id="cleaning-info" style="margin-top:0">Die Endreinigung <span data-price="cleaning-amount"></span> ist im Preis enthalten.</p>
           </div>
 
           <!-- Bettwäsche -->
@@ -281,8 +272,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112605" defer></script>
-<script src="/assets/js/booking-calendar.js?v=2026112605" defer></script>
+<script src="/assets/js/script.js?v=2026112606" defer></script>
+<script src="/assets/js/booking-calendar.js?v=2026112606" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>

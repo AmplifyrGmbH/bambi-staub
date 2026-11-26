@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112605">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112605">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112606">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112606">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
@@ -164,19 +164,10 @@
                   </div>
                 </div>
 
-                <!-- Cleaning -->
+                <!-- Final cleaning: no choice, info only (text changes with family code) -->
                 <div class="form-group form-group--full">
                   <p class="form-label">Final cleaning</p>
-                  <div class="form-radio-group">
-                    <label class="form-radio-label">
-                      <input type="radio" name="cleaning" value="yes" checked>
-                      <span>With cleaning <span class="form-option-price" data-price="cleaning"></span></span>
-                    </label>
-                    <label class="form-radio-label">
-                      <input type="radio" name="cleaning" value="no">
-                      <span>Self-clean</span>
-                    </label>
-                  </div>
+                  <p class="form-note" id="cleaning-info" style="margin-top:0">The final cleaning <span data-price="cleaning-amount"></span> is included in the price.</p>
                 </div>
 
                 <!-- Bed linen -->
@@ -283,8 +274,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112605" defer></script>
-<script src="/assets/js/booking-calendar-en.js?v=2026112605" defer></script>
+<script src="/assets/js/script.js?v=2026112606" defer></script>
+<script src="/assets/js/booking-calendar-en.js?v=2026112606" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>
