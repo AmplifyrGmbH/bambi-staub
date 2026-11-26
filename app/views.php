@@ -264,6 +264,10 @@ function felder_gast(array $w): string {
         . feld('davon Erwachsene (ab 16)', 'erwachsene', $w['erwachsene'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
         . feld('davon Kinder', 'kinder', $w['kinder'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
         . feld('Anreisezeit', 'anreisezeit', $w['anreisezeit'] ?? '', 'text', 'placeholder="z. B. ca. 16 Uhr"')
+        . '</div></fieldset>'
+        . '<fieldset><legend>Für Margrit</legend><div class="felder">'
+        . auswahl('Endreinigung nach der Abreise', 'reinigung', ['yes' => 'durch Margrit', 'no' => 'Gäste reinigen selber'], $w['reinigung'] ?? 'yes')
+        . feld('Betten beziehen vor der Anreise (Anzahl, 0 = selber)', 'bettwaesche', $w['bettwaesche'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
         . '</div></fieldset>';
 }
 
@@ -301,7 +305,7 @@ function seite_buchung(array $ich, array $b, string $fehler, ?array $w): void {
         . ($b['preis'] !== null ? '<div><dt>Preis</dt><dd>' . betrag($b['preis']) . '</dd></div>' : '')
         . ($b['rabattcode'] ? '<div><dt>Rabattcode</dt><dd>' . h($b['rabattcode']) . '</dd></div>' : '')
         . '<div><dt>Endreinigung</dt><dd>' . ($b['reinigung'] === 'no' ? 'durch die Gäste' : 'ja') . '</dd></div>'
-        . ($b['bettwaesche'] !== null && !$ih ? '<div><dt>Bettwäsche</dt><dd>' . ((int)$b['bettwaesche'] > 0 ? 'gemietet für ' . (int)$b['bettwaesche'] . ' Pers.' : 'eigene') . '</dd></div>' : '')
+        . ($b['bettwaesche'] !== null ? '<div><dt>Betten beziehen</dt><dd>' . ((int)$b['bettwaesche'] > 0 ? (int)$b['bettwaesche'] . ' (Margrit)' : 'selber') . '</dd></div>' : '')
         . ($b['ertrag_interhome'] !== null ? '<div><dt>Ertrag Interhome</dt><dd>' . betrag($b['ertrag_interhome']) . '</dd></div>' : '')
         . ($b['zahlung_faellig'] ? '<div><dt>Zahlung fällig</dt><dd>' . dmy($b['zahlung_faellig']) . ($b['bezahlt_am'] ? ' · bezahlt ' . dmy($b['bezahlt_am']) : '') . '</dd></div>' : '')
         . ($b['partner_id'] ? '<div><dt>Interhome</dt><dd><a href="/admin/buchung/' . (int)$b['partner_id'] . '">' . ($b['quelle'] === 'eigentuemer' ? 'gehört zur Direktbuchung' : 'als Eigentümerbuchung gesperrt ✓') . '</a></dd></div>' : '')
@@ -388,21 +392,21 @@ function seite_sperren(array $ich): void {
 // ── Reinigung (Margrit): nur Wechseltage, keine Namen/Kontakte/Preise ──
 function seite_reinigung(array $ich): void {
     $von = date('Y-m-d', strtotime('-7 days')); $bis = date('Y-m-d', strtotime('+60 days'));
-    $abreisen = q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND abreise BETWEEN ? AND ? AND COALESCE(reinigung, 'yes') != 'no' AND quelle != 'eigentuemer' ORDER BY abreise", [$von, $bis])->fetchAll();
+    $abreisen = q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND abreise BETWEEN ? AND ? AND COALESCE(reinigung, 'yes') != 'no' AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) ORDER BY abreise", [$von, $bis])->fetchAll();
     $karten = '';
     foreach ($abreisen as $b) {
         if ($b['abreise'] < heute() && $b['reinigung_erledigt_am']) continue;   // Erledigtes aus der Vergangenheit ausblenden
-        $naechste = q1("SELECT * FROM buchung WHERE status = 'bestaetigt' AND anreise >= ? AND id != ? ORDER BY anreise LIMIT 1", [$b['abreise'], $b['id']]);
-        $gleich = $naechste && $naechste['anreise'] === $b['abreise'];
+        $naechste = q1("SELECT * FROM buchung WHERE status = 'bestaetigt' AND anreise >= ? AND id != ? AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) ORDER BY anreise LIMIT 1", [$b['abreise'], $b['id']]);
+        $gleich = $naechste && $naechste['anreise'] <= date('Y-m-d', strtotime($b['abreise'] . ' +1 day'));
         $erledigt = (bool)$b['reinigung_erledigt_am'];
         $karten .= '<section class="karte reinigung' . ($erledigt ? ' erledigt' : '') . ($gleich ? ' eilig' : '') . '">'
             . '<h2>' . ($b['abreise'] === heute() ? 'Heute, ' : '') . wt($b['abreise']) . ' ' . dmy($b['abreise']) . '</h2>'
             . '<ul>'
             . '<li>Abreise bis ' . zeiten($b)['aus'] . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' Personen waren da' : '') . '</li>'
             . ($naechste
-                ? '<li>' . ($gleich ? '<b>Neue Gäste kommen am selben Tag ab ' . zeiten($naechste)['ein'] . '</b>' : 'Nächste Anreise: ' . wt($naechste['anreise']) . ' ' . dmy($naechste['anreise']))
+                ? '<li>' . ($gleich ? '<b>Neue Gäste kommen ' . ($naechste['anreise'] === $b['abreise'] ? 'am selben Tag ab ' . zeiten($naechste)['ein'] : 'am nächsten Tag') . '</b>' : 'Nächste Anreise: ' . wt($naechste['anreise']) . ' ' . dmy($naechste['anreise']))
                   . ($naechste['personen'] ? ' · ' . (int)$naechste['personen'] . ' Personen' : '') . '</li>'
-                  . ((int)$naechste['bettwaesche'] > 0 ? '<li>Bettwäsche bereitlegen für ' . (int)$naechste['bettwaesche'] . ' Personen</li>' : '')
+                  . ((int)$naechste['bettwaesche'] > 0 ? '<li><b>' . (int)$naechste['bettwaesche'] . ' Betten beziehen</b></li>' : ($naechste['bettwaesche'] !== null ? '<li>Betten beziehen die Gäste selber</li>' : ''))
                 : '<li>Danach noch keine Anreise eingetragen</li>')
             . '</ul>'
             . ($b['notiz_reinigung'] ? '<p class="notiz">' . nl2br(h($b['notiz_reinigung'])) . '</p>' : '')
@@ -413,7 +417,7 @@ function seite_reinigung(array $ich): void {
             . '</form></section>';
     }
     layout($ich, 'Reinigung', 'reinigung', '<h1>Reinigung</h1>'
-        . '<p class="klein">Wechseltage der nächsten 60 Tage. Grün = erledigt, orange = am selben Tag kommen neue Gäste.'
+        . '<p class="klein">Wechseltage der nächsten 60 Tage. Grün = erledigt, orange = am selben oder am nächsten Tag kommen neue Gäste.'
         . (cfg('ical_feed_token') ? ' <a href="webcal://' . h(parse_url(SITE_URL, PHP_URL_HOST)) . '/admin/ical/reinigung?token=' . h(rawurlencode((string)cfg('ical_feed_token'))) . '">Im Handy-Kalender abonnieren</a>' : '') . '</p>'
         . '<div class="raster">' . ($karten ?: '<p class="leer">Keine Reinigung geplant.</p>') . '</div>'
         . '<form method="post" action="/admin/reinigung/meldung" class="formular karte">' . csrf_feld()
@@ -451,6 +455,7 @@ function aufgaben_liste(): array {
         $a[] = [$link($b), 'Fehlt im Interhome-Kalender: storniert?', $unter($b)];
     }
     foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND quelle IN ('website','manuell') AND partner_id IS NULL AND abreise >= ? ORDER BY anreise", [$heute]) as $b) {
+        if (in_interhome_gesperrt($b)) continue;
         if (!$b['ih_eingetragen_am']) $a[] = [$link($b), 'Im Interhome-Portal als Eigentümerbuchung eintragen', $unter($b)];
         elseif (strtotime($b['ih_eingetragen_am']) < time() - 86400) $a[] = [$link($b), 'Eigentümerbuchung fehlt noch im Interhome-Kalender', $unter($b)];
     }
@@ -483,7 +488,7 @@ function buchung_aktionen(array $b): string {
             $x[] = $f('/bezahlt', '<label class="kompakt">Zahlung eingegangen am<input type="date" name="datum" value="' . heute() . '" max="' . heute() . '"></label><button type="submit" class="knopf">Bezahlt</button>');
             $x[] = $l('/mail/erinnerung', 'Zahlungserinnerung …');
         }
-        if (!$b['partner_id'] && !$b['ih_eingetragen_am']) $x[] = $f('/ih-eingetragen', '<button type="submit" class="knopf hell">In Interhome eingetragen</button>');
+        if (!$b['partner_id'] && !$b['ih_eingetragen_am'] && !in_interhome_gesperrt($b)) $x[] = $f('/ih-eingetragen', '<button type="submit" class="knopf hell">In Interhome eingetragen</button>');
     }
     if ($b['status'] === 'bestaetigt' && $b['quelle'] !== 'eigentuemer') {
         if ($b['quelle'] === 'interhome') $x[] = $l('/angaben', 'Angaben eintragen', !fehlende_angaben($b));
@@ -495,7 +500,7 @@ function buchung_aktionen(array $b): string {
     }
     if ($b['status'] === 'bestaetigt' && $direkt) $x[] = $l('/mail/storno', 'Stornieren …');
     return $x ? '<section class="karte"><h2>Aktionen</h2><div class="aktionen">' . implode('', $x) . '</div>'
-        . ($b['status'] === 'bestaetigt' && $direkt && !$b['partner_id'] ? '<p class="klein">Interhome-Sperre: bitte im Interhome-Portal als Eigentümerbuchung ' . dmy($b['anreise']) . '–' . dmy($b['abreise']) . ' eintragen. Der Abgleich erkennt sie dann von selbst.</p>' : '')
+        . ($b['status'] === 'bestaetigt' && $direkt && !$b['partner_id'] && !in_interhome_gesperrt($b) ? '<p class="klein">Interhome-Sperre: bitte im Interhome-Portal als Eigentümerbuchung ' . dmy($b['anreise']) . '–' . dmy($b['abreise']) . ' eintragen. Der Abgleich erkennt sie dann von selbst.</p>' : '')
         . '</section>' : '';
 }
 
@@ -683,4 +688,9 @@ function seite_geld(array $ich): void {
         . '</div><p class="klein">Gezählt nach Anreisedatum. Der Interhome-Ertrag kommt aus den Interhome-Mails (Buchung, Abrechnung) oder wird bei der Buchung von Hand eingetragen.</p></section>'
         . '<section class="karte"><h2>Offene Zahlungen</h2><div class="liste">' . ($offen ?: '<p class="leer">Keine.</p>') . '</div></section>'
         . '<section class="karte"><h2>Pro Monat</h2><div class="tabelle"><table><thead><tr><th>Monat</th><th>Nächte direkt</th><th>Nächte Interhome</th><th>Nächte Eigentümer</th><th>Direkt CHF</th><th>Interhome CHF</th></tr></thead><tbody>' . $zeilen . '</tbody></table></div></section>');
+}
+
+/* Deckt eine Sperre aus dem Interhome-Kalender den Zeitraum ganz ab? Dann ist in Interhome nichts mehr einzutragen. */
+function in_interhome_gesperrt(array $b): bool {
+    return (bool)qv("SELECT 1 FROM sperre WHERE quelle = 'interhome' AND von <= ? AND bis >= ?", [$b['anreise'], $b['abreise']]);
 }

@@ -337,7 +337,10 @@ function formular_buchung(array $p, ?array $alt): array|string {
         'anreisezeit' => $txt('anreisezeit', 40), 'notiz' => $txt('notiz', 4000), 'notiz_reinigung' => $txt('notiz_reinigung', 1000),
         'bezahlt_am' => $txt('bezahlt_am', 10),
         'sprache' => ($p['sprache'] ?? 'de') === 'en' ? 'en' : 'de',
+        'reinigung' => ($p['reinigung'] ?? 'yes') === 'no' ? 'no' : 'yes',
+        'bettwaesche' => $zahl('bettwaesche'),
     ];
+    if ($f['bettwaesche'] !== null && $f['bettwaesche'] > 4) return 'Höchstens 4 Betten.';
     if ($ih) { $e = trim(str_replace(['’', "'", ' ', 'CHF'], '', (string)($p['ertrag_interhome'] ?? ''))); $f['ertrag_interhome'] = $e === '' ? null : round((float)$e, 2); }
     if ($f['email'] !== null && !filter_var($f['email'], FILTER_VALIDATE_EMAIL)) return 'Die E-Mail-Adresse ist ungültig.';
     if ($f['bezahlt_am'] !== null && !datum_ok($f['bezahlt_am'])) return 'Bezahlt am: ungültiges Datum.';
@@ -348,10 +351,11 @@ function formular_buchung(array $p, ?array $alt): array|string {
         $f['status'] = array_key_exists((string)($p['status'] ?? ''), STATUS) ? (string)$p['status'] : 'anfrage';
         $preis = trim(str_replace(['’', "'", ' ', 'CHF'], '', (string)($p['preis'] ?? '')));
         $f['preis'] = $preis === '' ? null : round((float)$preis, 2);
-        if ($f['status'] === 'bestaetigt' && ($k = konflikte($f['anreise'], $f['abreise'], $alt['id'] ?? null))) {
+        // Abgelehnt wird nur bei Überschneidung mit Buchungen; Sperren (oft Familienaufenthalte in Interhome) zeigt die Detailseite als Hinweis
+        if ($f['status'] === 'bestaetigt' && ($k = konflikte($f['anreise'], $f['abreise'], $alt['id'] ?? null, true))) {
             return 'Bestätigen nicht möglich, der Zeitraum überschneidet sich mit: ' . implode(', ', array_map(fn($x) => $x['text'], $k));
         }
-        if (!$alt) { $f['quelle'] = 'manuell'; $f['reinigung'] = 'yes'; }
+        if (!$alt) $f['quelle'] = 'manuell';
     }
     return $f;
 }
@@ -359,14 +363,15 @@ function formular_buchung(array $p, ?array $alt): array|string {
 function feldname(string $k): string {
     return ['name' => 'Name', 'email' => 'E-Mail', 'telefon' => 'Telefon', 'adresse' => 'Adresse', 'personen' => 'Personen', 'erwachsene' => 'Erwachsene',
         'kinder' => 'Kinder', 'anreisezeit' => 'Anreisezeit', 'notiz' => 'Notiz', 'notiz_reinigung' => 'Notiz Reinigung', 'bezahlt_am' => 'Bezahlt am',
-        'anreise' => 'Anreise', 'abreise' => 'Abreise', 'status' => 'Status', 'preis' => 'Preis', 'sprache' => 'Sprache', 'ertrag_interhome' => 'Ertrag Interhome'][$k] ?? $k;
+        'anreise' => 'Anreise', 'abreise' => 'Abreise', 'status' => 'Status', 'preis' => 'Preis', 'sprache' => 'Sprache', 'ertrag_interhome' => 'Ertrag Interhome', 'reinigung' => 'Endreinigung', 'bettwaesche' => 'Betten beziehen'][$k] ?? $k;
 }
 
 /* Überschneidungen mit bestätigten Buchungen und Sperren (Ende exklusiv). */
 function konflikte(string $von, string $bis, ?int $ohneId, bool $nurBuchungen = false): array {
     $k = [];
-    // Eigentümerbuchungen aus Interhome sind meist unsere eigenen Direktbuchungen (dort zum Sperren eingetragen): kein Konflikt.
-    foreach (q("SELECT id, nummer, name, anreise, abreise FROM buchung WHERE status = 'bestaetigt' AND quelle != 'eigentuemer' AND anreise < ? AND abreise > ? AND id != ?", [$bis, $von, $ohneId ?? 0]) as $b) {
+    // Eine Eigentümerbuchung mit genau denselben Daten ist die Interhome-Sperre dieser Buchung selbst: kein Konflikt.
+    foreach (q("SELECT id, nummer, name, anreise, abreise FROM buchung WHERE status = 'bestaetigt' AND anreise < ? AND abreise > ? AND id != ?
+                AND NOT (quelle = 'eigentuemer' AND (partner_id IS NOT NULL OR (anreise = ? AND abreise = ?)))", [$bis, $von, $ohneId ?? 0, $von, $bis]) as $b) {
         $k[] = ['text' => ($b['name'] ?: $b['nummer']) . ' (' . dm($b['anreise']) . '–' . dm($b['abreise']) . ')', 'id' => $b['id']];
     }
     if (!$nurBuchungen) foreach (q('SELECT von, bis, grund FROM sperre WHERE von < ? AND bis > ?', [$bis, $von]) as $s) {
@@ -450,10 +455,10 @@ function ical_feed(string $art): string {
     $ev = [];
     $ab = date('Y-m-d', strtotime('-30 days'));
     if ($art === 'reinigung') {
-        foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND quelle != 'eigentuemer' AND COALESCE(reinigung, 'yes') != 'no' AND abreise >= ? ORDER BY abreise", [$ab]) as $b) {
-            $n = q1("SELECT * FROM buchung WHERE status = 'bestaetigt' AND anreise >= ? AND id != ? ORDER BY anreise LIMIT 1", [$b['abreise'], $b['id']]);
-            $gleich = $n && $n['anreise'] === $b['abreise'];
-            $desc = 'Abreise bis ' . zeiten($b)['aus'] . "\n" . ($n ? ($gleich ? 'Neue Gäste am selben Tag ab ' . zeiten($n)['ein'] : 'Nächste Anreise ' . dmy($n['anreise'])) . ($n['personen'] ? ', ' . $n['personen'] . ' Personen' : '') . ((int)$n['bettwaesche'] > 0 ? "\nBettwäsche für " . (int)$n['bettwaesche'] . ' Personen' : '') : 'Danach keine Anreise eingetragen')
+        foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) AND COALESCE(reinigung, 'yes') != 'no' AND abreise >= ? ORDER BY abreise", [$ab]) as $b) {
+            $n = q1("SELECT * FROM buchung WHERE status = 'bestaetigt' AND anreise >= ? AND id != ? AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) ORDER BY anreise LIMIT 1", [$b['abreise'], $b['id']]);
+            $gleich = $n && $n['anreise'] <= date('Y-m-d', strtotime($b['abreise'] . ' +1 day'));
+            $desc = 'Abreise bis ' . zeiten($b)['aus'] . "\n" . ($n ? ($gleich ? 'Neue Gäste ' . ($n['anreise'] === $b['abreise'] ? 'am selben Tag ab ' . zeiten($n)['ein'] : 'am nächsten Tag') : 'Nächste Anreise ' . dmy($n['anreise'])) . ($n['personen'] ? ', ' . $n['personen'] . ' Personen' : '') . ((int)$n['bettwaesche'] > 0 ? "\n" . (int)$n['bettwaesche'] . ' Betten beziehen' : ($n['bettwaesche'] !== null ? "\nBetten beziehen die Gäste selber" : '')) : 'Danach keine Anreise eingetragen')
                 . ($b['notiz_reinigung'] ? "\n" . $b['notiz_reinigung'] : '');
             $ev[] = ['uid' => 'reinigung-' . $b['id'], 'von' => $b['abreise'], 'bis' => date('Y-m-d', strtotime($b['abreise'] . ' +1 day')), 'titel' => 'Reinigung Chalet Bambi' . ($gleich ? ' (Wechsel)' : ''), 'text' => $desc];
         }

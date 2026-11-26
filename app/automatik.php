@@ -16,7 +16,7 @@ const CODE_TAGE_VORHER = 3;
 function code_hindernis(array $b): ?string {
     if ($b['status'] !== 'bestaetigt' || $b['quelle'] === 'eigentuemer' || $b['code_gesendet_am']) return null;
     if (ist_direkt($b) && !$b['bezahlt_am'] && (float)$b['preis'] > 0) return 'Zahlung offen: Code zurückgehalten';
-    if (!$b['email']) return 'E-Mail fehlt für die Code-Mail';
+    if (!$b['email']) return $b['quelle'] === 'manuell' ? null : 'E-Mail fehlt für die Code-Mail';   // von Hand erfasst (Familie, Bekannte): Code geht persönlich
     if (einst('tuercode') === '') return 'Türcode fehlt in den Einstellungen';
     return null;
 }
