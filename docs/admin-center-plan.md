@@ -1,6 +1,13 @@
 # Admin-Center Chalet Bambi – Umsetzungsplan
 
-Stand: 26.11.2026 · Status: Entwurf zur Freigabe
+Stand: 26.11.2026 · Status: Etappe 0 und 1 umgesetzt (live unter /admin)
+
+Umsetzungsnotizen Etappe 0/1:
+- Hostpoint läuft mit PHP 8.3 (nicht 8.5), die IMAP-Erweiterung ist vorhanden. SQLite liegt in `bambi-data/admin.sqlite`, Sicherungen täglich in `bambi-data/sicherungen/`.
+- Zugangsdaten (`config/admin.php`) schreibt der Deploy aus dem GitHub-Secret `BAMBI_ADMIN_CONFIG` (base64). Nach einer Änderung muss das Secret neu gesetzt werden: `base64 -i config/admin.php | gh secret set BAMBI_ADMIN_CONFIG`.
+- Interhome gibt allen Sperren dieselbe UID. Darum gilt für Sperren der Schlüssel UID + Daten.
+- Website und Formular lesen die Belegung aus der Datenbank. Fällt sie aus, greift der alte Weg (`app/availability_legacy.php`).
+- Cron-Adresse für den späteren Mail-Abruf: `/admin/cron?token=…` (Token in `config/admin.php`). Bis dahin gleicht jeder Aufruf von Website oder Admin-Center höchstens alle 30 Minuten ab.
 Festgelegt am 26.11.:
 - Konten: ein Admin-Konto (alles) und ein Konto für die Putzfrau (nur Reinigungsansicht).
 - Das Postfach info@bambi-staub.ch wird eingebunden, ausgelesen und ausgewertet.

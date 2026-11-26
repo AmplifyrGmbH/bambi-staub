@@ -16,6 +16,10 @@ RewriteRule ^gaestebuch/?$ /bambi#gaestebuch [R=301,L,NE]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^((?:en/)?[a-z0-9_-]+)/$ /$1 [R=301,L]
 
+# Admin-Center: alles unter /admin geht an admin/index.php (ausser admin.css/admin.js)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin(/.*)?$ admin/index.php [L,QSA]
+
 # /en and /en/ → en/index.html (before directory check, en/ is a real dir)
 RewriteRule ^en/?$ en/index.html [L,NC]
 
@@ -38,7 +42,7 @@ RewriteRule ^([a-z0-9_-]+)/?$ $1.html [L,NC]
 <FilesMatch "(^\.|\.(md|py|sh|ini|jsonl|rtf|log|bak)$|^(router|server)\.(php|py)$)">
   Require all denied
 </FilesMatch>
-RedirectMatch 404 ^/(config|cache|\.github)(/|$)
+RedirectMatch 404 ^/(config|cache|app|docs|\.github)(/|$)
 
 # Security headers
 <IfModule mod_headers.c>

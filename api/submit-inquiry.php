@@ -88,10 +88,22 @@ if ($nights < $minNights) respond(false, $minNights > 3
     : t('Mindestaufenthalt: 3 Nächte.', 'Minimum stay: 3 nights.'), [], 422);
 
 // ── Verfügbarkeit serverseitig prüfen ─────────────────────────
+// Quelle: Datenbank des Admin-Centers (Interhome, bestätigte Direktbuchungen, Sperren). Rückfall: alter Weg über den iCal.
 $cacheFile = __DIR__ . '/../cache/availability.json';
 $bookings  = [];
+$ausDb     = false;
+try {
+    require_once __DIR__ . '/../app/sync.php';
+    try { sync_interhome(); } catch (Throwable $e) { error_log('bambi sync: ' . $e->getMessage()); }
+    $bookings = belegungen(date('Y-m-d', strtotime('-1 day')));
+    $ausDb = true;
+} catch (Throwable $e) {
+    error_log('bambi admin: ' . $e->getMessage());
+}
 
-if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 3600) {
+if ($ausDb) {
+    // fertig
+} elseif (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 3600) {
     $cached   = json_decode(file_get_contents($cacheFile), true);
     $bookings = $cached['bookings'] ?? [];
 } else {
@@ -122,9 +134,9 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 3600) {
     }
 }
 
-// Manuelle Sperrtage einbeziehen
+// Manuelle Sperrtage einbeziehen (nur im Rückfall; sonst sind sie in der Datenbank)
 $manualFile = __DIR__ . '/../config/manual-blocks.php';
-if (file_exists($manualFile)) {
+if (!$ausDb && file_exists($manualFile)) {
     foreach (require $manualFile as $block) {
         if (!empty($block['start']) && !empty($block['end'])) {
             $bookings[] = ['start' => $block['start'], 'end' => $block['end']];
@@ -254,6 +266,19 @@ function naechsteNummer(string $dir): ?int {
     return $nr;
 }
 $ticket = 'BAM-' . (naechsteNummer($dir) ?? date('ymdHi'));
+// Ins Admin-Center übernehmen (Fehler hier dürfen die Anfrage nie blockieren)
+$adminLink = null;
+try {
+    if (!function_exists('buchung_anlegen')) throw new RuntimeException('Admin-Center nicht geladen');
+    $adminId = buchung_anlegen(['nummer' => $ticket, 'quelle' => 'website', 'status' => 'anfrage', 'anreise' => $arrival, 'abreise' => $departure,
+        'personen' => $persons, 'name' => $name, 'email' => $email, 'telefon' => $phone, 'adresse' => $adresse, 'sprache' => $en ? 'en' : 'de',
+        'preis' => $finalPrice, 'rabattcode' => $discountCode ?: null, 'reinigung' => $cleaning, 'bettwaesche' => $linen === 'rent' ? $linenBeds : 0,
+        'nachricht' => $message ?: null], 'website');
+    $adminLink = SITE_URL . '/admin/buchung/' . $adminId;
+} catch (Throwable $e) {
+    error_log('bambi admin: ' . $e->getMessage());
+}
+
 $von    = date('d.m.Y', $arrivalTs);
 $bis    = date('d.m.Y', $departureTs);
 
@@ -292,6 +317,8 @@ $body .= "Bettwäsche:   " . ($linen === 'rent' ? "Mieten – {$linenBeds} " . (
 if ($message !== '') {
     $body .= "\nNACHRICHT\n{$message}\n";
 }
+
+if ($adminLink) $body .= "\nIm Admin-Center öffnen: {$adminLink}\n";
 
 $betreff = "Buchungsanfrage {$von} bis {$bis} – {$name} ({$ticket})";
 
@@ -360,7 +387,8 @@ $internHtml = '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta 
     . '</tr></table>'
     // Knöpfe
     . '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0 0;"><tr>'
-    . $knopf($antwortLink, 'Gast antworten')
+    . ($adminLink ? $knopf($adminLink, 'Im Admin-Center öffnen') : '')
+    . $knopf($antwortLink, 'Gast antworten', (bool)$adminLink)
     . ($phone !== '' ? $knopf('tel:' . preg_replace('/[^\d+]/', '', $phone), 'Anrufen', true) : '')
     . '</tr></table>'
     . $iBlock('Kontakt', $kontaktRows)
