@@ -7,6 +7,10 @@ Festgelegt am 26.11.:
 - Zahlungen erfasst der Admin von Hand, es gibt keine Bankanbindung.
 - Mit der Bestätigung gehen alle Infos an den Gast. Nur der Code wird 3 Tage vor Anreise verschickt.
 - Personen und Kontakt bei Interhome-Buchungen trägt der Admin meist von Hand ein, weil Interhome sie erst kurz vor Anreise mitteilt.
+- Der Code ist fest und im Admin-Center hinterlegt. Er wird nur verschickt, wenn die Buchung als bezahlt markiert ist.
+- Interhome-Gäste bekommen Infos und Code von uns, sobald ihre E-Mail eingetragen ist.
+- Direktbuchungen zahlen 100 % im Voraus per Überweisung.
+- Check-in ab 15:00, Check-out bis 12:00 (wie im Guide).
 
 ## 1. Ziel
 
@@ -59,7 +63,7 @@ Legende:
 | 6 | Abgleich Interhome | ⚙️ | Der iCal-Sync findet ein `Ownerbooking` mit denselben Daten und verknüpft es. Die Aufgabe ist erledigt. Fehlt es nach 24 Std., kommt eine Erinnerung | Bestätigt ✓ Interhome |
 | 7 | Gast antwortet per Mail | ⚙️ | Die Mail-Auswertung ordnet die Antwort über die BAM-Nummer im Betreff oder die Absenderadresse der Buchung zu. Fragen erscheinen als Aufgabe, mit Antwortentwurf (KI) | – |
 | 8 | Zahlung | 👤 | **Manuell:** Der Admin sieht den Zahlungseingang auf dem Konto und klickt «Bezahlt». Das Admin-Center zeigt nur offene Beträge und das Fälligkeitsdatum. Eine Erinnerung verschickt der Admin per Knopf, nicht automatisch. Keine Bankanbindung | **Bezahlt** |
-| 9 | 3 Tage vor Anreise | ⚙️ ✉️ | **Code-Mail:** Code + kurze Erinnerung (Anreisezeit, Guide-Link). Ist die Buchung noch nicht als bezahlt markiert, wird nichts gesendet. Stattdessen erscheint eine Aufgabe (siehe offene Fragen) | Bereit |
+| 9 | 3 Tage vor Anreise | ⚙️ ✉️ | **Code-Mail:** Code + kurze Erinnerung (Anreisezeit, Guide-Link). Ist die Buchung noch nicht als bezahlt markiert, wird nichts gesendet. Stattdessen erscheint eine Aufgabe «Zahlung prüfen, Code zurückgehalten» | Bereit |
 | 11 | Anreise / Aufenthalt | 👤 | Übersicht «Heute»: wer kommt, wann, wie viele | **Vor Ort** |
 | 12 | Abreise | ⚙️ | Wechseltag in der Übersicht. Endreinigung planen. Beim Familiencode reinigen die Gäste selbst, also kein Eintrag | Abgereist |
 | 13 | 1 Tag nach Abreise | ⚙️ ✉️ | Dank + Bitte um Google-Bewertung | Abgeschlossen |
@@ -78,7 +82,7 @@ Legende:
 | 5 | Admin informieren | ⚙️ | Kurze Mail an info@: «Neue Interhome-Buchung 30.01.–06.02., Fam. Baumgartner, 4 Pers.» | – |
 | 6 | Lücken ergänzen | 👤 | Interhome teilt Personen und Kontakt meist erst kurz vor Anreise mit. Bei der Buchung steht «Angaben fehlen», 7 Tage vor Anreise erscheint eine Aufgabe. Der Admin trägt sie von Hand ein (Schnellformular, auf dem Handy in 30 Sekunden). Enthält eine Interhome-Mail die Angaben doch, füllt die Auswertung sie selbst aus | Bestätigt |
 | 7 | Änderung | ⚙️ | Eine Interhome-Änderungsmail und/oder geänderte iCal-Daten passen die Buchung an. Der Verlauf zeigt vorher/nachher, an info@ geht ein Hinweis | Bestätigt |
-| 8 | Vor Anreise | ⚙️/👤 | Haben wir eine E-Mail des Gastes: ✉️ Infos + Code wie bei der Direktbuchung (Code 3 Tage vor Anreise). Sonst erscheint eine Aufgabe «Code und Guide-Link übermitteln» (Weg siehe offene Fragen) | Bereit |
+| 8 | Vor Anreise | ⚙️/👤 | Haben wir eine E-Mail des Gastes: ✉️ Infos + Code wie bei der Direktbuchung (Code 3 Tage vor Anreise). Fehlt die E-Mail 3 Tage vor Anreise, erscheint eine Aufgabe «E-Mail des Gastes eintragen». Bezahlt ist bei Interhome immer (Interhome kassiert) | Bereit |
 | 9 | Anreise / Abreise | 👤 | Übersicht «Heute» und Wechseltag mit Endreinigung (Interhome-Gäste zahlen sie über Interhome, also immer einplanen) | Vor Ort → Abgereist |
 | 10 | Nach Abreise | ⚙️ | Interhome fragt selbst nach einer Bewertung, wir schicken keine eigene Mail. Mit E-Mail-Adresse optional die Bitte um eine Google-Bewertung | Abgeschlossen |
 | 11 | Abrechnung | ⚙️ | Die monatliche Interhome-Abrechnung (Mail/PDF) wird ausgelesen. Der Auszahlungsbetrag wird den Buchungen zugeordnet | Abgerechnet |
@@ -179,9 +183,8 @@ Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und dana
 ## 12. Offene Punkte
 
 1. **Beispiel-Mails von Interhome:** je eine Buchung, Änderung, Storno und Monatsabrechnung, weitergeleitet oder als .eml (für Etappe 3)
-2. **Code:** fester Code oder pro Buchung neu? Wird er auch gesendet, wenn noch nicht bezahlt ist?
-3. **Interhome-Gäste:** Wer schickt ihnen Code und Guide (Interhome oder wir)?
-4. **Zahlung Direktbuchung:** Vorauskasse, Anzahlung oder vor Ort? Zahlungsfrist? IBAN für die Bestätigungsmail
-5. **Check-in/-out-Zeiten:** Interhome 16:00/10:00, Guide 15:00/12:00. Was gilt?
-6. **Endreinigung nach Interhome-Gästen:** Wer reinigt, und braucht diese Person die Wechseltage?
-7. **API-Schlüssel Anthropic** (optional, Etappe 3)
+2. **Vorauskasse:** Zahlungsfrist (Vorschlag: 30 Tage vor Anreise, bei kurzfristiger Buchung sofort), Kontoinhaber und IBAN für die Bestätigungsmail
+3. **Code:** Er wird im Admin-Center eingetragen, nicht im Repo.
+4. **Interhome-Inserat:** Dort stehen 16:00/10:00. An 15:00/12:00 anpassen lassen?
+5. **Endreinigung nach Interhome-Gästen:** Wer reinigt, und braucht diese Person die Wechseltage?
+6. **API-Schlüssel Anthropic** (optional, Etappe 3)
