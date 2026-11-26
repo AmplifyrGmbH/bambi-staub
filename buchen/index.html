@@ -18,29 +18,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112601">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112601">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112602">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112602">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
 
-  <!-- Buchungs-Konfiguration (Preise + Mindestaufenthalt) -->
+  <!-- Buchungs-Konfiguration (Mindestaufenthalt) -->
   <script>
     window.BOOKING_CONFIG = {
       minNights: 3,
       highSeason: { from: '01-15', to: '03-15', minNights: 7 }, // MM-TT, jedes Jahr
-      cleaning: { price: 80 },
-      linen:    { pricePerBed: 20 },
-      pricing: [
-        { from: '2026-08-18', to: '2026-08-31', price: 120, label: 'Hochsaison Sommer' },
-        { from: '2026-09-01', to: '2026-10-31', price: 110, label: 'Nebensaison Herbst' },
-        { from: '2026-11-01', to: '2026-12-20', price: 100, label: 'Nebensaison' },
-        { from: '2026-12-21', to: '2027-01-07', price: 170, label: 'Hochsaison Winter' },
-        { from: '2027-01-08', to: '2027-01-21', price: 120, label: 'Januarwochen' },
-        { from: '2027-01-22', to: '2027-03-07', price: 170, label: 'Hochsaison Winter' },
-        { from: '2027-03-08', to: '2027-04-30', price: 105, label: 'Nebensaison Frühling' },
-        { from: '2027-05-01', to: '2027-10-31', price: 120, label: 'Hochsaison Sommer' },
-      ],
+      // Preise: config/pricing.php (geladen über /api/pricing.php)
     };
   </script>
 </head>
@@ -168,7 +157,7 @@
             <div class="form-radio-group">
               <label class="form-radio-label">
                 <input type="radio" name="cleaning" value="yes" checked>
-                <span>Mit Endreinigung <span class="form-option-price">+CHF 80</span></span>
+                <span>Mit Endreinigung <span class="form-option-price" data-price="cleaning"></span></span>
               </label>
               <label class="form-radio-label">
                 <input type="radio" name="cleaning" value="no">
@@ -183,7 +172,7 @@
             <div class="form-radio-group">
               <label class="form-radio-label">
                 <input type="radio" name="linen" value="rent">
-                <span>Mieten <span class="form-option-price">+CHF 20/Bett</span></span>
+                <span>Mieten <span class="form-option-price" data-price="linen" data-unit="Bett"></span></span>
               </label>
               <label class="form-radio-label">
                 <input type="radio" name="linen" value="own" checked>
@@ -290,8 +279,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112601" defer></script>
-<script src="/assets/js/booking-calendar.js?v=2026112601" defer></script>
+<script src="/assets/js/script.js?v=2026112602" defer></script>
+<script src="/assets/js/booking-calendar.js?v=2026112602" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>

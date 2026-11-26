@@ -137,7 +137,10 @@ while ($cur < $departureTs) {
 }
 
 // ── Preis serverseitig berechnen ──────────────────────────────
-$periods   = require __DIR__ . '/../config/pricing.php';
+$priceCfg  = require __DIR__ . '/../config/pricing.php';
+$periods   = $priceCfg['periods'];
+$cleanPrice = (int)$priceCfg['cleaning'];
+$linenPrice = (int)$priceCfg['linen_per_bed'];
 $totalPrice = 0;
 $breakdown  = [];
 
@@ -191,8 +194,8 @@ if (!empty($discountCode)) {
     }
 }
 
-$cleaningCost = ($cleaning === 'yes') ? 80 : 0;
-$linenCost    = ($linen   === 'rent') ? ($linenBeds * 20) : 0;
+$cleaningCost = ($cleaning === 'yes') ? $cleanPrice : 0;
+$linenCost    = ($linen   === 'rent') ? ($linenBeds * $linenPrice) : 0;
 $finalPrice   = $totalPrice - $discountAmount + $cleaningCost + $linenCost;
 
 // ── E-Mail-Text zusammenbauen ─────────────────────────────────
@@ -243,7 +246,7 @@ if ($discountAmount > 0) {
 }
 $body .= "TOTAL:     CHF {$finalPrice}\n";
 $body .= "\nOPTIONEN\n";
-$body .= "Endreinigung: " . ($cleaning === 'yes' ? 'Ja (+CHF 80)' : 'Nein (selbst reinigen)') . "\n";
+$body .= "Endreinigung: " . ($cleaning === 'yes' ? "Ja (+CHF {$cleanPrice})" : 'Nein (selbst reinigen)') . "\n";
 $body .= "Bettwäsche:   " . ($linen === 'rent' ? "Mieten – {$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . " (+CHF {$linenCost})" : 'Eigene') . "\n";
 if ($message !== '') {
     $body .= "\nNACHRICHT\n{$message}\n";
@@ -274,7 +277,7 @@ foreach ($breakdown as $b) {
     $n = $b['nights'];
     $preisRows .= $iZeile($n . ($n > 1 ? ' Nächte' : ' Nacht') . ' × CHF ' . $b['price'], 'CHF ' . $x($b['subtotal']));
 }
-$preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? 'CHF 80' : 'selbst reinigen');
+$preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? "CHF {$cleanPrice}" : 'selbst reinigen');
 $preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '')) . " · CHF {$linenCost}" : 'eigene');
 if ($discountAmount > 0) $preisRows .= $iZeile('Rabatt', $x("{$discountLabel} · Code {$discountCode}") . "<br>– CHF {$discountAmount}");
 $preisRows .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">Total (berechnet)</td>'
@@ -354,7 +357,7 @@ $zeilen = [
     [t('Anreise', 'Arrival'), $von],
     [t('Abreise', 'Departure'), $bis],
     [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
-    [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . ' (CHF 80)' : t('Selbst reinigen', 'Self-cleaning')],
+    [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . " (CHF {$cleanPrice})" : t('Selbst reinigen', 'Self-cleaning')],
     [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " · CHF {$linenCost}" : t('Eigene', 'Own')],
 ];
 if ($discountAmount > 0) $zeilen[] = [t('Rabatt', 'Discount'), "– CHF {$discountAmount}"];

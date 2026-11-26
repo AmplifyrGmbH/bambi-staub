@@ -2,12 +2,13 @@
   'use strict';
 
   // ── Config (injected per inline-script in buchen/index.html) ──
-  const cfg            = window.BOOKING_CONFIG || { pricing: [], minNights: 3 };
+  const cfg            = Object.assign({ pricing: [], minNights: 3 }, window.BOOKING_CONFIG);
   const MIN_NIGHTS     = cfg.minNights || 3;
   // Hochsaison (Mitte Januar bis Mitte März, jedes Jahr): längerer Mindestaufenthalt
   const HS             = cfg.highSeason || { from: '01-15', to: '03-15', minNights: 7 };
-  const CLEANING_PRICE = (cfg.cleaning || {}).price || 80;
-  const LINEN_PER_BED  = (cfg.linen || {}).pricePerBed || 20;
+  // Preise kommen vom Server (config/pricing.php über /api/pricing.php)
+  let CLEANING_PRICE   = 0;
+  let LINEN_PER_BED    = 0;
   const MONTHS     = 14; // Monate voraus
   const MOBILE_STEP = 3;  // Handy: so viele Monate pro Schritt
 
@@ -153,12 +154,17 @@
 
   // ── Fetch availability ─────────────────────────────────────────
   function fetchAvailability() {
-    fetch('/api/availability.php')
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(data => {
+    const getJSON = url => fetch(url).then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+    Promise.all([getJSON('/api/availability.php'), getJSON('/api/pricing.php')])
+      .then(([data, prices]) => {
+        cfg.pricing    = prices.pricing || [];
+        CLEANING_PRICE = prices.cleaning;
+        LINEN_PER_BED  = prices.linenPerBed;
+        document.querySelectorAll('[data-price="cleaning"]').forEach(el => { el.textContent = `+CHF ${CLEANING_PRICE}`; });
+        document.querySelectorAll('[data-price="linen"]').forEach(el => { el.textContent = `+CHF ${LINEN_PER_BED}/${el.dataset.unit}`; });
         S.booked  = data.bookings || [];
         S.loading = false;
         renderCalendar();
@@ -404,7 +410,7 @@
     const breakdown = calcBreakdown(S.arrival, S.departure);
 
     if (total === null || breakdown === null) {
-      $pricePreview.innerHTML = '<div class="price-breakdown"><p class="price-note">Für diesen Zeitraum liegt kein Standardpreis vor – bitte direkt via info@bambi-staub.ch anfragen.</p></div>';
+      $pricePreview.innerHTML = '<div class="price-breakdown"><p class="price-note">No standard rate is available for these dates – please enquire directly at info@bambi-staub.ch.</p></div>';
       $pricePreview.style.display = 'block';
       return;
     }
@@ -423,8 +429,8 @@
     const cleaning = getCleaningCost();
     const linen    = getLinenCost();
     let extrasHTML = '';
-    if (cleaning > 0) extrasHTML += `<div class="price-line"><span>Endreinigung</span><span>CHF ${cleaning}</span></div>`;
-    if (linen > 0)    extrasHTML += `<div class="price-line"><span>Bettwäsche</span><span>CHF ${linen}</span></div>`;
+    if (cleaning > 0) extrasHTML += `<div class="price-line"><span>Final cleaning</span><span>CHF ${cleaning}</span></div>`;
+    if (linen > 0)    extrasHTML += `<div class="price-line"><span>Bed linen</span><span>CHF ${linen}</span></div>`;
 
     let discountHTML = '';
     if (S.discountAmt > 0) {
@@ -437,7 +443,7 @@
         <div class="price-lines">${linesHTML}${extrasHTML}</div>
         ${discountHTML}
         <div class="price-total"><span>Total (enquiry)</span><span>CHF ${final}</span></div>
-        <p class="price-note">Verbindlich nach Bestätigung per E-Mail.</p>
+        <p class="price-note">Binding once confirmed by email.</p>
       </div>`;
     $pricePreview.style.display = 'block';
   }
