@@ -6,6 +6,7 @@ site/
 
 # Booking – sensitive files (NIEMALS committen)
 config/interhome.php
+config/admin.php
 cache/*.json
 
 # Gutschein-Vorlage (13 MB, nicht auf den Server)

@@ -2,7 +2,7 @@
 
 Stand: 26.11.2026 · Status: Entwurf zur Freigabe
 Festgelegt am 26.11.:
-- Es gibt ein einziges Admin-Konto.
+- Konten: ein Admin-Konto (alles) und ein Konto für die Putzfrau (nur Reinigungsansicht).
 - Das Postfach info@bambi-staub.ch wird eingebunden, ausgelesen und ausgewertet.
 - Zahlungen erfasst der Admin von Hand, es gibt keine Bankanbindung.
 - Mit der Bestätigung gehen alle Infos an den Gast. Nur der Code wird 3 Tage vor Anreise verschickt.
@@ -41,7 +41,18 @@ Nicht Ziel: Online-Zahlung, Bewertungen auf der Website, Ersatz von Interhome.
 - **Server: Hostpoint.** Alles läuft im bestehenden PHP-Projekt. Es braucht keinen zweiten Server. Der Hetzner-Server springt nur ein, falls der Hostpoint-Cron nicht genügt.
 - **Datenbank: SQLite** in `bambi-data/admin.sqlite`, ausserhalb des Webroots. Eine Sicherung ist eine Dateikopie. Fehlt `pdo_sqlite`, nehmen wir MariaDB von Hostpoint mit demselben Code.
 - **Kein Framework.** Schlankes PHP mit eigenem Router, wenig JavaScript.
-- **Ein Admin-Konto.** Benutzer `admin`, Passwort mit `password_hash` (Argon2id). Der Verlauf hält trotzdem fest, was wann geändert wurde. Die Mail-Auswertung erscheint dort als eigener Absender.
+- **Zwei Konten:**
+  - **Admin:** sieht und ändert alles.
+  - **Reinigung (Putzfrau):** sieht nur ihre Ansicht, die Liste der Wechseltage mit:
+    - Abreise und nächste Anreise am selben Tag ja/nein
+    - Anzahl Personen
+    - Bettwäsche gemietet ja/nein
+    - Endreinigung ja/nein (beim Familiencode nein)
+    - Notiz «für die Reinigung»
+
+    Sie sieht keine Namen, Kontakte oder Preise. Sie kann «Reinigung erledigt» und eine Meldung (z. B. «Glühbirne Bad defekt») eintragen. Zusätzlich gibt es für sie ein Kalender-Abo mit den Wechseltagen. Ihre Anmeldung bleibt auf dem Handy 90 Tage aktiv.
+
+  Passwörter werden mit `password_hash` (Argon2id) gespeichert. Der Verlauf hält fest, wer was geändert hat (Admin, Reinigung, Sync, Mail-Auswertung).
 - **Postfach per IMAP.** PHP 8.4+ hat die alte `imap`-Erweiterung nicht mehr. Wir verwenden deshalb eine IMAP-Anbindung in reinem PHP (über Sockets, ohne Erweiterung). Das prüft Etappe 0.
 - **Handy zuerst.** Jede Ansicht gibt es als Liste und als Kalender.
 
@@ -65,7 +76,7 @@ Legende:
 | 8 | Zahlung | 👤 | **Manuell:** Der Admin sieht den Zahlungseingang auf dem Konto und klickt «Bezahlt». Das Admin-Center zeigt nur offene Beträge und das Fälligkeitsdatum. Eine Erinnerung verschickt der Admin per Knopf, nicht automatisch. Keine Bankanbindung | **Bezahlt** |
 | 9 | 3 Tage vor Anreise | ⚙️ ✉️ | **Code-Mail:** Code + kurze Erinnerung (Anreisezeit, Guide-Link). Ist die Buchung noch nicht als bezahlt markiert, wird nichts gesendet. Stattdessen erscheint eine Aufgabe «Zahlung prüfen, Code zurückgehalten» | Bereit |
 | 11 | Anreise / Aufenthalt | 👤 | Übersicht «Heute»: wer kommt, wann, wie viele | **Vor Ort** |
-| 12 | Abreise | ⚙️ | Wechseltag in der Übersicht. Endreinigung planen. Beim Familiencode reinigen die Gäste selbst, also kein Eintrag | Abgereist |
+| 12 | Abreise | ⚙️ | Wechseltag erscheint bei der Putzfrau. Beim Familiencode reinigen die Gäste selbst, also kein Eintrag | Abgereist |
 | 13 | 1 Tag nach Abreise | ⚙️ ✉️ | Dank + Bitte um Google-Bewertung | Abgeschlossen |
 | 14 | Archiv | ⚙️ | Einnahmen zählen für die Jahresauswertung. Gastdaten nach 2 Jahren anonymisiert (Rechnungen 10 Jahre aufbewahrt) | – |
 
@@ -83,7 +94,7 @@ Legende:
 | 6 | Lücken ergänzen | 👤 | Interhome teilt Personen und Kontakt meist erst kurz vor Anreise mit. Bei der Buchung steht «Angaben fehlen», 7 Tage vor Anreise erscheint eine Aufgabe. Der Admin trägt sie von Hand ein (Schnellformular, auf dem Handy in 30 Sekunden). Enthält eine Interhome-Mail die Angaben doch, füllt die Auswertung sie selbst aus | Bestätigt |
 | 7 | Änderung | ⚙️ | Eine Interhome-Änderungsmail und/oder geänderte iCal-Daten passen die Buchung an. Der Verlauf zeigt vorher/nachher, an info@ geht ein Hinweis | Bestätigt |
 | 8 | Vor Anreise | ⚙️/👤 | Haben wir eine E-Mail des Gastes: ✉️ Infos + Code wie bei der Direktbuchung (Code 3 Tage vor Anreise). Fehlt die E-Mail 3 Tage vor Anreise, erscheint eine Aufgabe «E-Mail des Gastes eintragen». Bezahlt ist bei Interhome immer (Interhome kassiert) | Bereit |
-| 9 | Anreise / Abreise | 👤 | Übersicht «Heute» und Wechseltag mit Endreinigung (Interhome-Gäste zahlen sie über Interhome, also immer einplanen) | Vor Ort → Abgereist |
+| 9 | Anreise / Abreise | 👤 | Übersicht «Heute». Der Wechseltag erscheint bei der Putzfrau (Endreinigung immer, Interhome-Gäste zahlen sie über Interhome) | Vor Ort → Abgereist |
 | 10 | Nach Abreise | ⚙️ | Interhome fragt selbst nach einer Bewertung, wir schicken keine eigene Mail. Mit E-Mail-Adresse optional die Bitte um eine Google-Bewertung | Abgeschlossen |
 | 11 | Abrechnung | ⚙️ | Die monatliche Interhome-Abrechnung (Mail/PDF) wird ausgelesen. Der Auszahlungsbetrag wird den Buchungen zugeordnet | Abgerechnet |
 | 12 | Archiv | ⚙️ | wie Direktbuchung | – |
@@ -94,7 +105,7 @@ Legende:
 
 ## 6. Mail-Auswertung
 
-**Postfach:** info@bambi-staub.ch (Hostpoint, IMAP). Laufen Interhome-Mails an eine andere Adresse, wird diese entweder als zweites Postfach angebunden oder an info@ weitergeleitet.
+**Postfach:** info@bambi-staub.ch (Hostpoint, IMAP). Die Anmeldung wurde am 26.11. getestet und funktioniert. **Im Postfach ist bisher keine einzige Interhome-Mail.** Interhome schreibt also an eine andere Adresse. Diese Adresse muss im Interhome-Eigentümerkonto auf info@bambi-staub.ch geändert werden, oder die Interhome-Mails werden automatisch an info@ weitergeleitet.
 
 **Grundsätze:**
 - Die Auswertung liest nur und löscht nie. Jede Mail wird genau einmal verarbeitet (IMAP-UID gespeichert) und im Postfach mit dem Schlagwort `bambi-verarbeitet` markiert.
@@ -161,7 +172,7 @@ bambi-data/     ausserhalb Webroot: admin.sqlite, Sicherungen, bisherige .jsonl
 | 1 | Login (ein Admin, 2FA), DB, iCal-Sync, Website-Anfragen in die DB (inkl. Import .jsonl), Liste + Kalender, Sperren, Website liest aus DB | 2–3 Tage | Alles an einem Ort |
 | 2 | **Direkt-Roadmap Schritte 1–6:** Annehmen/Ablehnen, Mailvorlagen, Aufgabe + Abgleich Interhome, Verlauf | 2 Tage | Direktbuchung in wenigen Klicks |
 | 3 | **Mail-Auswertung:** IMAP-Abruf, Regeln für Interhome-Mails, KI-Rückfallebene, Vorschläge, Posteingang-Ansicht, Gastantworten zuordnen | 3 Tage | Interhome-Roadmap Schritte 2–7 und Storno automatisch |
-| 4 | Gäste: Code-Mail 3 Tage vorher, Dankesmail, Schnellformular für Interhome-Angaben, Kalender-Abo, Übersicht «Heute» und Wechseltage | 2 Tage | Roadmaps Schritte 9–13 |
+| 4 | Gäste + Reinigung: Code-Mail 3 Tage vorher, Dankesmail, Schnellformular für Interhome-Angaben, Konto und Ansicht für die Putzfrau inkl. Kalender-Abo, Übersicht «Heute» | 2–3 Tage | Roadmaps Schritte 9–13 |
 | 5 | Geld: Zahlungen manuell erfassen, Interhome-Abrechnung auslesen, Jahresauswertung, Löschfristen | 1–2 Tage | Einnahmen im Überblick |
 
 Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und danach live mit einer Testbuchung.
@@ -173,7 +184,7 @@ Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und dana
 | Server | `imap.mail.hostpoint.ch` |
 | Port / Verschlüsselung | 993, SSL/TLS |
 | Benutzername | `info@bambi-staub.ch` (ganze Adresse) |
-| Passwort | Passwort des Postfachs |
+| Passwort | erhalten, liegt lokal in `config/admin.php` (nicht im Repo) |
 | Ordner | Posteingang. Falls Mail-Regeln Interhome-Mails in einen Unterordner verschieben, auch dessen Namen |
 
 - Das Passwort kommt nur in `config/admin.php` auf dem Server (gesperrt, nicht im Repo, nicht in Mails). Ich lege die Datei per FTP ab oder ihr tragt das Passwort selbst ein.
@@ -186,5 +197,6 @@ Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und dana
 2. **Vorauskasse:** Zahlungsfrist (Vorschlag: 30 Tage vor Anreise, bei kurzfristiger Buchung sofort), Kontoinhaber und IBAN für die Bestätigungsmail
 3. **Code:** Er wird im Admin-Center eingetragen, nicht im Repo.
 4. **Interhome-Inserat:** Dort stehen 16:00/10:00. An 15:00/12:00 anpassen lassen?
-5. **Endreinigung nach Interhome-Gästen:** Wer reinigt, und braucht diese Person die Wechseltage?
-6. **API-Schlüssel Anthropic** (optional, Etappe 3)
+5. **Interhome-Mails an info@:** Absenderadresse im Interhome-Konto ändern oder Weiterleitung einrichten (heute ist keine Interhome-Mail im Postfach)
+6. **Putzfrau:** Name und Sprache der Ansicht (DE). Hat sie ein Smartphone?
+7. **API-Schlüssel Anthropic** (Etappe 3), siehe Antwort im Chat
