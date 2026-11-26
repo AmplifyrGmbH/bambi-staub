@@ -51,7 +51,7 @@ $message       = text($_POST['message']      ?? '');
 $discountCode  = strtoupper(clean($_POST['discount_code'] ?? '', 40));
 $cleaning      = 'yes';   // Endreinigung immer im Preis; nur mit Familiencode (night_rate) reinigen die Gäste selbst
 $linen         = ($_POST['linen']    ?? 'own') === 'rent' ? 'rent' : 'own';
-$linenBeds     = max(0, min(4, (int)($_POST['linen_beds'] ?? 0)));
+$linenBeds     = $persons;   // Bettwäsche wird pro Person berechnet
 
 // ── Validierung ───────────────────────────────────────────────
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
@@ -273,14 +273,14 @@ $body .= $breakdownLines;
 if ($energyCost > 0) $body .= "Energiekosten ({$nights} × CHF {$energyPriceTxt}): CHF {$energyCost}\n";
 if ($nightRate !== null) $body .= "Rabattcode {$discountCode}: CHF {$nightRate} pro Nacht, ohne Zusatzkosten. Reinigung und Bettwäsche durch die Gäste.\n";
 if ($cleaningCost > 0) $body .= "Endreinigung:  CHF {$cleaningCost}\n";
-if ($linenCost    > 0) $body .= "Bettwäsche ({$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . "): CHF {$linenCost}\n";
+if ($linenCost    > 0) $body .= "Bettwäsche ({$linenBeds} " . ($linenBeds > 1 ? 'Personen' : 'Person') . "): CHF {$linenCost}\n";
 if ($discountAmount > 0) {
     $body .= "Rabatt ({$discountLabel}, Code {$discountCode}): –CHF {$discountAmount}\n";
 }
 $body .= "TOTAL:     CHF {$finalPrice}\n";
 $body .= "\nOPTIONEN\n";
 $body .= "Endreinigung: " . ($cleaning === 'yes' ? "inbegriffen (CHF {$cleanPrice})" : 'durch die Gäste (Familiencode)') . "\n";
-$body .= "Bettwäsche:   " . ($linen === 'rent' ? "Mieten – {$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . " (+CHF {$linenCost})" : 'Eigene') . "\n";
+$body .= "Bettwäsche:   " . ($linen === 'rent' ? "Mieten – {$linenBeds} " . ($linenBeds > 1 ? 'Personen' : 'Person') . " (+CHF {$linenCost})" : 'Eigene') . "\n";
 if ($message !== '') {
     $body .= "\nNACHRICHT\n{$message}\n";
 }
@@ -313,7 +313,7 @@ foreach ($breakdown as $b) {
 if ($energyCost > 0) $preisRows .= $iZeile('Energiekosten', $x("{$nights} × CHF {$energyPriceTxt}") . " · CHF {$energyCost}");
 if ($nightRate !== null) $preisRows .= $iZeile('Rabattcode', $x("{$discountCode} · CHF {$nightRate} pro Nacht, ohne Zusatzkosten"));
 $preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? "CHF {$cleanPrice}" : 'durch die Gäste (Familiencode)');
-$preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '')) . " · CHF {$linenCost}" : 'eigene');
+$preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} " . ($linenBeds > 1 ? 'Personen' : 'Person')) . " · CHF {$linenCost}" : 'eigene');
 if ($discountAmount > 0) $preisRows .= $iZeile('Rabatt', $x("{$discountLabel} · Code {$discountCode}") . "<br>– CHF {$discountAmount}");
 $preisRows .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">Total (berechnet)</td>'
     . '<td align="right" style="padding:14px 0 0;' . $serif . 'color:#2D3E33;font-size:22px;">CHF ' . $x($finalPrice) . '</td></tr>';
@@ -393,7 +393,7 @@ $zeilen = [
     [t('Abreise', 'Departure'), $bis],
     [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
     [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Inbegriffen', 'Included') . " (CHF {$cleanPrice})" : t('Selbst reinigen', 'Self-cleaning')],
-    [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " · CHF {$linenCost}" : t('Eigene', 'Own')],
+    [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . ($linenBeds > 1 ? t(' Personen', ' guests') : t(' Person', ' guest')) . " · CHF {$linenCost}" : t('Eigene', 'Own')],
 ];
 if ($discountAmount > 0) $zeilen[] = [t('Rabatt', 'Discount'), "– CHF {$discountAmount}"];
 if ($energyCost > 0) array_splice($zeilen, 4, 0, [[t('Energiekosten', 'Energy costs'), "CHF {$energyCost}"]]);

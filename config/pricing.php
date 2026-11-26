@@ -5,7 +5,7 @@
 return [
     // Endreinigung pauschal
     'cleaning'      => 98,
-    // Bettwäsche pro Bett
+    // Bettwäsche pro Person
     'linen_per_bed' => 20,
     // Energiekosten pro Nacht, immer im Preis
     'energy_per_night' => 6.5,

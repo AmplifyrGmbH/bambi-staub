@@ -481,8 +481,9 @@
     if (isFlat()) return 0;
     const el = document.querySelector('[name="linen"]:checked');
     if (!el || el.value !== 'rent') return 0;
-    const beds = parseInt(document.getElementById('field-linen-beds')?.value) || 0;
-    return beds * LINEN_PER_BED;
+    // Bettwäsche pro Person: Anzahl aus dem Feld «Anzahl Personen»
+    const persons = Math.max(0, Math.min(4, parseInt(document.getElementById('field-persons')?.value) || 0));
+    return persons * LINEN_PER_BED;
   }
 
   function getExtrasCost() {
@@ -526,21 +527,11 @@
   }
 
   function bindExtras() {
-    // Bettwäsche: Betten-Anzahl ein-/ausblenden
-    document.querySelectorAll('[name="linen"]').forEach(r => {
-      r.addEventListener('change', () => {
-        const wrap = document.getElementById('linen-beds-wrap');
-        if (wrap) wrap.style.display = r.value === 'rent' ? 'block' : 'none';
-        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
-      });
-    });
-    // Betten-Anzahl geändert
-    const bedsInput = document.getElementById('field-linen-beds');
-    if (bedsInput) {
-      bedsInput.addEventListener('input', () => {
-        if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); }
-      });
-    }
+    // Bettwäsche (pro Person): Preis neu rechnen bei Wahl oder geänderter Personenzahl
+    const refresh = () => { if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); } };
+    document.querySelectorAll('[name="linen"]').forEach(r => r.addEventListener('change', refresh));
+    const personsInput = document.getElementById('field-persons');
+    if (personsInput) personsInput.addEventListener('input', refresh);
   }
 
   function bindStickyBar() {
@@ -572,8 +563,6 @@
     });
     const ci = document.getElementById('cleaning-info');
     if (ci) ci.textContent = on ? 'You do the final cleaning yourself – with the family code there is no cleaning charge.' : `The final cleaning (CHF ${CLEANING_PRICE}) is included in the price.`;
-    const wrap = document.getElementById('linen-beds-wrap');
-    if (wrap && on) wrap.style.display = 'none';
     let n = document.getElementById('flat-note');
     if (on && !n) {
       n = document.createElement('p'); n.id = 'flat-note'; n.className = 'form-note';
