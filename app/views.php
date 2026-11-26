@@ -8,13 +8,16 @@ function layout(?array $ich, string $titel, string $aktiv, string $inhalt): void
     $v = @filemtime(APP_ROOT . '/admin/admin.css') ?: 1;
     $nav = '';
     if ($ich) {
-        $punkte = $ich['rolle'] === 'reinigung'
-            ? ['reinigung' => 'Reinigung']
-            : ['' => 'Übersicht', 'buchungen' => 'Buchungen', 'kalender' => 'Kalender', 'posteingang' => 'Posteingang', 'sperren' => 'Sperren', 'reinigung' => 'Reinigung', 'geld' => 'Geld', 'einstellungen' => 'Einstellungen'];
-        $offen = $ich['rolle'] === 'admin' ? (int)qv("SELECT COUNT(*) FROM mail WHERE erledigt = 0 AND richtung = 'ein'") : 0;
-        foreach ($punkte as $p => $l) $nav .= '<a href="/admin' . ($p ? "/$p" : '') . '"' . ($p === $aktiv ? ' aria-current="page"' : '') . '>' . $l . ($p === 'posteingang' && $offen ? ' <span class="zahl">' . $offen . '</span>' : '') . '</a>';
-        $nav = '<nav class="nav">' . $nav . '</nav>'
-             . '<form method="post" action="/admin/logout" class="logout">' . csrf_feld() . '<button type="submit" class="link">Abmelden</button></form>';
+        if ($ich['rolle'] === 'reinigung') {
+            $nav = '<form method="post" action="/admin/logout" class="logout">' . csrf_feld() . '<button type="submit" class="link">Abmelden</button></form>';
+        } else {
+            $offen = (int)qv("SELECT COUNT(*) FROM mail WHERE erledigt = 0 AND richtung = 'ein'");
+            if (in_array($aktiv, ['sperren', 'geld', 'einstellungen', 'reinigung'], true)) $aktiv = 'mehr';
+            foreach (['' => 'Übersicht', 'buchungen' => 'Buchungen', 'kalender' => 'Kalender', 'posteingang' => 'Post', 'mehr' => 'Mehr'] as $p => $l) {
+                $nav .= '<a href="/admin' . ($p ? "/$p" : '') . '"' . ($p === $aktiv ? ' aria-current="page"' : '') . '>' . $l . ($p === 'posteingang' && $offen ? ' <span class="zahl">' . $offen . '</span>' : '') . '</a>';
+            }
+            $nav = '<nav class="nav">' . $nav . '</nav>';
+        }
     }
     $hinweis = '';
     if (!empty($_SESSION['hinweis'])) {
@@ -24,10 +27,10 @@ function layout(?array $ich, string $titel, string $aktiv, string $inhalt): void
     }
     echo '<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
        . '<meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#2D3E33">'
-       . '<title>' . h($titel) . ' · Chalet Bambi Admin</title>'
+       . '<title>' . h($titel) . ' · Chalet Bambi</title>'
        . '<link rel="icon" href="/favicons_bambi/favicon.ico"><link rel="stylesheet" href="/admin/admin.css?v=' . $v . '">'
        . '<script src="/admin/admin.js?v=' . (@filemtime(APP_ROOT . '/admin/admin.js') ?: 1) . '" defer></script></head><body>'
-       . '<header class="kopf"><a href="/admin" class="marke">Chalet Bambi <span>Admin</span></a>' . $nav . '</header>'
+       . '<header class="kopf"><a href="/admin" class="marke">Chalet Bambi</a>' . $nav . '</header>'
        . '<main class="inhalt">' . $hinweis . $inhalt . '</main></body></html>';
 }
 
@@ -53,13 +56,16 @@ function fehlende_angaben(array $b): array {
 }
 
 function buchung_zeile(array $b): string {
-    $n = naechte($b['anreise'], $b['abreise']);
-    // «fehlt» erst 14 Tage vor Anreise anzeigen: Interhome meldet Personen/Kontakt meist erst kurz vorher
+    // Nur Auffälliges als Badge; die Quelle zeigt der farbige Rand
     $fehlt = $b['status'] === 'bestaetigt' && $b['abreise'] >= heute() && $b['anreise'] <= date('Y-m-d', strtotime('+14 days')) ? fehlende_angaben($b) : [];
-    return '<a class="zeile" href="/admin/buchung/' . (int)$b['id'] . '">'
-        . '<span class="z-datum"><b>' . wt($b['anreise']) . ' ' . dm($b['anreise']) . '</b> – ' . wt($b['abreise']) . ' ' . dmy($b['abreise']) . '<small>' . $n . ' Nächte</small></span>'
-        . '<span class="z-name">' . h(anzeigename($b)) . '<small>' . h($b['nummer'] ?? '') . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' Pers.' : '') . '</small></span>'
-        . '<span class="z-badges">' . quelle_badge($b) . status_badge($b) . ($fehlt ? badge('fehlt: ' . implode(', ', $fehlt), 'leer') : '') . '</span>'
+    $marken = '';
+    if ($b['status'] !== 'bestaetigt' || $b['ih_fehlt']) $marken .= status_badge($b);
+    elseif (ist_direkt($b) && (float)$b['preis'] > 0 && !$b['bezahlt_am']) $marken .= badge('Zahlung offen', $b['zahlung_faellig'] && $b['zahlung_faellig'] < heute() ? 'warn' : 'leer');
+    if ($fehlt) $marken .= badge('fehlt: ' . implode(', ', $fehlt), 'leer');
+    return '<a class="zeile q-' . h($b['quelle']) . ($b['status'] === 'anfrage' ? ' q-anfrage' : '') . '" href="/admin/buchung/' . (int)$b['id'] . '">'
+        . '<span class="z-datum">' . dm($b['anreise']) . '–' . dm($b['abreise']) . '<small>' . wt($b['anreise']) . ' · ' . date('Y', strtotime($b['anreise'])) . '</small></span>'
+        . '<span class="z-name">' . h(anzeigename($b)) . '<small>' . naechte($b['anreise'], $b['abreise']) . ' N.' . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' P.' : '') . ' · ' . h(QUELLE[$b['quelle']] ?? '') . '</small></span>'
+        . ($marken ? '<span class="z-badges">' . $marken . '</span>' : '')
         . '</a>';
 }
 
@@ -81,76 +87,29 @@ function seite_fehlt(array $ich): void {
 // ── Übersicht ─────────────────────────────────────────────────────────
 function seite_uebersicht(array $ich): void {
     $heute = heute();
-    $in30 = date('Y-m-d', strtotime('+30 days'));
-    $in7 = date('Y-m-d', strtotime('+7 days'));
-
-    // Aufgaben
+    $bis = date('Y-m-d', strtotime('+14 days'));
     $aHtml = '';
     foreach (aufgaben_liste() as [$href, $text, $unter]) {
         $aHtml .= '<a class="aufgabe" href="' . h($href) . '"><b>' . h($text) . '</b><span>' . h($unter) . '</span></a>';
     }
-    $anzahl = substr_count($aHtml, 'class="aufgabe"');
-
-    // Heute
-    $hHtml = '';
-    foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND (anreise = ? OR abreise = ? OR (anreise < ? AND abreise > ?)) ORDER BY anreise", [$heute, $heute, $heute, $heute]) as $b) {
-        $art = $b['abreise'] === $heute ? 'Abreise bis ' . zeiten($b)['aus'] : ($b['anreise'] === $heute ? 'Anreise ab ' . zeiten($b)['ein'] . ($b['anreisezeit'] ? ' (' . $b['anreisezeit'] . ')' : '') : 'vor Ort bis ' . dm($b['abreise']));
-        $hHtml .= '<a class="ereignis" href="/admin/buchung/' . (int)$b['id'] . '"><span class="e-datum">' . h($art) . '</span><span>' . h(anzeigename($b)) . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' Pers.' : '') . ($b['telefon'] ? ' · ' . h($b['telefon']) : '') . '</span></a>';
-    }
-
-    // Nächste 30 Tage: An- und Abreisen
+    // An- und Abreisen der nächsten 14 Tage (Eigentümer-Spiegel von Direktbuchungen nicht doppelt)
     $ereignisse = [];
-    foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND ((anreise BETWEEN ? AND ?) OR (abreise BETWEEN ? AND ?))", [$heute, $in30, $heute, $in30]) as $b) {
-        if ($b['anreise'] >= $heute && $b['anreise'] <= $in30) $ereignisse[] = [$b['anreise'], 1, 'an', $b];
-        if ($b['abreise'] >= $heute && $b['abreise'] <= $in30) $ereignisse[] = [$b['abreise'], 0, 'ab', $b];
+    foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) AND ((anreise BETWEEN ? AND ?) OR (abreise BETWEEN ? AND ?))", [$heute, $bis, $heute, $bis]) as $b) {
+        if ($b['anreise'] >= $heute && $b['anreise'] <= $bis) $ereignisse[] = [$b['anreise'], 1, 'an', $b];
+        if ($b['abreise'] >= $heute && $b['abreise'] <= $bis) $ereignisse[] = [$b['abreise'], 0, 'ab', $b];
     }
     usort($ereignisse, fn($x, $y) => [$x[0], $x[1]] <=> [$y[0], $y[1]]);
     $eHtml = '';
     foreach ($ereignisse as [$d, , $art, $b]) {
         $eHtml .= '<a class="ereignis" href="/admin/buchung/' . (int)$b['id'] . '"><span class="e-datum">' . ($d === $heute ? 'Heute' : wt($d) . ' ' . dm($d)) . '</span>'
-            . '<span class="e-art e-' . $art . '">' . ($art === 'an' ? 'Anreise' : 'Abreise') . '</span>'
-            . '<span>' . h(anzeigename($b)) . ($art === 'an' && $b['personen'] ? ' · ' . (int)$b['personen'] . ' Pers.' : '') . ($art === 'an' && $b['anreisezeit'] ? ' · ' . h($b['anreisezeit']) : '') . '</span></a>';
+            . '<span class="e-art e-' . $art . '">' . ($art === 'an' ? 'an' : 'ab') . '</span>'
+            . '<span>' . h(anzeigename($b)) . ($art === 'an' && $b['personen'] ? ' · ' . (int)$b['personen'] . ' P.' : '') . ($art === 'an' && $b['anreisezeit'] ? ' · ' . h($b['anreisezeit']) : '') . '</span></a>';
     }
-
-    // Jahreszahlen
-    $jahr = date('Y');
-    $naechteNach = ['interhome' => 0, 'direkt' => 0, 'eigentuemer' => 0];
-    $einnahmen = 0.0; $ertragIh = 0.0;
-    foreach (q("SELECT * FROM buchung WHERE status = 'bestaetigt' AND anreise <= ? AND abreise >= ?", ["$jahr-12-31", "$jahr-01-01"]) as $b) {
-        $von = max($b['anreise'], "$jahr-01-01"); $bis = min($b['abreise'], ($jahr + 1) . '-01-01');
-        $n = max(0, naechte($von, $bis));
-        $k = $b['quelle'] === 'interhome' ? 'interhome' : ($b['quelle'] === 'eigentuemer' ? 'eigentuemer' : 'direkt');
-        $naechteNach[$k] += $n;
-        if ($k === 'direkt' && substr($b['anreise'], 0, 4) === $jahr) $einnahmen += (float)$b['preis'];
-        if ($k === 'interhome' && substr($b['anreise'], 0, 4) === $jahr) $ertragIh += (float)$b['ertrag_interhome'];
-    }
-    $tageImJahr = (int)date('z', mktime(0, 0, 0, 12, 31, (int)$jahr)) + 1;
-    $belegt = array_sum($naechteNach);
-
-    // Sync
-    $ok = meta_get('sync_ok'); $fehler = meta_get('sync_fehler');
-    $sync = '<form method="post" action="/admin/sync" class="sync">' . csrf_feld() . '<input type="hidden" name="zurueck" value="">'
-        . '<span>Interhome-Kalender: ' . ($ok ? 'abgeglichen ' . date('d.m. H:i', strtotime($ok)) : 'noch nie abgeglichen') . ($fehler ? ' · <b class="fehler">' . h($fehler) . '</b>' : '') . '</span>'
-        . '<button type="submit" class="link">Jetzt abgleichen</button></form>'
-        . '<p class="sync klein">Postfach: ' . (($p = meta_get('postfach_ok')) ? 'abgerufen ' . date('d.m. H:i', strtotime($p)) : 'noch nie abgerufen')
-        . (($pf = meta_get('postfach_fehler')) ? ' · <b class="fehler">' . h($pf) . '</b>' : '') . (($kf = meta_get('ki_fehler')) ? ' · KI: <b class="fehler">' . h($kf) . '</b>' : '') . '</p>';
-
-    layout($ich, 'Übersicht', '', '<h1>Übersicht</h1>'
-        . ($hHtml ? '<section class="karte heute"><h2>Heute, ' . wt($heute) . ' ' . dmy($heute) . '</h2>' . $hHtml . '</section>' : '')
-        . '<div class="raster">'
-        . '<section class="karte"><h2>Zu erledigen <span class="zahl">' . $anzahl . '</span></h2>' . ($aHtml ?: '<p class="leer">Nichts offen.</p>') . '</section>'
-        . '<section class="karte"><h2>Nächste 30 Tage</h2>' . ($eHtml ?: '<p class="leer">Keine An- oder Abreisen.</p>') . '</section>'
-        . '</div>'
-        . '<section class="karte"><h2>' . $jahr . '</h2><div class="kennzahlen">'
-        . '<div><b>' . $belegt . '</b><span>belegte Nächte (' . round($belegt / $tageImJahr * 100) . ' %)</span></div>'
-        . '<div><b>' . $naechteNach['interhome'] . '</b><span>Nächte Interhome</span></div>'
-        . '<div><b>' . $naechteNach['direkt'] . '</b><span>Nächte direkt</span></div>'
-        . '<div><b>' . $naechteNach['eigentuemer'] . '</b><span>Nächte Eigentümer</span></div>'
-        . '<div><b>' . betrag($einnahmen) . '</b><span>Einnahmen direkt</span></div>'
-        . ($ertragIh > 0 ? '<div><b>' . betrag($ertragIh) . '</b><span>Ertrag Interhome (erfasst)</span></div>' : '')
-        . '</div></section>'
-        . '<p class="aktionen"><a class="knopf" href="/admin/neu">+ Buchung erfassen</a></p>'
-        . $sync);
+    $fehler = array_filter([meta_get('sync_fehler'), meta_get('postfach_fehler')]);
+    layout($ich, 'Übersicht', '', '<div class="titelzeile"><h1>Übersicht</h1><a class="knopf klein-knopf" href="/admin/neu">+ Buchung</a></div>'
+        . ($fehler ? '<p class="warnung">' . h(implode(' · ', $fehler)) . ' <a href="/admin/mehr">Details</a></p>' : '')
+        . '<section class="karte"><h2>Zu erledigen</h2>' . ($aHtml ?: '<p class="leer">Alles erledigt.</p>') . '</section>'
+        . '<section class="karte"><h2>Nächste 14 Tage</h2>' . ($eHtml ?: '<p class="leer">Keine An- oder Abreisen.</p>') . '</section>');
 }
 
 // ── Buchungsliste ─────────────────────────────────────────────────────
@@ -171,13 +130,12 @@ function seite_buchungen(array $ich): void {
     }
     $liste = q("SELECT * FROM buchung WHERE $where ORDER BY $order LIMIT 300", $p)->fetchAll();
     $tabs = '';
-    foreach (['kommend' => 'Kommend', 'anfragen' => 'Anfragen', 'vergangen' => 'Vergangen', 'alle' => 'Alle'] as $k => $l) {
+    foreach (['kommend' => 'Kommend', 'anfragen' => 'Anfragen', 'alle' => 'Alle'] as $k => $l) {
         $tabs .= '<a href="/admin/buchungen?f=' . $k . ($suche ? '&amp;q=' . urlencode($suche) : '') . '"' . ($k === $filter ? ' aria-current="page"' : '') . '>' . $l . '</a>';
     }
-    layout($ich, 'Buchungen', 'buchungen', '<div class="titelzeile"><h1>Buchungen</h1><a class="knopf" href="/admin/neu">+ Erfassen</a></div>'
+    layout($ich, 'Buchungen', 'buchungen', '<div class="titelzeile"><h1>Buchungen</h1><a class="knopf klein-knopf" href="/admin/neu">+ Buchung</a></div>'
         . '<div class="werkzeuge"><nav class="tabs">' . $tabs . '</nav>'
-        . '<form method="get" class="suche"><input type="hidden" name="f" value="' . h($filter) . '"><input type="search" name="q" value="' . h($suche) . '" placeholder="Name, Nummer, E-Mail …" aria-label="Suchen"></form>'
-        . '<a href="/admin/kalender" class="link">Als Kalender</a></div>'
+        . '<form method="get" class="suche"><input type="hidden" name="f" value="' . h($filter) . '"><input type="search" name="q" value="' . h($suche) . '" placeholder="Suchen …" aria-label="Suchen"></form></div>'
         . '<div class="liste">' . (implode('', array_map('buchung_zeile', $liste)) ?: '<p class="leer">Keine Buchungen.</p>') . '</div>');
 }
 
@@ -198,13 +156,13 @@ function seite_kalender(array $ich): void {
     foreach (['interhome' => 'Interhome', 'website' => 'Direkt (Website)', 'manuell' => 'Von Hand', 'eigentuemer' => 'Eigentümer', 'anfrage' => 'Anfrage (offen)', 'sperre' => 'Gesperrt'] as $k => $l) {
         $legende .= '<span><i class="k-' . $k . '"></i>' . $l . '</span>';
     }
-    layout($ich, 'Kalender', 'kalender', '<div class="titelzeile"><h1>Kalender</h1><a href="/admin/buchungen" class="link">Als Liste</a></div>'
+    layout($ich, 'Kalender', 'kalender', '<h1>Kalender</h1>'
         . '<div class="monatsnav"><a class="knopf hell" href="/admin/kalender?m=' . $vor . '" aria-label="Vorheriger Monat">‹</a>'
         . '<a class="link" href="/admin/kalender">Heute</a>'
         . '<a class="knopf hell" href="/admin/kalender?m=' . $nach . '" aria-label="Nächster Monat">›</a></div>'
         . '<div class="monate">' . monat((int)date('Y', $start), (int)date('n', $start), $eintraege) . monat((int)date('Y', strtotime('+1 month', $start)), (int)date('n', strtotime('+1 month', $start)), $eintraege) . '</div>'
         . '<p class="legende">' . $legende . '</p>'
-        . '<p class="klein">Ein Balken zeigt die Nächte. Ein Klick auf einen Tag ohne Belegung erfasst dort eine neue Buchung.</p>');
+        . '<p class="klein">Klick auf einen freien Tag: dort eine Buchung erfassen.</p>');
 }
 
 /* Wie viele Tage läuft der Balken ab $d in dieser Woche (und diesem Monat) noch? Begrenzt die Beschriftung. */
@@ -273,98 +231,105 @@ function felder_gast(array $w): string {
 
 function seite_neu(array $ich, string $fehler, array $w): void {
     layout($ich, 'Buchung erfassen', 'buchungen', '<h1>Buchung erfassen</h1>'
-        . '<p class="klein">Für Buchungen per Telefon, Mail oder Familie. Website- und Interhome-Buchungen kommen von selbst.</p>'
         . ($fehler ? '<p class="fehler" role="alert">' . h($fehler) . '</p>' : '')
-        . '<form method="post" action="/admin/neu" class="formular">' . csrf_feld()
-        . '<fieldset><legend>Aufenthalt</legend><div class="felder">'
+        . '<form method="post" action="/admin/neu" class="formular karte">' . csrf_feld()
+        . '<div class="felder">'
         . feld('Anreise', 'anreise', $w['anreise'] ?? '', 'date', 'required')
         . feld('Abreise', 'abreise', $w['abreise'] ?? '', 'date', 'required')
-        . auswahl('Status', 'status', ['bestaetigt' => 'Bestätigt (sperrt den Kalender)', 'anfrage' => 'Anfrage (noch offen)'], $w['status'] ?? 'bestaetigt')
+        . feld('Name', 'name', $w['name'] ?? '', 'text', 'autocomplete="off" required')
+        . feld('Personen', 'personen', $w['personen'] ?? '', 'number', 'min="1" max="4" inputmode="numeric"')
+        . auswahl('Endreinigung', 'reinigung', ['yes' => 'Margrit', 'no' => 'Gäste selber'], $w['reinigung'] ?? 'yes')
+        . feld('Betten beziehen (0 = selber)', 'bettwaesche', $w['bettwaesche'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
+        . '</div>'
+        . '<details class="mehr-felder"' . (array_filter([$w['email'] ?? '', $w['preis'] ?? '', $w['notiz'] ?? '']) ? ' open' : '') . '><summary>Kontakt, Preis, Notizen</summary><div class="felder">'
+        . feld('E-Mail', 'email', $w['email'] ?? '', 'email', 'autocomplete="off"')
+        . feld('Telefon', 'telefon', $w['telefon'] ?? '', 'tel', 'autocomplete="off"')
         . feld('Preis total (CHF)', 'preis', $w['preis'] ?? '', 'text', 'inputmode="decimal"')
+        . auswahl('Status', 'status', ['bestaetigt' => 'Bestätigt', 'anfrage' => 'Anfrage (offen)'], $w['status'] ?? 'bestaetigt')
         . auswahl('Sprache', 'sprache', ['de' => 'Deutsch', 'en' => 'Englisch'], $w['sprache'] ?? 'de')
-        . '</div></fieldset>'
-        . felder_gast($w)
-        . '<fieldset><legend>Notizen</legend><div class="felder">'
-        . bereich('Interne Notiz', 'notiz', $w['notiz'] ?? '', 3)
-        . bereich('Notiz für die Reinigung (sieht Margrit)', 'notiz_reinigung', $w['notiz_reinigung'] ?? '', 2)
-        . '</div></fieldset>'
+        . feld('Anreisezeit', 'anreisezeit', $w['anreisezeit'] ?? '', 'text')
+        . bereich('Interne Notiz', 'notiz', $w['notiz'] ?? '', 2)
+        . bereich('Notiz für Margrit', 'notiz_reinigung', $w['notiz_reinigung'] ?? '', 2)
+        . '</div></details>'
         . '<p class="aktionen"><button type="submit" class="knopf">Speichern</button> <a href="/admin/buchungen" class="link">Abbrechen</a></p></form>');
 }
 
 function seite_buchung(array $ich, array $b, string $fehler, ?array $w): void {
     $w = $w ?? $b;
+    $id = (int)$b['id'];
     $ih = (bool)$b['ih_uid'];
     $n = naechte($b['anreise'], $b['abreise']);
-    $k = in_array($b['status'], ['anfrage', 'bestaetigt'], true) ? konflikte($b['anreise'], $b['abreise'], (int)$b['id']) : [];
-    $kHtml = $k ? '<p class="warnung">Überschneidung mit: ' . implode(', ', array_map(fn($x) => $x['id'] ? '<a href="/admin/buchung/' . (int)$x['id'] . '">' . h($x['text']) . '</a>' : h($x['text']), $k)) . '</p>' : '';
+    // Interhome-Sperren überdecken oft Interhome- und Familienbuchungen: nur bei Anfragen als Konflikt zeigen
+    $k = in_array($b['status'], ['anfrage', 'bestaetigt'], true) ? array_filter(konflikte($b['anreise'], $b['abreise'], $id), fn($x) => $x['id'] || $x['quelle'] !== 'interhome' || $b['status'] === 'anfrage') : [];
 
-    $info = '<dl class="infos">'
-        . '<div><dt>Nummer</dt><dd>' . h($b['nummer'] ?? '–') . '</dd></div>'
-        . '<div><dt>Quelle</dt><dd>' . h(QUELLE[$b['quelle']] ?? $b['quelle']) . ($ih ? ' · ' . h($b['ih_status']) : '') . '</dd></div>'
-        . '<div><dt>Nächte</dt><dd>' . $n . '</dd></div>'
-        . ($b['preis'] !== null ? '<div><dt>Preis</dt><dd>' . betrag($b['preis']) . '</dd></div>' : '')
-        . ($b['rabattcode'] ? '<div><dt>Rabattcode</dt><dd>' . h($b['rabattcode']) . '</dd></div>' : '')
-        . '<div><dt>Endreinigung</dt><dd>' . ($b['reinigung'] === 'no' ? 'durch die Gäste' : 'ja') . '</dd></div>'
-        . ($b['bettwaesche'] !== null ? '<div><dt>Betten beziehen</dt><dd>' . ((int)$b['bettwaesche'] > 0 ? (int)$b['bettwaesche'] . ' (Margrit)' : 'selber') . '</dd></div>' : '')
-        . ($b['ertrag_interhome'] !== null ? '<div><dt>Ertrag Interhome</dt><dd>' . betrag($b['ertrag_interhome']) . '</dd></div>' : '')
-        . ($b['zahlung_faellig'] ? '<div><dt>Zahlung fällig</dt><dd>' . dmy($b['zahlung_faellig']) . ($b['bezahlt_am'] ? ' · bezahlt ' . dmy($b['bezahlt_am']) : '') . '</dd></div>' : '')
-        . ($b['partner_id'] ? '<div><dt>Interhome</dt><dd><a href="/admin/buchung/' . (int)$b['partner_id'] . '">' . ($b['quelle'] === 'eigentuemer' ? 'gehört zur Direktbuchung' : 'als Eigentümerbuchung gesperrt ✓') . '</a></dd></div>' : '')
-        . '<div><dt>Mails</dt><dd>' . mail_status($b) . '</dd></div>'
-        . '<div><dt>Erfasst</dt><dd>' . date('d.m.Y H:i', strtotime($b['erstellt'])) . '</dd></div>'
+    // Fakten in einer Liste, nur was gesetzt ist
+    $zeile = fn(string $dt, string $dd) => '<div><dt>' . $dt . '</dt><dd>' . $dd . '</dd></div>';
+    $kontakt = trim(($b['email'] ? '<a href="mailto:' . h($b['email']) . '">' . h($b['email']) . '</a>' : '') . ($b['email'] && $b['telefon'] ? '<br>' : '') . ($b['telefon'] ? '<a href="tel:' . h(preg_replace('/[^\d+]/', '', $b['telefon'])) . '">' . h($b['telefon']) . '</a>' : ''));
+    $geld = $b['preis'] !== null ? betrag($b['preis']) . (ist_direkt($b) && (float)$b['preis'] > 0 ? ($b['bezahlt_am'] ? ' · bezahlt ' . dm($b['bezahlt_am']) : ' · offen' . ($b['zahlung_faellig'] ? ' bis ' . dm($b['zahlung_faellig']) : '')) : '') : '';
+    $margrit = $b['quelle'] === 'eigentuemer' && $b['partner_id'] ? '' : (($b['reinigung'] === 'no' ? 'Gäste reinigen selber' : 'Endreinigung') . ($b['bettwaesche'] !== null ? ' · ' . ((int)$b['bettwaesche'] > 0 ? (int)$b['bettwaesche'] . ' Betten beziehen' : 'Betten selber') : ''));
+    $fakten = '<dl class="infos">'
+        . ($kontakt ? $zeile('Kontakt', $kontakt) : '')
+        . ($geld ? $zeile('Preis', h($geld)) : '')
+        . ($b['ertrag_interhome'] !== null ? $zeile('Ertrag', betrag($b['ertrag_interhome'])) : '')
+        . ($margrit ? $zeile('Margrit', h($margrit)) : '')
+        . ($b['partner_id'] ? $zeile('Interhome', '<a href="/admin/buchung/' . (int)$b['partner_id'] . '">' . ($b['quelle'] === 'eigentuemer' ? 'Spiegel einer Direktbuchung' : 'gesperrt ✓') . '</a>') : '')
+        . (($ms = mail_status($b)) !== '–' ? $zeile('Mails', $ms) : '')
+        . $zeile('Nummer', h(($b['nummer'] ?? '–') . ' · ' . (QUELLE[$b['quelle']] ?? $b['quelle'])))
         . '</dl>'
-        . ($b['nachricht'] ? '<div class="nachricht"><b>Nachricht des Gastes</b><p>' . nl2br(h($b['nachricht'])) . '</p></div>' : '');
+        . ($b['nachricht'] ? '<p class="nachricht">' . nl2br(h($b['nachricht'])) . '</p>' : '')
+        . ($b['notiz'] ? '<p class="notiz">' . nl2br(h($b['notiz'])) . '</p>' : '')
+        . ($b['notiz_reinigung'] ? '<p class="notiz">Für Margrit: ' . nl2br(h($b['notiz_reinigung'])) . '</p>' : '');
 
-    $kontakt = '';
-    if ($b['email']) $kontakt .= '<a class="knopf hell" href="mailto:' . h($b['email']) . '?subject=' . rawurlencode('Chalet Bambi ' . dmy($b['anreise']) . ' – ' . dmy($b['abreise']) . ' (' . $b['nummer'] . ')') . '">E-Mail</a>';
-    if ($b['telefon']) $kontakt .= '<a class="knopf hell" href="tel:' . h(preg_replace('/[^\d+]/', '', $b['telefon'])) . '">Anrufen</a>';
+    $warn = buchung_vorschlaege($b)
+        . ($k ? '<p class="warnung">Überschneidung mit: ' . implode(', ', array_map(fn($x) => $x['id'] ? '<a href="/admin/buchung/' . (int)$x['id'] . '">' . h($x['text']) . '</a>' : h($x['text']), $k)) . '</p>' : '')
+        . ($b['ih_fehlt'] && $b['status'] === 'bestaetigt' ? '<form method="post" action="/admin/buchung/' . $id . '/storno-bestaetigen" class="warnung">' . csrf_feld()
+            . 'Nicht mehr im Interhome-Kalender. Storniert? <button type="submit" class="link" data-bestaetigen="Als storniert markieren? Der Zeitraum wird auf der Website wieder frei.">Storno bestätigen</button></form>' : '')
+        . ($b['status'] === 'bestaetigt' && ist_direkt($b) && !$b['partner_id'] && !in_interhome_gesperrt($b) && $b['abreise'] >= heute() ? '<p class="warnung">In Interhome noch nicht gesperrt: bitte als Eigentümerbuchung eintragen.</p>' : '');
 
-    $aufenthalt = $ih
-        ? '<p class="klein">Daten und Status kommen von Interhome und werden beim Abgleich aktualisiert.</p>'
-        : '<fieldset><legend>Aufenthalt</legend><div class="felder">'
-          . feld('Anreise', 'anreise', $w['anreise'], 'date', 'required') . feld('Abreise', 'abreise', $w['abreise'], 'date', 'required')
-          . auswahl('Status', 'status', STATUS, $w['status'])
-          . feld('Preis total (CHF)', 'preis', $w['preis'] ?? '', 'text', 'inputmode="decimal"')
-          . auswahl('Sprache', 'sprache', ['de' => 'Deutsch', 'en' => 'Englisch'], $w['sprache'] ?? 'de')
-          . feld('Bezahlt am', 'bezahlt_am', $w['bezahlt_am'] ?? '', 'date')
-          . '</div></fieldset>';
+    // Bearbeiten (zugeklappt)
+    $felder = $ih ? '' : feld('Anreise', 'anreise', $w['anreise'], 'date', 'required') . feld('Abreise', 'abreise', $w['abreise'], 'date', 'required')
+        . auswahl('Status', 'status', STATUS, $w['status']) . feld('Preis total (CHF)', 'preis', $w['preis'] ?? '', 'text', 'inputmode="decimal"');
+    $felder .= feld('Name', 'name', $w['name'] ?? '', 'text', 'autocomplete="off"')
+        . feld('Personen', 'personen', $w['personen'] ?? '', 'number', 'min="1" max="4" inputmode="numeric"')
+        . feld('Erwachsene', 'erwachsene', $w['erwachsene'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
+        . feld('Kinder', 'kinder', $w['kinder'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
+        . feld('E-Mail', 'email', $w['email'] ?? '', 'email', 'autocomplete="off"')
+        . feld('Telefon', 'telefon', $w['telefon'] ?? '', 'tel', 'autocomplete="off"')
+        . feld('Anreisezeit', 'anreisezeit', $w['anreisezeit'] ?? '', 'text')
+        . auswahl('Sprache', 'sprache', ['de' => 'Deutsch', 'en' => 'Englisch'], $w['sprache'] ?? 'de')
+        . auswahl('Endreinigung', 'reinigung', ['yes' => 'Margrit', 'no' => 'Gäste selber'], $w['reinigung'] ?? 'yes')
+        . feld('Betten beziehen (0 = selber)', 'bettwaesche', $w['bettwaesche'] ?? '', 'number', 'min="0" max="4" inputmode="numeric"')
+        . feld('Bezahlt am', 'bezahlt_am', $w['bezahlt_am'] ?? '', 'date')
+        . ($ih ? feld('Ertrag Interhome (CHF)', 'ertrag_interhome', $w['ertrag_interhome'] ?? '', 'text', 'inputmode="decimal"') : '')
+        . bereich('Adresse', 'adresse', $w['adresse'] ?? '', 2)
+        . bereich('Interne Notiz', 'notiz', $w['notiz'] ?? '', 2)
+        . bereich('Notiz für Margrit', 'notiz_reinigung', $w['notiz_reinigung'] ?? '', 2);
+    $bearbeiten = '<details class="karte"' . ($fehler ? ' open' : '') . '><summary>Bearbeiten</summary>'
+        . ($fehler ? '<p class="fehler" role="alert">' . h($fehler) . '</p>' : '')
+        . '<form method="post" action="/admin/buchung/' . $id . '" class="formular">' . csrf_feld()
+        . ($ih ? '<p class="klein">Daten und Status kommen aus dem Interhome-Kalender.</p>' : '')
+        . '<div class="felder">' . $felder . '</div><p class="aktionen"><button type="submit" class="knopf">Speichern</button></p></form>'
+        . (ist_direkt($b) ? '<form method="post" action="/admin/buchung/' . $id . '/loeschen">' . csrf_feld()
+            . '<button type="submit" class="link rot" data-bestaetigen="Buchung ' . h($b['nummer']) . ' endgültig löschen? (Für Tests und Doppelte. Sonst besser stornieren.)">Buchung löschen</button></form>' : '')
+        . '</details>';
 
     $verlauf = '';
-    foreach (q('SELECT * FROM verlauf WHERE buchung_id = ? ORDER BY id DESC', [$b['id']]) as $v) {
-        $verlauf .= '<li><time>' . date('d.m.Y H:i', strtotime($v['zeit'])) . '</time> <b>' . h($v['aktion']) . '</b> <small>' . h($v['wer']) . '</small>'
+    foreach (q('SELECT * FROM verlauf WHERE buchung_id = ? ORDER BY id DESC', [$id]) as $v) {
+        $verlauf .= '<li><time>' . date('d.m.y H:i', strtotime($v['zeit'])) . '</time> <b>' . h($v['aktion']) . '</b> <small>' . h($v['wer']) . '</small>'
             . ($v['details'] ? '<div>' . h($v['details']) . '</div>' : '') . '</li>';
     }
+    $mails = buchung_mails($b);
+    $verlaufHtml = '<details class="karte"><summary>Verlauf' . ($mails ? ' und Mails' : '') . '</summary>' . $mails . '<ul class="verlauf">' . ($verlauf ?: '<li class="leer">–</li>') . '</ul></details>';
 
-    $gefahr = buchung_aktionen($b);
-    if ($b['ih_fehlt'] && $b['status'] === 'bestaetigt') {
-        $gefahr .= '<form method="post" action="/admin/buchung/' . (int)$b['id'] . '/storno-bestaetigen" class="warnung">' . csrf_feld()
-            . '<p>Diese Buchung ist nicht mehr im Interhome-Kalender. Ist sie storniert? Bitte im Interhome-Portal prüfen.</p>'
-            . '<button type="submit" class="knopf" data-bestaetigen="Als storniert markieren? Der Zeitraum wird auf der Website wieder frei.">Storno bestätigen</button></form>';
-    }
-    if (in_array($b['quelle'], ['website', 'manuell'], true)) {
-        $gefahr .= '<form method="post" action="/admin/buchung/' . (int)$b['id'] . '/loeschen" class="loeschen">' . csrf_feld()
-            . '<button type="submit" class="link rot" data-bestaetigen="Buchung ' . h($b['nummer']) . ' endgültig löschen? (Für Tests und Doppelte. Sonst besser «Abgelehnt» oder «Storniert».)">Buchung löschen</button></form>';
-    }
-
-    layout($ich, anzeigename($b), 'buchungen', '<p class="zurueck"><a href="/admin/buchungen" class="link">‹ Buchungen</a></p>'
-        . '<div class="titelzeile"><h1>' . h(anzeigename($b)) . '</h1><span>' . quelle_badge($b) . status_badge($b) . '</span></div>'
-        . '<p class="unterzeile">' . wt($b['anreise']) . ' ' . dmy($b['anreise']) . ' → ' . wt($b['abreise']) . ' ' . dmy($b['abreise']) . ' · ' . $n . ' Nächte' . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' Personen' : '') . '</p>'
-        . ($kontakt ? '<p class="aktionen">' . $kontakt . '</p>' : '')
-        . buchung_vorschlaege($b)
-        . $kHtml
-        . ($fehler ? '<p class="fehler" role="alert">' . h($fehler) . '</p>' : '')
-        . '<div class="raster breit">'
-        . '<form method="post" action="/admin/buchung/' . (int)$b['id'] . '" class="formular karte">' . csrf_feld()
-        . $aufenthalt . felder_gast($w)
-        . '<fieldset><legend>Notizen</legend><div class="felder">'
-        . bereich('Interne Notiz', 'notiz', $w['notiz'] ?? '', 3)
-        . bereich('Notiz für die Reinigung (sieht Margrit)', 'notiz_reinigung', $w['notiz_reinigung'] ?? '', 2)
-        . ($ih ? auswahl('Sprache für Mails', 'sprache', ['de' => 'Deutsch', 'en' => 'Englisch'], $w['sprache'] ?? 'de') . feld('Ertrag Interhome (CHF)', 'ertrag_interhome', $w['ertrag_interhome'] ?? '', 'text', 'inputmode="decimal"') : '')
-        . '</div></fieldset>'
-        . '<p class="aktionen"><button type="submit" class="knopf">Speichern</button></p></form>'
-        . '<div><section class="karte">' . $info . '</section>' . $gefahr
-        . buchung_mails($b)
-        . '<section class="karte"><h2>Verlauf</h2><ul class="verlauf">' . ($verlauf ?: '<li class="leer">–</li>') . '</ul></section></div>'
-        . '</div>');
+    $aktionen = buchung_aktionen($b);
+    layout($ich, anzeigename($b), 'buchungen', '<div class="buchung">'
+        . '<p class="zurueck"><a href="/admin/buchungen" class="link">‹ Buchungen</a></p>'
+        . '<div class="titelzeile"><h1>' . h(anzeigename($b)) . '</h1><span>' . status_badge($b) . '</span></div>'
+        . '<p class="unterzeile">' . wt($b['anreise']) . ' ' . dmy($b['anreise']) . ' → ' . wt($b['abreise']) . ' ' . dmy($b['abreise']) . ' · ' . $n . ' Nächte' . ($b['personen'] ? ' · ' . (int)$b['personen'] . ' Pers.' : '') . '</p>'
+        . ($aktionen ? '<div class="aktionen">' . $aktionen . '</div>' : '')
+        . $warn
+        . '<section class="karte">' . $fakten . '</section>'
+        . $bearbeiten . $verlaufHtml . '</div>');
 }
 
 // ── Sperren ───────────────────────────────────────────────────────────
@@ -476,32 +441,23 @@ function aufgaben_liste(): array {
 function buchung_aktionen(array $b): string {
     $id = (int)$b['id'];
     $l = fn(string $zu, string $text, bool $hell = true) => '<a class="knopf' . ($hell ? ' hell' : '') . '" href="/admin/buchung/' . $id . $zu . '">' . h($text) . '</a>';
-    $f = fn(string $zu, string $inhalt) => '<form method="post" action="/admin/buchung/' . $id . $zu . '" class="inline">' . csrf_feld() . $inhalt . '</form>';
+    $f = fn(string $zu, string $text, bool $hell = false) => '<form method="post" action="/admin/buchung/' . $id . $zu . '" class="inline">' . csrf_feld() . '<button type="submit" class="knopf' . ($hell ? ' hell' : '') . '">' . h($text) . '</button></form>';
     $x = [];
     $direkt = ist_direkt($b);
-    if ($b['status'] === 'anfrage') {
-        $x[] = $l('/mail/bestaetigung', 'Annehmen …', false);
-        $x[] = $l('/mail/absage', 'Ablehnen …');
+    $offen = $b['status'] === 'bestaetigt';
+    if ($b['status'] === 'anfrage') { $x[] = $l('/mail/bestaetigung', 'Annehmen', false); $x[] = $l('/mail/absage', 'Ablehnen'); }
+    if ($offen && $direkt && !$b['bezahlt_am'] && (float)$b['preis'] > 0) { $x[] = $f('/bezahlt', 'Bezahlt'); $x[] = $l('/mail/erinnerung', 'Erinnern'); }
+    if ($offen && $direkt && !$b['partner_id'] && !$b['ih_eingetragen_am'] && !in_interhome_gesperrt($b) && $b['abreise'] >= heute()) $x[] = $f('/ih-eingetragen', 'In Interhome eingetragen', true);
+    if ($offen && $b['quelle'] === 'interhome' && fehlende_angaben($b)) $x[] = $l('/angaben', 'Angaben eintragen', false);
+    if ($offen && $b['quelle'] !== 'eigentuemer' && $b['email'] && $b['abreise'] >= heute()) {
+        if ($b['quelle'] === 'interhome' && !$b['info_gesendet_am']) $x[] = $l('/mail/info', 'Infos senden');
+        if (!$b['code_gesendet_am']) $x[] = $l('/mail/code', 'Code senden');
     }
-    if ($b['status'] === 'bestaetigt' && $direkt) {
-        if (!$b['bezahlt_am'] && (float)$b['preis'] > 0) {
-            $x[] = $f('/bezahlt', '<label class="kompakt">Zahlung eingegangen am<input type="date" name="datum" value="' . heute() . '" max="' . heute() . '"></label><button type="submit" class="knopf">Bezahlt</button>');
-            $x[] = $l('/mail/erinnerung', 'Zahlungserinnerung …');
-        }
-        if (!$b['partner_id'] && !$b['ih_eingetragen_am'] && !in_interhome_gesperrt($b)) $x[] = $f('/ih-eingetragen', '<button type="submit" class="knopf hell">In Interhome eingetragen</button>');
-    }
-    if ($b['status'] === 'bestaetigt' && $b['quelle'] !== 'eigentuemer') {
-        if ($b['quelle'] === 'interhome') $x[] = $l('/angaben', 'Angaben eintragen', !fehlende_angaben($b));
-        if ($b['email']) {
-            if ($b['quelle'] === 'interhome' && !$b['info_gesendet_am']) $x[] = $l('/mail/info', 'Infos senden …');
-            if (!$b['code_gesendet_am']) $x[] = $l('/mail/code', 'Code jetzt senden …');
-            if ($direkt && $b['abreise'] <= heute() && !$b['dank_gesendet_am']) $x[] = $l('/mail/dank', 'Dankesmail …');
-        }
-    }
-    if ($b['status'] === 'bestaetigt' && $direkt) $x[] = $l('/mail/storno', 'Stornieren …');
-    return $x ? '<section class="karte"><h2>Aktionen</h2><div class="aktionen">' . implode('', $x) . '</div>'
-        . ($b['status'] === 'bestaetigt' && $direkt && !$b['partner_id'] && !in_interhome_gesperrt($b) ? '<p class="klein">Interhome-Sperre: bitte im Interhome-Portal als Eigentümerbuchung ' . dmy($b['anreise']) . '–' . dmy($b['abreise']) . ' eintragen. Der Abgleich erkennt sie dann von selbst.</p>' : '')
-        . '</section>' : '';
+    if ($offen && $direkt && $b['email'] && $b['abreise'] <= heute() && !$b['dank_gesendet_am']) $x[] = $l('/mail/dank', 'Dank senden');
+    if ($b['email']) $x[] = '<a class="knopf hell" href="mailto:' . h($b['email']) . '?subject=' . rawurlencode('Chalet Bambi ' . dmy($b['anreise']) . ' – ' . dmy($b['abreise']) . ($b['nummer'] ? ' (' . $b['nummer'] . ')' : '')) . '">E-Mail</a>';
+    if ($b['telefon']) $x[] = '<a class="knopf hell" href="tel:' . h(preg_replace('/[^\d+]/', '', $b['telefon'])) . '">Anrufen</a>';
+    if ($offen && $direkt && $b['abreise'] >= heute()) $x[] = $l('/mail/storno', 'Stornieren');
+    return implode('', $x);
 }
 
 function mail_status(array $b): string {
@@ -588,7 +544,7 @@ function seite_posteingang(array $ich): void {
     }
     layout($ich, 'Posteingang', 'posteingang', '<div class="titelzeile"><h1>Posteingang</h1>'
         . '<form method="post" action="/admin/postfach">' . csrf_feld() . '<button type="submit" class="knopf hell">Jetzt abrufen</button></form></div>'
-        . '<p class="klein">Mails an ' . INFO_MAIL . ' werden alle 10 Minuten gelesen (nur lesend, im Postfach ändert sich nichts), der passenden Buchung zugeordnet und ausgewertet.'
+        . '<p class="klein">Alle 10 Minuten aus ' . INFO_MAIL . ' gelesen und zugeordnet.'
         . (ki_verfuegbar() ? '' : ' <b>Ohne API-Schlüssel nur mit einfachen Regeln.</b>') . '</p>'
         . '<nav class="tabs"><a href="/admin/posteingang"' . ($filter === 'offen' ? ' aria-current="page"' : '') . '>Offen</a><a href="/admin/posteingang?f=alle"' . ($filter === 'alle' ? ' aria-current="page"' : '') . '>Alle</a></nav>'
         . '<div class="liste">' . ($z ?: '<p class="leer">' . ($filter === 'offen' ? 'Nichts offen.' : 'Noch keine Mails.') . '</p>') . '</div>');
@@ -693,4 +649,23 @@ function seite_geld(array $ich): void {
 /* Deckt eine Sperre aus dem Interhome-Kalender den Zeitraum ganz ab? Dann ist in Interhome nichts mehr einzutragen. */
 function in_interhome_gesperrt(array $b): bool {
     return (bool)qv("SELECT 1 FROM sperre WHERE quelle = 'interhome' AND von <= ? AND bis >= ?", [$b['anreise'], $b['abreise']]);
+}
+
+// ── Mehr: selten Gebrauchtes und Stand ──────────────────────────────────
+function seite_mehr(array $ich): void {
+    $punkt = fn(string $href, string $titel, string $text) => '<a class="aufgabe" href="' . $href . '"><b>' . $titel . '</b><span>' . $text . '</span></a>';
+    $f = fn(string $ziel, string $text) => '<form method="post" action="/admin/' . $ziel . '" class="inline">' . csrf_feld() . '<input type="hidden" name="zurueck" value="mehr"><button type="submit" class="knopf hell">' . $text . '</button></form>';
+    $stand = fn(?string $ok, ?string $fehler) => ($ok ? date('d.m. H:i', strtotime($ok)) : 'noch nie') . ($fehler ? ' · <b class="fehler">' . h($fehler) . '</b>' : '');
+    layout($ich, 'Mehr', 'mehr', '<h1>Mehr</h1>'
+        . '<section class="karte">'
+        . $punkt('/admin/sperren', 'Sperren', 'Zeiten auf der Website sperren')
+        . $punkt('/admin/geld', 'Geld', 'Einnahmen, offene Zahlungen')
+        . $punkt('/admin/reinigung', 'Reinigung', 'So sieht es Margrit')
+        . $punkt('/admin/einstellungen', 'Einstellungen', 'Code, IBAN, Automatik, Kalender-Abo')
+        . '</section>'
+        . '<section class="karte"><h2>Stand</h2><dl class="infos">'
+        . '<div><dt>Interhome-Kalender</dt><dd>' . $stand(meta_get('sync_ok'), meta_get('sync_fehler')) . '</dd></div>'
+        . '<div><dt>Postfach</dt><dd>' . $stand(meta_get('postfach_ok'), meta_get('postfach_fehler')) . '</dd></div>'
+        . '</dl><div class="aktionen">' . $f('sync', 'Interhome abgleichen') . $f('postfach', 'Post abrufen') . '</div></section>'
+        . '<form method="post" action="/admin/logout">' . csrf_feld() . '<button type="submit" class="knopf hell">Abmelden</button></form>');
 }

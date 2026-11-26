@@ -92,7 +92,7 @@ switch ($seite) {
             $r = sync_interhome(true);
             hinweis(isset($r['fehler']) ? 'Interhome-Kalender nicht erreichbar. Später nochmals versuchen.' : 'Mit Interhome abgeglichen: ' . ($r['neu'] ?? 0) . ' neu, ' . ($r['geaendert'] ?? 0) . ' geändert, ' . ($r['fehlt'] ?? 0) . ' fehlend.', isset($r['fehler']) ? 'fehler' : 'ok');
         }
-        weiter((string)($_POST['zurueck'] ?? ''));
+        weiter(($_POST['zurueck'] ?? '') === 'mehr' ? 'mehr' : '');
 
     case 'buchungen':
         seite_buchungen($ich);
@@ -229,7 +229,7 @@ switch ($seite) {
             $r = postfach_abrufen();
             hinweis($r['fehler'] ? 'Postfach: ' . $r['fehler'] : ($r['neu'] ? $r['neu'] . ' neue Mail(s) ausgewertet.' : 'Keine neuen Mails.'), $r['fehler'] ? 'fehler' : 'ok');
         }
-        weiter('posteingang');
+        weiter(($_POST['zurueck'] ?? '') === 'mehr' ? 'mehr' : 'posteingang');
 
     case 'mail':
         $m = q1('SELECT * FROM mail WHERE id = ?', [(int)($teile[1] ?? 0)]);
@@ -278,6 +278,10 @@ switch ($seite) {
 
     case 'geld':
         seite_geld($ich);
+        break;
+
+    case 'mehr':
+        seite_mehr($ich);
         break;
 
     case 'sperren':
@@ -374,8 +378,8 @@ function konflikte(string $von, string $bis, ?int $ohneId, bool $nurBuchungen = 
                 AND NOT (quelle = 'eigentuemer' AND (partner_id IS NOT NULL OR (anreise = ? AND abreise = ?)))", [$bis, $von, $ohneId ?? 0, $von, $bis]) as $b) {
         $k[] = ['text' => ($b['name'] ?: $b['nummer']) . ' (' . dm($b['anreise']) . '–' . dm($b['abreise']) . ')', 'id' => $b['id']];
     }
-    if (!$nurBuchungen) foreach (q('SELECT von, bis, grund FROM sperre WHERE von < ? AND bis > ?', [$bis, $von]) as $s) {
-        $k[] = ['text' => 'Sperre ' . dm($s['von']) . '–' . dm(date('Y-m-d', strtotime($s['bis'] . ' -1 day'))), 'id' => null];
+    if (!$nurBuchungen) foreach (q('SELECT von, bis, grund, quelle FROM sperre WHERE von < ? AND bis > ?', [$bis, $von]) as $s) {
+        $k[] = ['text' => 'Sperre ' . dm($s['von']) . '–' . dm(date('Y-m-d', strtotime($s['bis'] . ' -1 day'))), 'id' => null, 'quelle' => $s['quelle']];
     }
     return $k;
 }
