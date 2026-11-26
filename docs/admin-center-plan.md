@@ -3,7 +3,10 @@
 Stand: 26.11.2026 · Status: Entwurf zur Freigabe
 Festgelegt am 26.11.:
 - Es gibt ein einziges Admin-Konto.
-- Das Postfach wird eingebunden, ausgelesen und ausgewertet.
+- Das Postfach info@bambi-staub.ch wird eingebunden, ausgelesen und ausgewertet.
+- Zahlungen erfasst der Admin von Hand, es gibt keine Bankanbindung.
+- Mit der Bestätigung gehen alle Infos an den Gast. Nur der Code wird 3 Tage vor Anreise verschickt.
+- Personen und Kontakt bei Interhome-Buchungen trägt der Admin meist von Hand ein, weil Interhome sie erst kurz vor Anreise mitteilt.
 
 ## 1. Ziel
 
@@ -50,14 +53,13 @@ Legende:
 | 1 | Anfrage über /buchen | Gast | Formular wie heute. Nummer BAM-xxxx, Preis wird serverseitig berechnet | **Anfrage** |
 | 2 | Anfrage erfassen | ⚙️ | Buchung und Gast in der DB. ✉️ Eingangsbestätigung an den Gast, Mail an info@ mit Link «Im Admin-Center öffnen». Der Zeitraum ist noch frei | Anfrage |
 | 3 | Prüfen | 👤 | Das Admin-Center zeigt Konflikte (Interhome, Sperren, andere Anfragen), Stammgast ja/nein, Preis | Anfrage |
-| 4a | Annehmen | 👤 | ✉️ Bestätigung mit Zahlungsangaben (QR-Rechnung ab Etappe 4), vor dem Senden anpassbar. Zeitraum **sofort auf der Website gesperrt** | **Bestätigt** |
+| 4a | Annehmen | 👤 | ✉️ Bestätigung mit **allem auf einmal**: Zahlungsangaben, Anreise und Parkieren, Check-in/-out-Zeiten, Link zum Aufenthalts-Guide, Kurtaxe, Hinweis «Code folgt 3 Tage vor Anreise». Vor dem Senden anpassbar. Zeitraum **sofort auf der Website gesperrt** | **Bestätigt** |
 | 4b | oder Ablehnen | 👤 | ✉️ freundliche Absage, Zeitraum bleibt frei | Abgelehnt (Ende) |
 | 5 | In Interhome sperren | 👤 | Aufgabe «Im Interhome-Portal als Eigentümerbuchung eintragen» | Bestätigt, Aufgabe offen |
 | 6 | Abgleich Interhome | ⚙️ | Der iCal-Sync findet ein `Ownerbooking` mit denselben Daten und verknüpft es. Die Aufgabe ist erledigt. Fehlt es nach 24 Std., kommt eine Erinnerung | Bestätigt ✓ Interhome |
 | 7 | Gast antwortet per Mail | ⚙️ | Die Mail-Auswertung ordnet die Antwort über die BAM-Nummer im Betreff oder die Absenderadresse der Buchung zu. Fragen erscheinen als Aufgabe, mit Antwortentwurf (KI) | – |
-| 8 | Zahlung | ⚙️/👤 | Fälligkeit wird überwacht, ✉️ Erinnerung bei Verzug. Zahlungseingang trägt der Admin ein | **Bezahlt** |
-| 9 | 14 Tage vor Anreise | ⚙️ ✉️ | Anreiseinfo mit Link zum Aufenthalts-Guide und zum **Online-Check-in** (Personen und Alter für die Kurtaxe, Anreisezeit, Autokennzeichen, Wünsche) | Bezahlt |
-| 10 | Check-in ausgefüllt | ⚙️ | Angaben stehen bei der Buchung. Fehlt der Check-in 3 Tage vor Anreise, erscheint eine Aufgabe | Bereit |
+| 8 | Zahlung | 👤 | **Manuell:** Der Admin sieht den Zahlungseingang auf dem Konto und klickt «Bezahlt». Das Admin-Center zeigt nur offene Beträge und das Fälligkeitsdatum. Eine Erinnerung verschickt der Admin per Knopf, nicht automatisch. Keine Bankanbindung | **Bezahlt** |
+| 9 | 3 Tage vor Anreise | ⚙️ ✉️ | **Code-Mail:** Code + kurze Erinnerung (Anreisezeit, Guide-Link). Ist die Buchung noch nicht als bezahlt markiert, wird nichts gesendet. Stattdessen erscheint eine Aufgabe (siehe offene Fragen) | Bereit |
 | 11 | Anreise / Aufenthalt | 👤 | Übersicht «Heute»: wer kommt, wann, wie viele | **Vor Ort** |
 | 12 | Abreise | ⚙️ | Wechseltag in der Übersicht. Endreinigung planen. Beim Familiencode reinigen die Gäste selbst, also kein Eintrag | Abgereist |
 | 13 | 1 Tag nach Abreise | ⚙️ ✉️ | Dank + Bitte um Google-Bewertung | Abgeschlossen |
@@ -70,13 +72,13 @@ Legende:
 | # | Schritt | Wer | Was passiert | Status danach |
 |---|---|---|---|---|
 | 1 | Gast bucht bei Interhome | Interhome | Interhome verschickt eine Buchungsmail und ergänzt den iCal | – |
-| 2 | Mail auslesen | ⚙️ (alle 10 Min.) | Mail wird als Interhome-Buchung erkannt. Ausgelesen werden: Reservationsnummer, Daten, Gast, Personen (Erw./Kinder), Kontakt falls vorhanden, Ertrag. Die Buchung wird angelegt | **Bestätigt** (Quelle Interhome) |
+| 2 | Mail auslesen | ⚙️ (alle 10 Min.) | Mail wird als Interhome-Buchung erkannt. Ausgelesen wird, was drinsteht: Reservationsnummer, Daten, Gastname, Ertrag. Personen und Kontakt fehlen meist | **Bestätigt** (Quelle Interhome) |
 | 3 | Abgleich iCal | ⚙️ (alle 30 Min.) | Der iCal-Eintrag mit derselben Reservationsnummer bestätigt die Daten. Abweichungen werden rot markiert. Kommt der iCal zuerst, entsteht die Buchung dort und die Mail ergänzt sie | Bestätigt ✓ |
 | 4 | Website sperren | ⚙️ | Zeitraum auf der Website belegt (ohne Zutun) | – |
 | 5 | Admin informieren | ⚙️ | Kurze Mail an info@: «Neue Interhome-Buchung 30.01.–06.02., Fam. Baumgartner, 4 Pers.» | – |
-| 6 | Lücken ergänzen | 👤 | Fehlende Angaben sind markiert (z. B. Telefon). Man ergänzt sie von Hand oder sie kommen aus späteren Interhome-Mails | Bestätigt |
+| 6 | Lücken ergänzen | 👤 | Interhome teilt Personen und Kontakt meist erst kurz vor Anreise mit. Bei der Buchung steht «Angaben fehlen», 7 Tage vor Anreise erscheint eine Aufgabe. Der Admin trägt sie von Hand ein (Schnellformular, auf dem Handy in 30 Sekunden). Enthält eine Interhome-Mail die Angaben doch, füllt die Auswertung sie selbst aus | Bestätigt |
 | 7 | Änderung | ⚙️ | Eine Interhome-Änderungsmail und/oder geänderte iCal-Daten passen die Buchung an. Der Verlauf zeigt vorher/nachher, an info@ geht ein Hinweis | Bestätigt |
-| 8 | Vor Anreise | ⚙️/👤 | Haben wir eine E-Mail des Gastes: ✉️ Anreiseinfo mit Guide-Link (wie Direktbuchung, Schritt 9). Sonst Aufgabe «Guide-Link über Interhome-Nachricht senden» | Bereit |
+| 8 | Vor Anreise | ⚙️/👤 | Haben wir eine E-Mail des Gastes: ✉️ Infos + Code wie bei der Direktbuchung (Code 3 Tage vor Anreise). Sonst erscheint eine Aufgabe «Code und Guide-Link übermitteln» (Weg siehe offene Fragen) | Bereit |
 | 9 | Anreise / Abreise | 👤 | Übersicht «Heute» und Wechseltag mit Endreinigung (Interhome-Gäste zahlen sie über Interhome, also immer einplanen) | Vor Ort → Abgereist |
 | 10 | Nach Abreise | ⚙️ | Interhome fragt selbst nach einer Bewertung, wir schicken keine eigene Mail. Mit E-Mail-Adresse optional die Bitte um eine Google-Bewertung | Abgeschlossen |
 | 11 | Abrechnung | ⚙️ | Die monatliche Interhome-Abrechnung (Mail/PDF) wird ausgelesen. Der Auszahlungsbetrag wird den Buchungen zugeordnet | Abgerechnet |
@@ -155,16 +157,31 @@ bambi-data/     ausserhalb Webroot: admin.sqlite, Sicherungen, bisherige .jsonl
 | 1 | Login (ein Admin, 2FA), DB, iCal-Sync, Website-Anfragen in die DB (inkl. Import .jsonl), Liste + Kalender, Sperren, Website liest aus DB | 2–3 Tage | Alles an einem Ort |
 | 2 | **Direkt-Roadmap Schritte 1–6:** Annehmen/Ablehnen, Mailvorlagen, Aufgabe + Abgleich Interhome, Verlauf | 2 Tage | Direktbuchung in wenigen Klicks |
 | 3 | **Mail-Auswertung:** IMAP-Abruf, Regeln für Interhome-Mails, KI-Rückfallebene, Vorschläge, Posteingang-Ansicht, Gastantworten zuordnen | 3 Tage | Interhome-Roadmap Schritte 2–7 und Storno automatisch |
-| 4 | Gäste: Online-Check-in, Anreise- und Dankesmail, Kalender-Abo, Übersicht «Heute» und Wechseltage | 2–3 Tage | Roadmaps Schritte 9–13 |
-| 5 | Geld: Zahlungen, QR-Rechnung, Interhome-Abrechnung auslesen, Jahresauswertung, Löschfristen | 2 Tage | Einnahmen im Überblick |
+| 4 | Gäste: Code-Mail 3 Tage vorher, Dankesmail, Schnellformular für Interhome-Angaben, Kalender-Abo, Übersicht «Heute» und Wechseltage | 2 Tage | Roadmaps Schritte 9–13 |
+| 5 | Geld: Zahlungen manuell erfassen, Interhome-Abrechnung auslesen, Jahresauswertung, Löschfristen | 1–2 Tage | Einnahmen im Überblick |
 
 Getestet wird lokal (`php -S`, SQLite, Playwright, Test-Mails als .eml) und danach live mit einer Testbuchung.
 
-## 11. Was ich noch brauche
+## 11. IMAP-Zugang (Postfach info@bambi-staub.ch)
 
-1. **Interhome-Mails:** Wohin gehen sie (info@ oder eine andere Adresse)? Und je ein Beispiel für Buchung, Änderung, Storno und Abrechnung, zum Beispiel als weitergeleitete Mails oder .eml (für Etappe 3).
-2. **IMAP-Zugang** zu info@bambi-staub.ch (Passwort kommt nur in `config/admin.php` auf dem Server, nicht ins Repo).
-3. **Zahlung Direktbuchung:** Vorauskasse oder Anzahlung (wie viel %)? IBAN für die QR-Rechnung (Etappe 5).
-4. **Check-in/-out-Zeiten:** Interhome 16:00/10:00, Guide 15:00/12:00. Was gilt?
-5. **Endreinigung nach Interhome-Gästen:** Wer reinigt, und braucht diese Person die Wechseltage?
-6. **API-Schlüssel Anthropic** (optional, Etappe 3).
+| Angabe | Wert |
+|---|---|
+| Server | `imap.mail.hostpoint.ch` |
+| Port / Verschlüsselung | 993, SSL/TLS |
+| Benutzername | `info@bambi-staub.ch` (ganze Adresse) |
+| Passwort | Passwort des Postfachs |
+| Ordner | Posteingang. Falls Mail-Regeln Interhome-Mails in einen Unterordner verschieben, auch dessen Namen |
+
+- Das Passwort kommt nur in `config/admin.php` auf dem Server (gesperrt, nicht im Repo, nicht in Mails). Ich lege die Datei per FTP ab oder ihr tragt das Passwort selbst ein.
+- Ändert ihr das Postfach-Passwort später, muss es dort nachgeführt werden. Das Admin-Center meldet, wenn die Anmeldung fehlschlägt.
+- Die Auswertung setzt keine Mails auf «gelesen». Ihr seht in Apple Mail/Outlook weiterhin alles wie bisher.
+
+## 12. Offene Punkte
+
+1. **Beispiel-Mails von Interhome:** je eine Buchung, Änderung, Storno und Monatsabrechnung, weitergeleitet oder als .eml (für Etappe 3)
+2. **Code:** fester Code oder pro Buchung neu? Wird er auch gesendet, wenn noch nicht bezahlt ist?
+3. **Interhome-Gäste:** Wer schickt ihnen Code und Guide (Interhome oder wir)?
+4. **Zahlung Direktbuchung:** Vorauskasse, Anzahlung oder vor Ort? Zahlungsfrist? IBAN für die Bestätigungsmail
+5. **Check-in/-out-Zeiten:** Interhome 16:00/10:00, Guide 15:00/12:00. Was gilt?
+6. **Endreinigung nach Interhome-Gästen:** Wer reinigt, und braucht diese Person die Wechseltage?
+7. **API-Schlüssel Anthropic** (optional, Etappe 3)
