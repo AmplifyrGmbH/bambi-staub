@@ -18,8 +18,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112609">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112609">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112610">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112610">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
@@ -156,8 +156,13 @@
 
             <div class="form-group">
               <label class="form-label" for="field-persons">Anzahl Personen *</label>
-              <input class="form-input" type="number" id="field-persons" name="persons"
-                     required min="1" max="4" placeholder="z.B. 4">
+              <select class="form-input" id="field-persons" name="persons" required>
+                <option value="" disabled selected>Bitte wählen</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
             </div>
 
             <div class="form-group" style="grid-column:1/-1">
@@ -186,11 +191,6 @@
 
           </div>
 
-          <!-- Endreinigung: keine Auswahl, nur Hinweis (Text wechselt mit Familiencode) -->
-          <div class="form-group form-group--full">
-            <p class="form-label">Endreinigung</p>
-            <p class="form-note" id="cleaning-info" style="margin-top:0">Die Endreinigung <span data-price="cleaning-amount"></span> ist im Preis enthalten.</p>
-          </div>
 
           <!-- Bettwäsche -->
           <div class="form-group form-group--full">
@@ -291,8 +291,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112609" defer></script>
-<script src="/assets/js/booking-calendar.js?v=2026112609" defer></script>
+<script src="/assets/js/script.js?v=2026112610" defer></script>
+<script src="/assets/js/booking-calendar.js?v=2026112610" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>

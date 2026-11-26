@@ -174,7 +174,6 @@
         LINEN_PER_BED  = prices.linenPerBed;
         ENERGY_PER_NIGHT = prices.energyPerNight || 0;
         TAX            = prices.touristTax || null;
-        document.querySelectorAll('[data-price="cleaning-amount"]').forEach(el => { el.textContent = `(CHF ${CLEANING_PRICE})`; });
         document.querySelectorAll('[data-price="linen"]').forEach(el => { el.textContent = `+CHF ${LINEN_PER_BED}/${el.dataset.unit}`; });
         S.booked  = data.bookings || [];
         S.loading = false;
@@ -531,7 +530,7 @@
     const refresh = () => { if (S.arrival && S.departure) { updatePricePreview(); updateStickyBar(); } };
     document.querySelectorAll('[name="linen"]').forEach(r => r.addEventListener('change', refresh));
     const personsInput = document.getElementById('field-persons');
-    if (personsInput) personsInput.addEventListener('input', refresh);
+    if (personsInput) personsInput.addEventListener('change', refresh);
   }
 
   function bindStickyBar() {
@@ -561,8 +560,6 @@
       el.disabled = on;
       const label = el.closest('label'); if (label) label.style.opacity = on ? '.45' : '';
     });
-    const ci = document.getElementById('cleaning-info');
-    if (ci) ci.textContent = on ? 'Die Endreinigung machen Sie selbst – mit dem Familiencode entfallen die Reinigungskosten.' : `Die Endreinigung (CHF ${CLEANING_PRICE}) ist im Preis enthalten.`;
     let n = document.getElementById('flat-note');
     if (on && !n) {
       n = document.createElement('p'); n.id = 'flat-note'; n.className = 'form-note';

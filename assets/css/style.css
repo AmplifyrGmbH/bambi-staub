@@ -2001,3 +2001,26 @@ p, li, dd, td { overflow-wrap: break-word; }
   font-size: .85rem;
   text-decoration: underline;
 }
+
+/* ── MOBILE-NACHBESSERUNG (26.11.2026) ───────────────────────── */
+/* Sehr schmale Handys (320–360 px): Kopfzeile darf nicht breiter als der Bildschirm werden */
+@media (max-width: 360px) {
+  .logo-name { font-size: 1.6rem; }
+  .header-actions { gap: .5rem; }
+}
+/* Eigenständige Textlinks und Umrandungs-Knöpfe: genügend grosse Tippfläche */
+.btn-outline-dark { min-height: 44px; }
+.guide-card > a[target="_blank"] { padding: .7rem 0; margin-top: .25rem !important; }
+/* Slider in Rasterspalten dürfen schmaler werden als ihre Bilder */
+.slider { min-width: 0; max-width: 100%; }
+/* Schmale Handys: Knopftext darf umbrechen statt über den Rand zu laufen */
+@media (max-width: 400px) {
+  .btn { white-space: normal; text-align: center; padding-left: 1.25rem; padding-right: 1.25rem; }
+}
+/* Viele Bilder (z. B. 18 im Aussenbereich): Punkte brechen um statt über den Rand zu laufen */
+.slider-dots { flex-wrap: wrap; row-gap: .6rem; padding: 0 1rem; }
+/* Ausstattungsliste: unter 400 px einspaltig, lange deutsche Wörter dürfen trennen */
+.ausstattung-item { hyphens: auto; overflow-wrap: anywhere; }
+@media (max-width: 400px) {
+  .ausstattung-grid { grid-template-columns: minmax(0, 1fr); }
+}
