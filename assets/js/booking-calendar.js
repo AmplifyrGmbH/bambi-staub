@@ -9,6 +9,11 @@
   // Preise kommen vom Server (config/pricing.php über /api/pricing.php)
   let CLEANING_PRICE   = 0;
   let LINEN_PER_BED    = 0;
+  let ENERGY_PER_NIGHT = 0;
+  let TAX              = null;
+  // CHF-Betrag: ganze Franken ohne, sonst mit Rappen (19.50)
+  const chf = n => Number.isInteger(n) ? String(n) : n.toFixed(2);
+  const energyCost = nights => Math.round(nights * ENERGY_PER_NIGHT * 100) / 100;
   const MONTHS     = 14; // Monate voraus
   const MOBILE_STEP = 3;  // Handy: so viele Monate pro Schritt
 
@@ -163,6 +168,8 @@
         cfg.pricing    = prices.pricing || [];
         CLEANING_PRICE = prices.cleaning;
         LINEN_PER_BED  = prices.linenPerBed;
+        ENERGY_PER_NIGHT = prices.energyPerNight || 0;
+        TAX            = prices.touristTax || null;
         document.querySelectorAll('[data-price="cleaning"]').forEach(el => { el.textContent = `+CHF ${CLEANING_PRICE}`; });
         document.querySelectorAll('[data-price="linen"]').forEach(el => { el.textContent = `+CHF ${LINEN_PER_BED}/${el.dataset.unit}`; });
         S.booked  = data.bookings || [];
@@ -418,7 +425,8 @@
     S.priceTotal   = total;
     S.discountAmt  = applyDiscount(total);
     const extras   = getExtrasCost();
-    const final    = total - S.discountAmt + extras;
+    const energy   = energyCost(nights);
+    const final    = chf(total - S.discountAmt + extras + energy);
 
     let linesHTML = '';
     breakdown.forEach(b => {
@@ -428,7 +436,7 @@
 
     const cleaning = getCleaningCost();
     const linen    = getLinenCost();
-    let extrasHTML = '';
+    let extrasHTML = energy > 0 ? `<div class="price-line"><span>Energiekosten (${nights} × CHF ${chf(ENERGY_PER_NIGHT)})</span><span>CHF ${chf(energy)}</span></div>` : '';
     if (cleaning > 0) extrasHTML += `<div class="price-line"><span>Endreinigung</span><span>CHF ${cleaning}</span></div>`;
     if (linen > 0)    extrasHTML += `<div class="price-line"><span>Bettwäsche</span><span>CHF ${linen}</span></div>`;
 
@@ -444,6 +452,7 @@
         ${discountHTML}
         <div class="price-total"><span>Total (Anfrage)</span><span>CHF ${final}</span></div>
         <p class="price-note">Verbindlich nach Bestätigung per E-Mail.</p>
+        ${TAX ? `<p class="price-note price-note--tax">${`Nicht im Preis enthalten: Kurtaxe CHF ${TAX.adult}.– pro Person ab ${TAX.from_age} Jahren und Nacht (Zwischensaison die Hälfte), jünger gratis. Sie bezahlen sie vor Ort beim Tourismus-Büro Sörenberg.`}</p>` : ''}
       </div>`;
     $pricePreview.style.display = 'block';
   }
@@ -497,7 +506,7 @@
         `${short(S.arrival)} → ${short(S.departure)} · ${nights} Nächte`;
       const priceEl = document.getElementById('sticky-bar-price');
       if (total !== null) {
-        const final = total - applyDiscount(total) + getExtrasCost();
+        const final = chf(total - applyDiscount(total) + getExtrasCost() + energyCost(nights));
         priceEl.innerHTML = `CHF ${final}<small>Total</small>`;
       } else {
         priceEl.textContent = '';

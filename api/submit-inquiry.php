@@ -141,6 +141,10 @@ $priceCfg  = require __DIR__ . '/../config/pricing.php';
 $periods   = $priceCfg['periods'];
 $cleanPrice = (int)$priceCfg['cleaning'];
 $linenPrice = (int)$priceCfg['linen_per_bed'];
+$energyPrice = (float)$priceCfg['energy_per_night'];
+$tax        = $priceCfg['tourist_tax'];
+// Beträge mit Rappen nur wenn nötig: 98 bzw. 19.50
+function chf($n): string { return floor($n) == $n ? (string)(int)$n : number_format($n, 2, '.', ''); }
 $totalPrice = 0;
 $breakdown  = [];
 
@@ -196,7 +200,12 @@ if (!empty($discountCode)) {
 
 $cleaningCost = ($cleaning === 'yes') ? $cleanPrice : 0;
 $linenCost    = ($linen   === 'rent') ? ($linenBeds * $linenPrice) : 0;
-$finalPrice   = $totalPrice - $discountAmount + $cleaningCost + $linenCost;
+$energyCost   = round($nights * $energyPrice, 2);
+$finalPrice   = chf($totalPrice - $discountAmount + $cleaningCost + $linenCost + $energyCost);
+$energyCost   = chf($energyCost);
+$energyPriceTxt = chf($energyPrice);
+$kurtaxe = t("Nicht im Preis enthalten: Kurtaxe CHF {$tax['adult']}.– pro Person ab {$tax['from_age']} Jahren und Nacht (Zwischensaison die Hälfte), jünger gratis. Bitte in den ersten Tagen beim Tourismus-Büro Sörenberg, Rothornstrasse 21, bezahlen.",
+    "Not included: tourist tax CHF {$tax['adult']}.– per person aged {$tax['from_age']}+ per night (half in the off-season), younger guests free. Please pay within the first few days at the Sörenberg Tourist Office, Rothornstrasse 21.");
 
 // ── E-Mail-Text zusammenbauen ─────────────────────────────────
 $dir    = dirname(__DIR__, 3) . '/bambi-data';   // ausserhalb des Webroots
@@ -239,6 +248,7 @@ $body .= "Abreise:   {$bis}\n";
 $body .= "Nächte:    {$nights}\n\n";
 $body .= "PREIS (berechnet)\n";
 $body .= $breakdownLines;
+$body .= "Energiekosten ({$nights} × CHF {$energyPriceTxt}): CHF {$energyCost}\n";
 if ($cleaningCost > 0) $body .= "Endreinigung:  CHF {$cleaningCost}\n";
 if ($linenCost    > 0) $body .= "Bettwäsche ({$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '') . "): CHF {$linenCost}\n";
 if ($discountAmount > 0) {
@@ -277,6 +287,7 @@ foreach ($breakdown as $b) {
     $n = $b['nights'];
     $preisRows .= $iZeile($n . ($n > 1 ? ' Nächte' : ' Nacht') . ' × CHF ' . $b['price'], 'CHF ' . $x($b['subtotal']));
 }
+$preisRows .= $iZeile('Energiekosten', $x("{$nights} × CHF {$energyPriceTxt}") . " · CHF {$energyCost}");
 $preisRows .= $iZeile('Endreinigung', $cleaning === 'yes' ? "CHF {$cleanPrice}" : 'selbst reinigen');
 $preisRows .= $iZeile('Bettwäsche', $linen === 'rent' ? $x("{$linenBeds} Bett" . ($linenBeds > 1 ? 'en' : '')) . " · CHF {$linenCost}" : 'eigene');
 if ($discountAmount > 0) $preisRows .= $iZeile('Rabatt', $x("{$discountLabel} · Code {$discountCode}") . "<br>– CHF {$discountAmount}");
@@ -343,10 +354,10 @@ $msg = "--$iAlt\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-E
 
 $bestaetigung = $en
     ? "Hello {$name}\n\nThank you for your booking enquiry. We have received it and will get back to you by email within 24 hours.\n\n" .
-      "Reference: {$ticket}\nStay: {$von} to {$bis} ({$nights} nights, {$persons} guests)\nEstimated total: CHF {$finalPrice}\n\n" .
+      "Reference: {$ticket}\nStay: {$von} to {$bis} ({$nights} nights, {$persons} guests)\nEstimated total: CHF {$finalPrice}\n{$kurtaxe}\n\n" .
       "This is an enquiry, not yet a confirmed booking.\n\nKind regards\nFamilie Staub\n" . NAME . "\nRothornstrasse 40, 6174 Sörenberg\n" . MAIL_TO . "\n"
     : "Guten Tag {$name}\n\nVielen Dank für Ihre Buchungsanfrage. Wir haben sie erhalten und melden uns innerhalb von 24 Stunden per E-Mail bei Ihnen.\n\n" .
-      "Nummer: {$ticket}\nAufenthalt: {$von} bis {$bis} ({$nights} Nächte, {$persons} Personen)\nVoraussichtlicher Preis: CHF {$finalPrice}\n\n" .
+      "Nummer: {$ticket}\nAufenthalt: {$von} bis {$bis} ({$nights} Nächte, {$persons} Personen)\nVoraussichtlicher Preis: CHF {$finalPrice}\n{$kurtaxe}\n\n" .
       "Das ist eine Anfrage, noch keine bestätigte Buchung.\n\nHerzliche Grüsse\nFamilie Staub\n" . NAME . "\nRothornstrasse 40, 6174 Sörenberg\n" . MAIL_TO . "\n";
 
 // ── Bestätigung als HTML ──────────────────────────────────────
@@ -357,6 +368,7 @@ $zeilen = [
     [t('Anreise', 'Arrival'), $von],
     [t('Abreise', 'Departure'), $bis],
     [t('Aufenthalt', 'Stay'), $nights . t(' Nächte · ', ' nights · ') . $persons . t(' Personen', ' guests')],
+    [t('Energiekosten', 'Energy costs'), "CHF {$energyCost}"],
     [t('Endreinigung', 'Final cleaning'), $cleaning === 'yes' ? t('Ja', 'Yes') . " (CHF {$cleanPrice})" : t('Selbst reinigen', 'Self-cleaning')],
     [t('Bettwäsche', 'Bed linen'), $linen === 'rent' ? $linenBeds . t(' Bett', ' bed') . ($linenBeds > 1 ? t('en', 's') : '') . " · CHF {$linenCost}" : t('Eigene', 'Own')],
 ];
@@ -369,7 +381,8 @@ foreach ($zeilen as [$k, $v]) {
         . '<td align="right" style="padding:7px 0;border-bottom:1px solid #E2DCD0;color:#2C2C2C;font-size:14px;">' . $x($v) . '</td></tr>';
 }
 $tabelle .= '<tr><td style="padding:14px 0 0;color:#2D3E33;font-size:15px;font-weight:600;">' . t('Voraussichtlicher Preis', 'Estimated total') . '</td>'
-    . '<td align="right" style="padding:14px 0 0;' . $serif . 'color:#2D3E33;font-size:22px;">CHF ' . $x($finalPrice) . '</td></tr>';
+    . '<td align="right" style="padding:14px 0 0;' . $serif . 'color:#2D3E33;font-size:22px;">CHF ' . $x($finalPrice) . '</td></tr>'
+    . '<tr><td colspan="2" style="padding:12px 0 0;color:#5A7263;font-size:13px;line-height:1.5;">' . $x($kurtaxe) . '</td></tr>';
 
 $bestaetigungHtml = '<!doctype html><html lang="' . t('de', 'en') . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     . '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Chalet Bambi</title></head>'

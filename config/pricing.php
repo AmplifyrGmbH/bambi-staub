@@ -4,9 +4,15 @@
 // (die Buchungsseiten über /api/pricing.php). Nach einer Änderung genügt der Push.
 return [
     // Endreinigung pauschal
-    'cleaning'      => 80,
+    'cleaning'      => 98,
     // Bettwäsche pro Bett
     'linen_per_bed' => 20,
+    // Energiekosten pro Nacht, immer im Preis
+    'energy_per_night' => 6.5,
+
+    // Kurtaxe: NICHT im Preis, Gäste zahlen selbst beim Tourismus-Büro Sörenberg.
+    // Nur für den Hinweis auf der Buchungsseite und in der Bestätigung (Quelle: soerenberg.ch/de/kurtaxe)
+    'tourist_tax' => ['adult' => 4, 'from_age' => 16],
 
     // Preis pro Nacht. "from" und "to" sind inklusive (letzter Tag, an dem dieser Preis gilt).
     // Zeiträume müssen lückenlos sein, sonst erscheint "Preis auf Anfrage".
