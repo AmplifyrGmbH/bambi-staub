@@ -58,9 +58,16 @@
 }
 
 @media (min-width: 960px) {
+  /* Rechte Spalte so hoch wie die Kalenderspalte, damit «Buchen» beim Scrollen stehen bleibt */
+  .booking-col-form { align-self: stretch; }
   .booking-form-sticky {
     position: sticky;
-    top: 2rem;
+    top: calc(var(--header-h, 76px) + 1rem);
+    /* Höher als der Bildschirm: innerhalb der Spalte scrollen statt abschneiden */
+    max-height: calc(100vh - var(--header-h, 76px) - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 }
 
