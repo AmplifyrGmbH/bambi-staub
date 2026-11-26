@@ -13,6 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Zugangsdaten Admin-Center schreiben (aus Secret, nicht im Repo)
+        env:
+          BAMBI_ADMIN_CONFIG: ${{ secrets.BAMBI_ADMIN_CONFIG }}
+        run: |
+          if [ -n "$BAMBI_ADMIN_CONFIG" ]; then echo "$BAMBI_ADMIN_CONFIG" | base64 -d > config/admin.php; fi
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
