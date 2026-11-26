@@ -62,6 +62,7 @@ $linenBeds     = $persons;   // Bettwäsche wird pro Person berechnet
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
 
 if ($name === '')                                       respond(false, t('Bitte geben Sie Ihren Namen an.', 'Please enter your name.'), [], 422);
+if (strlen(preg_replace('/\D/', '', $phone)) < 7) respond(false, t('Bitte geben Sie Ihre Telefonnummer an.', 'Please enter your phone number.'), [], 422);
 if ($street === '' || $zip === '' || $city === '' || $country === '') respond(false, t('Bitte geben Sie Ihre vollständige Adresse an.', 'Please enter your full address.'), [], 422);
 if ($persons < 1 || $persons > 4)                      respond(false, t('Das Chalet bietet Platz für 1 bis 4 Personen.', 'The chalet sleeps 1 to 4 guests.'), [], 422);
 if (!$email)                                            respond(false, t('Bitte prüfen Sie die E-Mail-Adresse.', 'Please check your email address.'), [], 422);
