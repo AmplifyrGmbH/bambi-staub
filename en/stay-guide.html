@@ -28,7 +28,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112610">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112611">
+  <link rel="stylesheet" href="/assets/css/guide.css?v=2026112611">
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
   <style>
     .site-header {
@@ -51,65 +52,8 @@
     .mobile-menu .mobile-nav-link { padding: .6rem 0; font-size: .9rem; }
     .mobile-menu .mobile-menu-inner { padding-top: .5rem; padding-bottom: 1rem; }
     .mobile-menu .mobile-cta { margin-top: .75rem; }
-    .site-header .header-cta {
-      background: var(--forest);
-      border-color: var(--forest);
-      color: var(--linen);
-    }
+    .site-header .header-cta { background: var(--forest); border-color: var(--forest); color: var(--linen); }
     .site-header .header-cta:hover { background: var(--forest-light); }
-    .sg-fold {
-      height: calc(100vh - var(--header-h, 88px));
-      height: calc(100dvh - var(--header-h, 88px));
-      display: flex;
-      flex-direction: column;
-    }
-    .sg-fold .hero--short {
-      flex: 1;
-      height: auto;
-      min-height: 0;
-    }
-    .toc-toggle { display: none; }
-    @media (max-width: 767px) {
-      .hero-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
-      .guide-card { padding: 1.1rem 1.25rem; }
-      .sg-fold .hero--short { flex: 1; }
-      /* Mobile TOC dropdown */
-      .toc-nav { display: block; padding: 0; }
-      .toc-label { display: none; }
-      .toc-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        background: none;
-        border: none;
-        border-bottom: 1px solid rgba(251,249,244,0.1);
-        cursor: pointer;
-        padding: 1rem var(--px);
-        color: rgba(251,249,244,0.6);
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: 0.75rem;
-        font-weight: 500;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-      }
-      .toc-toggle svg { transition: transform 0.25s; flex-shrink: 0; }
-      .toc-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
-      .toc-toggle[aria-expanded="true"] { border-bottom-color: transparent; }
-      #toc-chips-list { display: none; flex-direction: column; gap: 0; padding: 0; }
-      #toc-chips-list.open { display: flex; }
-      #toc-chips-list .toc-chip {
-        border-radius: 0;
-        border: none;
-        border-bottom: 1px solid rgba(251,249,244,0.08);
-        padding: .875rem var(--px);
-        font-size: .9rem;
-        background: rgba(0,0,0,0.15);
-        justify-content: flex-start;
-      }
-      #toc-chips-list .toc-chip:last-child { border-bottom: none; }
-      #toc-chips-list .toc-num { font-size: .65rem; margin-right: .75rem; opacity: .5; }
-    }
   </style>
 
   <script type="application/ld+json">
@@ -124,6 +68,43 @@
   </script>
 </head>
 <body>
+<!-- Symbole (einmal definiert, per <use> wiederverwendet) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-in" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 17H3v-5l2.2-5.2A2 2 0 0 1 7 5.5h10a2 2 0 0 1 1.8 1.3L21 12v5h-2M3 12h18M9 17h6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24"><path d="M6 3h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM4 11h16M8 18v2.5M16 18v2.5M8 14.5h.01M16 14.5h.01"/></symbol>
+  <symbol id="i-parking" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4zM14 5v2M14 11v2M14 17v2"/></symbol>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M2 2l20 20M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5c4-.4 8.1.9 11.3 3.8M16.9 11.3a10 10 0 0 1 2.2 1.7M5 13a10 10 0 0 1 5.2-2.8M12 20h.01"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5S12.5 5.5 12 3c-.5 2.5-2 4.9-4 6.5S5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+  <symbol id="i-thermo" viewBox="0 0 24 24"><path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3zm0 0v7"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-nosmoke" viewBox="0 0 24 24"><path d="M2 2l20 20M12 12H2v4h14M22 12v4M7 12v4M18 8c0-2.5-2-2.5-2-5M22 8c0-2.5-2-2.5-2-5"/></symbol>
+  <symbol id="i-paw" viewBox="0 0 24 24"><circle cx="8" cy="7" r="1.8"/><circle cx="14" cy="5.5" r="1.8"/><circle cx="18.5" cy="10" r="1.6"/><path d="M11 11c-2.5 0-4.5 2.6-4.5 4.6 0 1.4 1.1 2.4 2.4 2.4.8 0 1.3-.4 2.1-.4s1.3.4 2.1.4c1.3 0 2.4-1 2.4-2.4 0-2-2-4.6-4.5-4.6zM3 21 21 3"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-recycle" viewBox="0 0 24 24"><path d="M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7L7 9.5M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7l-1.2-2.1M14 16l-3 3 3 3M8.3 13.6 7 9.5l-4.1 1.1M14.5 6.1l-1.4-2.4a1.8 1.8 0 0 0-3.2 0L8.7 5.8M16.6 12.8l1.2-4.1-4.1-1.2"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10zM2 21c0-3 1.9-5.4 5.1-6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-radio" viewBox="0 0 24 24"><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M6 9l10-6"/><circle cx="16" cy="15" r="2.5"/><path d="M6 13.5h4M6 16.5h4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></symbol>
+</svg>
 
 <header class="site-header" role="banner">
   <div class="header-inner">
@@ -147,15 +128,13 @@
   </div>
   <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation">
     <div class="mobile-menu-inner">
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#chalet-info" class="mobile-nav-link">Chalet at a Glance</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#arrival" class="mobile-nav-link">Arrival &amp; Departure</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#heating" class="mobile-nav-link">Heating</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#hotwater" class="mobile-nav-link">Hot Water &amp; Boiler</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#linen" class="mobile-nav-link">Bed Linen</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#kitchen" class="mobile-nav-link">Kitchen &amp; Appliances</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#houserules" class="mobile-nav-link">House Rules</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#waste" class="mobile-nav-link">Waste &amp; Recycling</a></div></div>
-      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#emergency" class="mobile-nav-link">Important Numbers</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#arrival" class="mobile-nav-link">Arrival</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#in-the-chalet" class="mobile-nav-link">In the chalet</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#house-rules" class="mobile-nav-link">House rules &amp; waste</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#departure" class="mobile-nav-link">Departure</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#help" class="mobile-nav-link">Help &amp; emergency</a></div></div>
+      <div class="mobile-nav-item"><div class="mobile-nav-row"><a href="#chalet" class="mobile-nav-link">The chalet</a></div></div>
+
       <a href="/en/" class="mobile-cta">To Website</a>
     </div>
   </div>
@@ -163,336 +142,326 @@
 
 <main>
 
-  <div class="sg-fold">
   <!-- ── HERO ─────────────────────────────────────────────────── -->
-  <section class="hero hero--short" aria-label="Stay Guide">
-    <div class="hero-bg">
-      <img src="/Bilder/hero/Hero_Haus.webp" srcset="/Bilder/hero/Hero_Haus-960.webp 960w, /Bilder/hero/Hero_Haus.webp 1920w" sizes="100vw" fetchpriority="high" alt="Living room Chalet Bambi – cosy wood interior" width="1920" height="1080" style="object-position: center 40%">
-      <div class="hero-gradient-full" aria-hidden="true"></div>
-    </div>
-    <div class="hero-content container" style="text-align:center">
-      <h1 class="hero-title" style="max-width:none">Your Stay Guide</h1>
+  <section class="g-hero" aria-label="Welcome">
+    <img src="/Bilder/hero/Hero_Haus.webp" srcset="/Bilder/hero/Hero_Haus-960.webp 960w, /Bilder/hero/Hero_Haus.webp 1920w" sizes="100vw" fetchpriority="high" alt="Chalet Bambi in Sörenberg" width="1920" height="1080">
+    <div class="g-hero-content container">
+      <p class="g-eyebrow">Your stay</p>
+      <h1>Welcome to Chalet Bambi</h1>
+      <p class="g-lead">Everything you need for your holiday – from arrival to departure. Best save this page on your phone.</p>
     </div>
   </section>
 
-  <!-- ── TABLE OF CONTENTS ─────────────────────────────────────── -->
-  <nav class="toc-nav" aria-label="Table of Contents">
+  <!-- ── AT A GLANCE ──────────────────────────────────────────── -->
+  <section class="g-glance" aria-label="At a glance">
     <div class="container">
-      <p class="toc-label">Contents</p>
-      <button class="toc-toggle" aria-expanded="false" aria-controls="toc-chips-list">
-        <span>Contents</span>
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8l5 5 5-5"/></svg>
-      </button>
-      <div class="toc-chips" id="toc-chips-list">
-        <a href="#chalet-info" class="toc-chip"><span class="toc-num">01</span>Chalet at a Glance</a>
-        <a href="#arrival" class="toc-chip"><span class="toc-num">02</span>Arrival &amp; Departure</a>
-        <a href="#heating" class="toc-chip"><span class="toc-num">03</span>Heating</a>
-        <a href="#hotwater" class="toc-chip"><span class="toc-num">04</span>Hot Water &amp; Boiler</a>
-        <a href="#linen" class="toc-chip"><span class="toc-num">05</span>Bed Linen</a>
-        <a href="#kitchen" class="toc-chip"><span class="toc-num">06</span>Kitchen &amp; Appliances</a>
-        <a href="#houserules" class="toc-chip"><span class="toc-num">07</span>House Rules</a>
-        <a href="#waste" class="toc-chip"><span class="toc-num">08</span>Waste &amp; Recycling</a>
-        <a href="#emergency" class="toc-chip"><span class="toc-num">09</span>Important Numbers</a>
+      <div class="g-glance-grid">
+        <a class="g-tile" href="#arrival">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-in"/></svg></span>
+          <span class="g-tile-label">Check-in</span>
+          <span class="g-tile-value">from 15:00</span>
+          <span class="g-tile-note">Key in the key safe at the entrance</span>
+        </a>
+        <a class="g-tile" href="#departure">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-out"/></svg></span>
+          <span class="g-tile-label">Check-out</span>
+          <span class="g-tile-value">by 12:00</span>
+          <span class="g-tile-note">Checklist further down</span>
+        </a>
+        <a class="g-tile" href="#arrival">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-parking"/></svg></span>
+          <span class="g-tile-label">Parking</span>
+          <span class="g-tile-value">2 spaces</span>
+          <span class="g-tile-note">Free, right in front of the chalet</span>
+        </a>
+        <a class="g-tile" href="#in-the-chalet">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-wifioff"/></svg></span>
+          <span class="g-tile-label">Internet</span>
+          <span class="g-tile-value">No Wi-Fi</span>
+          <span class="g-tile-note">Satellite TV and DAB+ radio</span>
+        </a>
+        <a class="g-tile g-tile--alert" href="tel:144">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-phone"/></svg></span>
+          <span class="g-tile-label">Emergency</span>
+          <span class="g-tile-value">144</span>
+          <span class="g-tile-note">More numbers under «Help»</span>
+        </a>
+        <a class="g-tile" href="#help">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-mail"/></svg></span>
+          <span class="g-tile-label">Hosts</span>
+          <span class="g-tile-value">Staub family</span>
+          <span class="g-tile-note">info@bambi-staub.ch</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTIONS ─────────────────────────────────────────────── -->
+  <nav class="g-nav" aria-label="Sections">
+    <div class="container">
+      <div class="g-nav-list">
+        <a href="#arrival"><svg class="g-ico" aria-hidden="true"><use href="#i-key"/></svg>Arrival</a>
+        <a href="#in-the-chalet"><svg class="g-ico" aria-hidden="true"><use href="#i-home"/></svg>In the chalet</a>
+        <a href="#house-rules"><svg class="g-ico" aria-hidden="true"><use href="#i-heart"/></svg>House rules</a>
+        <a href="#departure"><svg class="g-ico" aria-hidden="true"><use href="#i-out"/></svg>Departure</a>
+        <a href="#help"><svg class="g-ico" aria-hidden="true"><use href="#i-phone"/></svg>Help &amp; emergency</a>
+        <a href="#chalet"><svg class="g-ico" aria-hidden="true"><use href="#i-pin"/></svg>The chalet</a>
       </div>
     </div>
   </nav>
-  </div><!-- /.sg-fold -->
 
-  <!-- ── CHALET INFO ───────────────────────────────────────────── -->
-  <section id="chalet-info" class="section-linen">
+  <!-- ── ARRIVAL ──────────────────────────────────────────────── -->
+  <section id="arrival" class="g-section">
     <div class="container">
-      <div class="sg-section">
-        <h2 class="sg-title">Chalet Bambi at a Glance</h2>
-        <p class="guide-card-text" style="margin-bottom:1.5rem">Built in 1972. Idyllically situated on a 650 m² plot directly on the Waldemme river – with a direct view of the Brienzer Rothorn.</p>
-        <div class="info-box">
-          <div class="info-row">
-            <span class="info-label">Living area</span>
-            <span class="info-value">35 m² living space + 27 m² finished basement</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Sleeping places</span>
-            <span class="info-value">4 bunk beds + 1 sofa bed (1.60 × 2.00 m)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Capacity</span>
-            <span class="info-value">Ideal for 4 persons</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Terrace</span>
-            <span class="info-value">Large sun terrace with views of the Waldemme and Brienzer Rothorn</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Postal address</span>
-            <span class="info-value">Rothornstrasse 40, Postfach 459, 6174 Sörenberg</span>
-          </div>
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-key"/></svg></span>
+        <div>
+          <h2>Arrival</h2>
+          <p>Four steps from setting off to your first coffee on the terrace.</p>
         </div>
       </div>
+      <ol class="g-steps">
+        <li class="g-step">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-car"/></svg>Getting here</h3>
+          <span class="g-sub">By car</span>
+          <p>From Lucerne via Malters, Wolhusen and Entlebuch to Schüpfheim, then via Flühli to Sörenberg. Approx. 1 hour.</p>
+          <span class="g-sub">By public transport</span>
+          <p>Train to Schüpfheim, then PostBus line 241 via Flühli. Get off at <strong>Höchistrasse</strong> – 50 m from the chalet. Approx. 1 hour from Lucerne.</p>
+          <a class="g-link" href="https://maps.google.com/?cid=3112521424199138451" target="_blank" rel="noopener noreferrer">Open in Google Maps <svg class="g-ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </li>
+        <li class="g-step">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-parking"/></svg>Parking</h3>
+          <p><strong>Rothornstrasse 40, 6174 Sörenberg.</strong></p>
+          <p>Two free outdoor parking spaces right in front of the chalet.</p>
+        </li>
+        <li class="g-step">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-key"/></svg>Collect the key</h3>
+          <p>Check-in from <strong>15:00</strong>. The key is in the <strong>key safe at the entrance</strong>.</p>
+          <p>You will receive the code by email in good time before you arrive.</p>
+        </li>
+        <li class="g-step">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-ticket"/></svg>Pay the tourist tax</h3>
+          <p>Within the first few days at the <strong>Sörenberg Tourist Office</strong>, Rothornstrasse 21 (stop: Post). Mon–Fri 8–12 and 13.30–17.</p>
+          <p>CHF 4.– per person aged 16+ per night, half in the off-season, younger guests free.</p>
+        </li>
+      </ol>
     </div>
   </section>
 
-  <!-- ── ARRIVAL & DEPARTURE ───────────────────────────────────── -->
-  <section id="arrival" class="section-cream">
+  <!-- ── IN THE CHALET ────────────────────────────────────────── -->
+  <section id="in-the-chalet" class="g-section g-section--alt">
     <div class="container">
-      <h2 class="sg-title">Arrival &amp; Departure</h2>
-      <h3 class="guide-subheading">Getting here</h3>
-      <div class="stay-guide-grid" style="margin-top:1rem">
-        <div class="guide-card">
-          <h3 class="guide-card-title">By car</h3>
-          <p class="guide-card-text">From Lucerne via Malters, Wolhusen and Entlebuch to Schüpfheim, then via Flühli to Sörenberg. Approx. 1 hour from Lucerne.</p>
-          <a href="https://maps.google.com/?cid=3112521424199138451" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:.75rem;font-size:.85rem;color:var(--forest);text-decoration:underline">Open in Google Maps →</a>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">By public transport</h3>
-          <p class="guide-card-text">Train to Schüpfheim, then PostBus line 241 via Flühli to Sörenberg. Approx. 1 hour from Lucerne. Alight at stop <strong>Höchistrasse</strong> – just 50 m from the chalet.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Address &amp; Parking</h3>
-          <p class="guide-card-text">Rothornstrasse 40, 6174 Sörenberg. Two free outdoor parking spaces directly in front of the chalet.</p>
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-home"/></svg></span>
+        <div>
+          <h2>In the chalet</h2>
+          <p>How the heating, hot water and appliances work.</p>
         </div>
       </div>
-      <h3 class="guide-subheading" style="margin-top:2.5rem">Check-in &amp; Check-out</h3>
-      <div class="stay-guide-grid stay-guide-grid--2" style="margin-top:1rem">
-        <div class="guide-card">
-          <h3 class="guide-card-title">Check-in from 15:00</h3>
-          <p class="guide-card-text">You will find the key in the key safe at the entrance. The code will be sent to you by e-mail in good time before your arrival.</p>
-          <p class="guide-card-text" style="margin-top:.75rem">Please pay the tourist tax within the first few days at the <strong>Sörenberg Tourist Office</strong> (stop: Post): CHF 4.– per person aged 16+ per night, half in the off-season, younger guests free.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Check-out by 12:00</h3>
-          <p class="guide-card-text">Return the key to the safe and reset the code to 0000.</p>
-          <ul class="guide-list guide-list--ul" style="margin-top:.75rem">
-            <li>Close all windows &amp; shutters, leave interior doors open</li>
-            <li>Turn off lights, switch off the TV</li>
-            <li>Set boiler to 0</li>
-            <li>Set fridge to 0 (leave door open)</li>
-            <li>Set both warm-air heaters to 5 degrees</li>
+      <div class="g-cards">
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-flame"/></svg>Heating</h3>
+          <p>The oil-fired warm-air heaters regulate the temperature automatically – simply set the temperature you want.</p>
+          <ul style="margin-top:.6rem">
+            <li>Living room thermostat: on the wall towards the entrance</li>
+            <li>Basement thermostat: inside the right-hand heater door</li>
           </ul>
-          <p class="guide-card-text" style="margin-top:1rem">Did you enjoy your stay? We would be delighted if you left us a review on Google.</p>
-          <a href="https://search.google.com/local/writereview?placeid=ChIJz_lYkKqVj0cRk7wulb7lMSs" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:.5rem;font-size:.85rem;color:var(--forest);text-decoration:underline">Write a review →</a>
+          <details class="g-help">
+            <summary>Heater makes noise but doesn't get warm?</summary>
+            <p style="margin-bottom:.4rem">Open the right-hand door (instructions inside) and check:</p>
+            <ol>
+              <li>Are all switches in the correct position?</li>
+              <li>Are all fuses in the heater door present? (bright filament = intact)</li>
+              <li>Is the thin V-belt still over both drive wheels (large at the top, small at the bottom)?</li>
+              <li>At the arrow on the left (back, bottom): has the regulator latch clicked down? Move it up and down a few times, then press it down.</li>
+            </ol>
+            <p>Still not working: Mr Kaufmann, <a href="tel:0797862952" style="color:var(--forest);font-weight:500">079 786 29 52</a>.</p>
+          </details>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-drop"/></svg>Hot water</h3>
+          <p>The boiler (120 litres) heats up automatically between <strong>2 and 6 am</strong> – setting «Night». Please leave it like this.</p>
+          <div class="g-note"><svg class="g-ico" aria-hidden="true"><use href="#i-alert"/></svg><span>If hot water runs low: set the switch <strong>to the left of the stove</strong> to «Day» for 2–4 hours, then back to «Night».</span></div>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-thermo"/></svg>Shower room</h3>
+          <p>Electric wall heater with timer: ON/OFF (6) → Timer (1) → set hours with + (4) → wait 3 seconds. Heats up in about 1 hour.</p>
+          <p>Please <strong>air the room well</strong> after showering.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-utensils"/></svg>Kitchen</h3>
+          <ul>
+            <li>Ceramic hob with 4 zones, oven below (dial). Please clean after use.</li>
+            <li>Kitchen linen is provided.</li>
+            <li>Before leaving, empty the fridge, set it to 0 (press for a few seconds) and leave the door open.</li>
+          </ul>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-bed"/></svg>Beds &amp; linen</h3>
+          <ul>
+            <li>Please bring bed linen or rent it when booking (<strong>CHF 25.–/person</strong>). Guests make the beds themselves.</li>
+            <li>Nordic duvets 160 × 210 cm, pillows 65 × 100 cm.</li>
+            <li>Sofa bed in the living room (160 × 200 cm): please bring a fitted sheet and bed linen.</li>
+            <li>Wool blankets in the chest in the bedroom.</li>
+          </ul>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-tv"/></svg>TV &amp; radio</h3>
+          <p>TV with satellite reception (Astra). To switch off: hold On/Off for a few seconds. Swiss channels appear after about 1 minute.</p>
+          <p>DAB+ radio with CD, USB, Bluetooth and remote control. <strong>No Wi-Fi</strong> in the chalet.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-flame"/></svg>Fire bowl &amp; barbecue</h3>
+          <p>Place the fire bowl on the <strong>three bricks</strong> at the seating area – <strong>never use it under the balcony</strong>. Firewood is free to use.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-shield"/></svg>Safety</h3>
+          <p><strong>Fire extinguisher</strong> in the basement next to the stairs, <strong>fire blanket</strong> in the entrance area.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── HEATING ───────────────────────────────────────────────── -->
-  <section id="heating" class="section-linen">
+  <!-- ── HOUSE RULES & WASTE ──────────────────────────────────── -->
+  <section id="house-rules" class="g-section">
     <div class="container">
-      <div class="sg-section">
-        <h2 class="sg-title">Heating</h2>
-        <p class="guide-card-text" style="margin-bottom:1.25rem">The oil-powered warm-air heaters regulate the temperature automatically – simply set your desired temperature.</p>
-        <div class="info-box" style="margin-bottom:1.75rem">
-          <div class="info-row">
-            <span class="info-label">Thermostat living room</span>
-            <span class="info-value">On the wall towards the entrance area</span>
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-heart"/></svg></span>
+        <div>
+          <h2>House rules</h2>
+          <p>So that everyone feels at home – including the neighbours and the next guests.</p>
+        </div>
+      </div>
+      <div class="g-rules">
+        <div class="g-rule"><span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-nosmoke"/></svg></span><div><strong>Non-smoking</strong><span>Smoking outdoors only, please.</span></div></div>
+        <div class="g-rule"><span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-paw"/></svg></span><div><strong>No pets</strong><span>Unfortunately pets are not allowed.</span></div></div>
+        <div class="g-rule"><span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-moon"/></svg></span><div><strong>Quiet hours</strong><span>22:00 to 07:00.</span></div></div>
+        <div class="g-rule"><span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-users"/></svg></span><div><strong>Additional guests</strong><span>Please register them before they stay overnight (tourist tax, no extra charge).</span></div></div>
+        <div class="g-rule"><span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-alert"/></svg></span><div><strong>Damage</strong><span>Please report any damage or defects straight away.</span></div></div>
+      </div>
+
+      <h3 class="g-subtitle">Waste &amp; recycling</h3>
+      <div class="g-cards">
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-recycle"/></svg>Recycling</h3>
+          <p>Collection point 50 m away, next to the petrol station: glass, PET, metal, batteries, paper, cardboard and general waste.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-trash"/></svg>General waste</h3>
+          <p>General waste needs waste stickers – available at <strong>Volg Sörenberg</strong>.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-leaf"/></svg>Compost</h3>
+          <p>Compost bin in the garden for vegetables, coffee grounds and eggshells. No meat, no cooked food, no charcoal or half-burnt wood.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEPARTURE ────────────────────────────────────────────── -->
+  <section id="departure" class="g-section g-section--alt">
+    <div class="container">
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-out"/></svg></span>
+        <div>
+          <h2>Departure</h2>
+          <p>Check-out by <strong>12:00</strong>. Tick off what is done.</p>
+        </div>
+      </div>
+      <div class="g-checkwrap">
+        <div class="g-checklist" id="checklist">
+          <div class="g-progress"><span class="g-progress-bar"><span></span></span><span class="g-progress-text">0 of 0 done</span></div>
+          <div class="g-checkgroup">
+            <span class="g-sub" style="margin-top:0">Tidying up</span>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Dishes washed and put away</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Oven clean</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Fridge empty, set to 0, door open</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Bed linen stripped and piled up</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Rubbish disposed of</span></label>
           </div>
-          <div class="info-row">
-            <span class="info-label">Thermostat basement</span>
-            <span class="info-value">Inside the right heater door</span>
-          </div>
-        </div>
-        <h3 class="guide-subheading">If the heater makes noise but doesn't heat up:</h3>
-        <p class="guide-card-text" style="margin-bottom:.75rem">Open the right door (the manual is inside) and check the following:</p>
-        <ol class="guide-list" style="margin-bottom:1rem">
-          <li>Are all switches in the correct position?</li>
-          <li>Are all fuses in the heater door intact? (Glowing wire = intact)</li>
-          <li>Is the thin v-belt still running over the two drive wheels (large on top, small on bottom)?</li>
-          <li>At the arrow on the left side (rear bottom): is the regulator "flap" snapped downward? Move it up and down a few times and then press it down so it no longer springs up.</li>
-        </ol>
-        <p class="guide-card-text">If none of this helps, please contact Mr Kaufmann (see Important Numbers).</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── HOT WATER & BOILER ─────────────────────────────────────── -->
-  <section id="hotwater" class="section-cream">
-    <div class="container">
-      <h2 class="sg-title">Hot Water &amp; Boiler</h2>
-      <div class="stay-guide-grid stay-guide-grid--2">
-        <div class="guide-card">
-          <h3 class="guide-card-title">Standard – "Night" setting</h3>
-          <p class="guide-card-text">The boiler (120 litres) heats up automatically between <strong>02:00 and 06:00</strong>. This is the normal setting – please leave it as is.</p>
-        </div>
-        <div class="guide-card guide-card--emergency">
-          <h3 class="guide-card-title">Extra demand – "Day" setting</h3>
-          <p class="guide-card-text">If hot water runs short: set the switch <strong>to the left of the hob</strong> to "Day" for 2–4 hours. Afterwards return it to "Night".</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Shower room – Electric wall heater</h3>
-          <p class="guide-card-text" style="margin-bottom:.75rem">Wall heater with timer: ON/OFF (6) → Timer (1) → Set hours with + (4) → Wait 3 seconds. Heating time approx. 1 hour.</p>
-          <p class="guide-card-text">Please <strong>ventilate thoroughly</strong> after showering.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── BED LINEN ─────────────────────────────────────────────── -->
-  <section id="linen" class="section-linen">
-    <div class="container">
-      <h2 class="sg-title">Bed Linen</h2>
-      <div class="stay-guide-grid stay-guide-grid--3">
-        <div class="guide-card">
-          <h3 class="guide-card-title">Bed linen</h3>
-          <p class="guide-card-text">Kitchen linen is provided. All other linen please bring yourself. Duvets: Nordic 1.60 × 2.10 m, pillows 65 × 100 cm.<br><br>Bed linen on request: <strong>CHF 25.–/person</strong> – please indicate when booking. Guests always make the beds themselves.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Sofa bed</h3>
-          <p class="guide-card-text">A sofa bed is available in the living room (<strong>1.60 × 2.00 m</strong>). Please bring your own fitted sheet and bed linen.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Woollen blankets</h3>
-          <p class="guide-card-text">If needed, you will find woollen blankets in the <strong>chest in the bedroom</strong>.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── KITCHEN & APPLIANCES ───────────────────────────────────── -->
-  <section id="kitchen" class="section-cream">
-    <div class="container">
-      <h2 class="sg-title">Kitchen &amp; Appliances</h2>
-      <div class="stay-guide-grid stay-guide-grid--3">
-        <div class="guide-card">
-          <h3 class="guide-card-title">Hob &amp; Oven</h3>
-          <p class="guide-card-text">Ceramic hob with 4 zones. Oven below – set temperature with the dial. Please clean after use.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Fridge</h3>
-          <p class="guide-card-text">Please empty before departure. <strong>Set fridge to 0</strong> (press for a few seconds) and leave the door open.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Fire safety</h3>
-          <p class="guide-card-text"><strong>Fire extinguisher</strong> in the basement next to the stairs. <strong>Fire blanket</strong> in the entrance area.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">TV</h3>
-          <p class="guide-card-text">Television with <strong>satellite reception (Astra)</strong>. To switch off: <strong>hold On/Off for several seconds</strong>. Swiss channels connect after approx. 1 minute.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Radio</h3>
-          <p class="guide-card-text">DAB+ radio with CD, USB, Bluetooth and <strong>remote control</strong>. No Wi-Fi in the chalet.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Fire bowl</h3>
-          <p class="guide-card-text"><strong>Do not use under the balcony.</strong> Place on the <strong>three bricks</strong> at the seating area.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── HOUSE RULES ───────────────────────────────────────────── -->
-  <section id="houserules" class="section-linen">
-    <div class="container">
-      <div class="sg-section">
-        <h2 class="sg-title">House Rules</h2>
-        <ul class="guide-list guide-list--ul">
-          <li><strong>Smoking:</strong> The entire chalet is non-smoking. Please smoke outside only.</li>
-          <li><strong>Pets:</strong> Not permitted.</li>
-          <li><strong>Quiet hours:</strong> 22:00–07:00.</li>
-          <li><strong>Occupancy:</strong> Unregistered guests staying overnight must be registered (tourist tax applies, no extra charge).</li>
-          <li><strong>Cleaning:</strong> Please leave the chalet tidy: dishes washed, oven clean, fridge emptied, bed linen piled up, rubbish disposed of.</li>
-          <li><strong>Damage:</strong> Please report any damage or defects promptly.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── WASTE & RECYCLING ─────────────────────────────────────── -->
-  <section id="waste" class="section-cream">
-    <div class="container">
-      <h2 class="sg-title">Waste &amp; Recycling</h2>
-      <div class="stay-guide-grid stay-guide-grid--3">
-        <div class="guide-card">
-          <h3 class="guide-card-title">Recycling</h3>
-          <p class="guide-card-text">Recycling station 50 m away – next to the petrol station. Glass, PET, metal, batteries, paper, cardboard and general waste.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Compost</h3>
-          <p class="guide-card-text">Compost bin in the garden for vegetables, coffee grounds, eggshells. No meat, no cooked food, no coal or half-burnt wood.</p>
-        </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">General waste</h3>
-          <p class="guide-card-text">Waste stickers are required for general rubbish (available at Volg Sörenberg).</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── EMERGENCY NUMBERS ─────────────────────────────────────── -->
-  <section id="emergency" class="section-linen">
-    <div class="container">
-      <h2 class="sg-title">Important Numbers</h2>
-      <div class="stay-guide-grid stay-guide-grid--2">
-        <div class="guide-card guide-card--emergency">
-          <h3 class="guide-card-title guide-card-title--emergency">Emergency Numbers</h3>
-          <div class="emergency-list">
-            <div class="emergency-row">
-              <span class="emergency-service">Police</span>
-              <a href="tel:117" class="emergency-number">117</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Fire brigade</span>
-              <a href="tel:118" class="emergency-number">118</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Ambulance</span>
-              <a href="tel:144" class="emergency-number">144</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Rega (Air rescue)</span>
-              <a href="tel:1414" class="emergency-number">1414</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Tox Centre (Poisoning)</span>
-              <a href="tel:145" class="emergency-number">145</a>
-            </div>
-          </div>
-          <h3 class="guide-card-title guide-card-title--emergency" style="margin-top:1.5rem">Local tradespeople</h3>
-          <div class="emergency-list">
-            <div class="emergency-row">
-              <span class="emergency-service">Heating – Mr Kaufmann, Schüpfheim</span>
-              <a href="tel:0797862952" class="emergency-number">079 786 29 52</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Electrician – René Bucher AG, Sörenberg</span>
-              <a href="tel:0414881609" class="emergency-number">041 488 16 09</a>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Plumber – Wicki Haustechnik, Flühli</span>
-              <a href="tel:0414881234" class="emergency-number">041 488 12 34</a>
-            </div>
+          <div class="g-checkgroup">
+            <span class="g-sub">Closing the house</span>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Windows and shutters closed, interior doors open</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Lights off, TV switched off</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Boiler set to 0</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Both warm-air heaters set to 5 degrees</span></label>
+            <label class="g-check"><input type="checkbox"><span class="g-box"><svg class="g-ico" aria-hidden="true"><use href="#i-check"/></svg></span><span class="g-check-text">Key back in the safe, code reset to 0000</span></label>
           </div>
         </div>
-        <div class="guide-card">
-          <h3 class="guide-card-title">Contact hosts</h3>
-          <p class="guide-card-text" style="margin-bottom:1rem">For questions, problems or any matter, we are happy to help.</p>
-          <div class="emergency-list">
-            <div class="emergency-row">
-              <span class="emergency-service">Familie Staub</span>
-              <a href="mailto:info@bambi-staub.ch" class="emergency-number" style="font-size:.9rem">info@bambi-staub.ch</a>
-            </div>
+        <div class="g-review">
+          <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-star"/></svg></span>
+          <h3>Did you enjoy your stay?</h3>
+          <p>We would be delighted with a short review on Google – it helps us and future guests a lot.</p>
+          <a href="https://search.google.com/local/writereview?placeid=ChIJz_lYkKqVj0cRk7wulb7lMSs" target="_blank" rel="noopener noreferrer">Write a review <svg class="g-ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HELP & EMERGENCY ─────────────────────────────────────── -->
+  <section id="help" class="g-section">
+    <div class="container">
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-phone"/></svg></span>
+        <div>
+          <h2>Help &amp; emergency</h2>
+          <p>Just tap – the numbers dial directly.</p>
+        </div>
+      </div>
+      <div class="g-sos">
+        <a class="g-sos--main" href="tel:144"><b>144</b><span>Ambulance</span></a>
+        <a href="tel:117"><b>117</b><span>Police</span></a>
+        <a href="tel:118"><b>118</b><span>Fire brigade</span></a>
+        <a href="tel:1414"><b>1414</b><span>Rega (air rescue)</span></a>
+        <a href="tel:145"><b>145</b><span>Poison centre</span></a>
+      </div>
+      <div class="g-cards">
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-mail"/></svg>Your hosts</h3>
+          <p>We are happy to help with any questions or problems.</p>
+          <div class="g-rows">
+            <div class="g-row"><span>Staub family</span><a href="mailto:info@bambi-staub.ch">info@bambi-staub.ch</a></div>
           </div>
-          <p style="font-size:.85rem;color:var(--charcoal-light);line-height:1.75;margin-top:1rem">You will receive a mobile number with your booking confirmation.</p>
-          <h3 class="guide-card-title" style="margin-top:1.5rem">Key locations</h3>
-          <div class="emergency-list">
-            <div class="emergency-row">
-              <a href="https://share.google/TgjptaWBlCLPxC905" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Tourist Office (tourist tax)</a>
-              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">Stop: Post</span>
-            </div>
-            <div class="emergency-row">
-              <a href="https://www.arztpraxisfluehli.ch/" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Doctor's practice Flühli</a>
-              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">10 min by car</span>
-            </div>
-            <div class="emergency-row">
-              <a href="https://www.google.com/maps/search/?api=1&query=Spital+Wolhusen" target="_blank" rel="noopener noreferrer" class="emergency-service" style="color:var(--forest);text-decoration:underline">Hospital Wolhusen</a>
-              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">40 min by car</span>
-            </div>
-            <div class="emergency-row">
-              <span class="emergency-service">Cantonal Hospital Lucerne</span>
-              <span class="emergency-number" style="color:var(--charcoal-light);font-weight:400">60 min by car</span>
-            </div>
+          <p style="font-size:.82rem">You will receive our mobile number with your booking confirmation.</p>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-wrench"/></svg>Local tradespeople</h3>
+          <div class="g-rows">
+            <div class="g-row"><span>Heating<small>Mr Kaufmann, Schüpfheim</small></span><a href="tel:0797862952">079 786 29 52</a></div>
+            <div class="g-row"><span>Electrician<small>René Bucher AG, Sörenberg</small></span><a href="tel:0414881609">041 488 16 09</a></div>
+            <div class="g-row"><span>Plumber<small>Wicki Haustechnik, Flühli</small></span><a href="tel:0414881234">041 488 12 34</a></div>
+          </div>
+        </div>
+        <div class="g-card">
+          <h3><svg class="g-ico" aria-hidden="true"><use href="#i-cross"/></svg>Doctor &amp; hospital</h3>
+          <div class="g-rows">
+            <div class="g-row"><a href="https://www.arztpraxisfluehli.ch/" target="_blank" rel="noopener noreferrer">Arztpraxis Flühli</a><em>10 min by car</em></div>
+            <div class="g-row"><a href="https://www.google.com/maps/search/?api=1&amp;query=Spital+Wolhusen" target="_blank" rel="noopener noreferrer">Hospital Wolhusen</a><em>40 min by car</em></div>
+            <div class="g-row"><span>Lucerne Cantonal Hospital</span><em>60 min by car</em></div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ── THE CHALET ───────────────────────────────────────────── -->
+  <section id="chalet" class="g-section g-section--alt">
+    <div class="container">
+      <div class="g-head">
+        <span class="g-badge"><svg class="g-ico" aria-hidden="true"><use href="#i-pin"/></svg></span>
+        <div>
+          <h2>The chalet in figures</h2>
+          <p>Built in 1972, right on the Waldemme with a view of the Brienzer Rothorn.</p>
+        </div>
+      </div>
+      <dl class="g-facts">
+        <div class="g-fact"><dt>Plot</dt><dd>650 m² by the stream</dd></div>
+        <div class="g-fact"><dt>Living space</dt><dd>35 m² + 27 m² lower level</dd></div>
+        <div class="g-fact"><dt>Beds</dt><dd>4 bunk beds + sofa bed</dd></div>
+        <div class="g-fact"><dt>Guests</dt><dd>up to 4 people</dd></div>
+        <div class="g-fact"><dt>Terrace</dt><dd>Sun terrace facing the Rothorn</dd></div>
+        <div class="g-fact"><dt>Postal address</dt><dd>Rothornstrasse 40, Postfach 459, 6174 Sörenberg</dd></div>
+      </dl>
     </div>
   </section>
 
@@ -527,7 +496,7 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112610" defer></script>
+<script src="/assets/js/script.js?v=2026112611" defer></script>
 <script>
   (function () {
     function setHeaderH() {
@@ -536,23 +505,46 @@
     }
     setHeaderH();
     window.addEventListener('resize', setHeaderH);
-  })();
 
-  // Mobile TOC toggle
-  var tocBtn = document.querySelector('.toc-toggle');
-  var tocList = document.getElementById('toc-chips-list');
-  if (tocBtn && tocList) {
-    tocBtn.addEventListener('click', function () {
-      var open = tocList.classList.toggle('open');
-      tocBtn.setAttribute('aria-expanded', open);
-    });
-    tocList.querySelectorAll('.toc-chip').forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        tocList.classList.remove('open');
-        tocBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
+    // Abreise-Checkliste: Fortschritt anzeigen, Häkchen auf diesem Gerät merken
+    var list = document.getElementById('checklist');
+    if (list) {
+      var boxes = list.querySelectorAll('input[type=checkbox]');
+      var bar = list.querySelector('.g-progress-bar span');
+      var txt = list.querySelector('.g-progress-text');
+      var tpl = txt.getAttribute('data-tpl') || txt.textContent;
+      txt.setAttribute('data-tpl', tpl);
+      var KEY = 'bambi_checkout_' + document.documentElement.lang;
+      var saved = [];
+      try { saved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+      boxes.forEach(function (b, i) { b.checked = saved[i] === 1; });
+      function update() {
+        var done = 0; var state = [];
+        boxes.forEach(function (b) { if (b.checked) done++; state.push(b.checked ? 1 : 0); });
+        bar.style.width = (done / boxes.length * 100) + '%';
+        txt.textContent = tpl.replace(/^\d+/, done).replace(/\d+(?=\D*$)/, boxes.length);
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      }
+      boxes.forEach(function (b) { b.addEventListener('change', update); });
+      update();
+    }
+
+    // Abschnitts-Navigation: aktiven Abschnitt hervorheben
+    var links = document.querySelectorAll('.g-nav a');
+    if ('IntersectionObserver' in window && links.length) {
+      var map = {};
+      links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          links.forEach(function (a) { a.classList.remove('is-active'); });
+          var a = map[en.target.id];
+          if (a) { a.classList.add('is-active'); a.scrollIntoView({ block: 'nearest', inline: 'center' }); }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      Object.keys(map).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+    }
+  })();
 </script>
 </body>
 </html>

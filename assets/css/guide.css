@@ -1,0 +1,211 @@
+/* ── AUFENTHALTS-GUIDE (Gästesicht) ─────────────────────────────
+   Reihenfolge nach dem, was Gäste wann brauchen:
+   Auf einen Blick → Ankommen → Im Chalet → Hausregeln → Abreise → Hilfe → Das Chalet */
+
+.g-ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* Kopf */
+.g-hero {
+  position: relative;
+  min-height: 300px;
+  height: 46vh;
+  max-height: 460px;
+  display: flex;
+  align-items: flex-end;
+  color: var(--linen);
+  overflow: hidden;
+}
+.g-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.g-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,28,23,.15) 0%, rgba(20,28,23,.55) 55%, rgba(20,28,23,.8) 100%); }
+.g-hero-content { position: relative; z-index: 1; width: 100%; padding-bottom: 6.5rem; }
+.g-eyebrow { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; opacity: .85; margin-bottom: .75rem; }
+.g-hero h1 { font-family: 'Noto Serif', Georgia, serif; font-weight: 300; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.1; }
+.g-hero p.g-lead { margin-top: .9rem; max-width: 34rem; font-size: 1.02rem; line-height: 1.6; opacity: .92; }
+
+/* Auf einen Blick */
+.g-glance { position: relative; z-index: 2; margin-top: -4.5rem; }
+.g-glance-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+@media (min-width: 720px)  { .g-glance-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .g-glance-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.g-tile {
+  background: #fff;
+  border: 1px solid rgba(191,181,168,.35);
+  border-radius: 14px;
+  padding: 1.1rem 1rem 1rem;
+  box-shadow: 0 10px 30px -18px rgba(45,62,51,.45);
+  display: flex; flex-direction: column; gap: .35rem;
+  color: inherit; text-decoration: none;
+}
+a.g-tile:hover { border-color: var(--forest-muted); }
+.g-tile .g-badge { margin-bottom: .35rem; }
+.g-tile-label { font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--stone); }
+.g-tile-value { font-family: 'Noto Serif', Georgia, serif; font-size: 1.25rem; color: var(--forest); line-height: 1.2; }
+.g-tile-note { font-size: .8rem; color: var(--charcoal-light); line-height: 1.45; }
+.g-tile--alert .g-badge { background: rgba(160,92,59,.12); color: var(--terracotta); }
+.g-tile--alert .g-tile-value { color: var(--terracotta); }
+
+.g-badge {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(45,62,51,.08); color: var(--forest);
+}
+
+/* Abschnitts-Navigation */
+.g-nav {
+  position: sticky; top: var(--header-h, 76px); z-index: 50;
+  background: rgba(251,249,244,.94);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(44,62,51,.08);
+  margin-top: 2.5rem;
+}
+.g-nav-list {
+  display: flex; gap: .5rem; overflow-x: auto; padding: .7rem 0;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.g-nav-list::-webkit-scrollbar { display: none; }
+.g-nav a {
+  display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap;
+  min-height: 40px; padding: .45rem .9rem; border-radius: 999px;
+  border: 1px solid rgba(191,181,168,.55); background: #fff;
+  font-size: .82rem; color: var(--charcoal); text-decoration: none;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.g-nav a .g-ico { width: 17px; height: 17px; color: var(--forest-muted); }
+.g-nav a:hover, .g-nav a.is-active { background: var(--forest); border-color: var(--forest); color: var(--linen); }
+.g-nav a:hover .g-ico, .g-nav a.is-active .g-ico { color: var(--linen); }
+
+/* Abschnitte */
+.g-section { padding: 4.5rem 0; scroll-margin-top: calc(var(--header-h, 76px) + 64px); }
+.g-section--alt { background: var(--linen-dark); }
+.g-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 2rem; max-width: 46rem; }
+.g-head .g-badge { width: 48px; height: 48px; border-radius: 14px; background: var(--forest); color: var(--linen); }
+.g-head .g-ico { width: 24px; height: 24px; }
+.g-head h2 { font-family: 'Noto Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.5rem, 3.2vw, 2.1rem); color: var(--forest); line-height: 1.15; }
+.g-head p { margin-top: .4rem; color: var(--charcoal-light); line-height: 1.6; }
+
+/* Schritte (Ankommen) */
+.g-steps { list-style: none; display: grid; gap: 1rem; counter-reset: step; }
+@media (min-width: 900px) { .g-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.g-step {
+  position: relative; background: #fff; border: 1px solid rgba(191,181,168,.35); border-radius: 14px;
+  padding: 1.4rem 1.25rem 1.25rem; counter-increment: step;
+}
+.g-step::before {
+  content: counter(step); position: absolute; top: -12px; left: 1.25rem;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--terracotta); color: #fff;
+  font-size: .8rem; font-weight: 500; display: flex; align-items: center; justify-content: center;
+}
+.g-step h3, .g-card h3 { display: flex; align-items: center; gap: .6rem; font-size: 1rem; font-weight: 500; color: var(--forest); margin-bottom: .6rem; }
+.g-step h3 .g-ico, .g-card h3 .g-ico { color: var(--forest-muted); }
+.g-step p, .g-card p, .g-card li { font-size: .9rem; line-height: 1.65; color: var(--charcoal-light); }
+.g-step p + p, .g-card p + p { margin-top: .55rem; }
+.g-sub { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stone); margin: .8rem 0 .2rem; }
+.g-link {
+  display: inline-flex; align-items: center; gap: .35rem; margin-top: .6rem; padding: .55rem 0;
+  font-size: .85rem; font-weight: 500; color: var(--forest); text-decoration: none; border-bottom: 1px solid transparent;
+}
+.g-link:hover { border-bottom-color: currentColor; }
+.g-link .g-ico { width: 16px; height: 16px; }
+
+/* Karten (Im Chalet, Abfall) */
+.g-cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
+.g-card { background: #fff; border: 1px solid rgba(191,181,168,.35); border-radius: 14px; padding: 1.3rem 1.25rem; }
+.g-section--alt .g-card, .g-section--alt .g-step { background: var(--linen); }
+.g-card ul { list-style: none; display: grid; gap: .35rem; }
+.g-card ul li { position: relative; padding-left: 1rem; }
+.g-card ul li::before { content: ""; position: absolute; left: 0; top: .7em; width: 5px; height: 5px; border-radius: 50%; background: var(--stone-light); }
+.g-note { display: flex; gap: .5rem; margin-top: .8rem; padding: .7rem .8rem; border-radius: 10px; background: rgba(160,92,59,.08); font-size: .84rem; line-height: 1.5; color: var(--charcoal); }
+.g-note .g-ico { width: 18px; height: 18px; color: var(--terracotta); margin-top: .1rem; }
+
+/* Aufklappbare Hilfe */
+.g-help { margin-top: .9rem; border-top: 1px solid rgba(191,181,168,.4); padding-top: .6rem; }
+.g-help summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  min-height: 44px; font-size: .88rem; font-weight: 500; color: var(--terracotta);
+}
+.g-help summary::-webkit-details-marker { display: none; }
+.g-help summary::after { content: "+"; font-size: 1.2rem; line-height: 1; }
+.g-help[open] summary::after { content: "–"; }
+.g-help ol { margin: .3rem 0 .4rem 1.1rem; display: grid; gap: .4rem; }
+.g-help ol li { font-size: .86rem; line-height: 1.6; color: var(--charcoal-light); padding-left: .2rem; }
+
+/* Hausregeln */
+.g-rules { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); margin-bottom: 2.5rem; }
+.g-rule { display: flex; gap: .85rem; align-items: flex-start; background: var(--linen); border-radius: 14px; padding: 1rem; }
+.g-rule strong { display: block; font-weight: 500; color: var(--forest); font-size: .95rem; margin-bottom: .15rem; }
+.g-rule span { font-size: .86rem; line-height: 1.55; color: var(--charcoal-light); }
+.g-subtitle { font-family: 'Noto Serif', Georgia, serif; font-weight: 400; font-size: 1.3rem; color: var(--forest); margin-bottom: 1rem; }
+
+/* Abreise-Checkliste */
+.g-checkwrap { display: grid; gap: 1.25rem; }
+@media (min-width: 900px) { .g-checkwrap { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; } }
+.g-checklist { background: #fff; border: 1px solid rgba(191,181,168,.35); border-radius: 14px; padding: 1.25rem; }
+.g-progress { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; font-size: .82rem; color: var(--stone); }
+.g-progress-bar { flex: 1; height: 6px; border-radius: 99px; background: var(--linen-dark); overflow: hidden; }
+.g-progress-bar span { display: block; height: 100%; width: 0; background: var(--forest-muted); transition: width .3s; }
+.g-checkgroup + .g-checkgroup { margin-top: 1rem; }
+.g-check {
+  display: flex; align-items: center; gap: .8rem; min-height: 46px; padding: .35rem .25rem;
+  border-bottom: 1px solid rgba(191,181,168,.25); cursor: pointer; font-size: .92rem; color: var(--charcoal);
+}
+.g-check:last-child { border-bottom: none; }
+.g-check input { position: absolute; opacity: 0; pointer-events: none; }
+.g-box {
+  width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--stone-light); flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; color: transparent; transition: all .15s;
+}
+.g-box .g-ico { width: 15px; height: 15px; stroke-width: 2.4; }
+.g-check input:checked + .g-box { background: var(--forest); border-color: var(--forest); color: #fff; }
+.g-check input:checked ~ .g-check-text { color: var(--stone); text-decoration: line-through; }
+.g-check input:focus-visible + .g-box { outline: 2px solid var(--forest); outline-offset: 2px; }
+.g-review { background: var(--forest); color: var(--linen); border-radius: 14px; padding: 1.5rem 1.4rem; }
+.g-review .g-badge { background: rgba(251,249,244,.12); color: #F2C46D; margin-bottom: .9rem; }
+.g-review h3 { font-family: 'Noto Serif', Georgia, serif; font-weight: 400; font-size: 1.25rem; margin-bottom: .5rem; }
+.g-review p { font-size: .9rem; line-height: 1.6; opacity: .9; }
+.g-review a {
+  display: inline-flex; align-items: center; gap: .4rem; margin-top: 1rem; min-height: 44px; padding: .6rem 1.1rem;
+  background: var(--linen); color: var(--forest); border-radius: 999px; font-size: .85rem; font-weight: 500; text-decoration: none;
+}
+
+/* Hilfe & Notfall */
+.g-sos { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 2rem; }
+@media (min-width: 720px) { .g-sos { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.g-sos a {
+  display: flex; flex-direction: column; gap: .15rem; padding: 1rem; border-radius: 14px; text-decoration: none;
+  background: #fff; border: 1px solid rgba(160,92,59,.25); color: var(--charcoal);
+}
+.g-sos a:hover { border-color: var(--terracotta); }
+.g-sos b { font-family: 'Noto Serif', Georgia, serif; font-weight: 400; font-size: 1.9rem; color: var(--terracotta); line-height: 1.1; }
+.g-sos span { font-size: .8rem; color: var(--charcoal-light); }
+.g-sos a.g-sos--main { background: var(--terracotta); border-color: var(--terracotta); }
+.g-sos a.g-sos--main b, .g-sos a.g-sos--main span { color: #fff; }
+.g-rows { display: grid; }
+.g-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 48px; padding: .4rem 0; border-bottom: 1px solid rgba(191,181,168,.3); font-size: .9rem; }
+.g-row:last-child { border-bottom: none; }
+.g-row > span { color: var(--charcoal-light); line-height: 1.4; }
+.g-row > span small { display: block; font-size: .78rem; color: var(--stone); }
+.g-row a { color: var(--forest); font-weight: 500; text-decoration: none; white-space: nowrap; }
+.g-row a:hover { text-decoration: underline; }
+.g-row em { font-style: normal; color: var(--stone); white-space: nowrap; font-size: .85rem; }
+
+/* Das Chalet in Zahlen */
+.g-facts { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 900px) { .g-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.g-fact { background: var(--linen); border-radius: 14px; padding: 1.1rem 1rem; }
+.g-fact dt { font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--stone); margin-bottom: .35rem; }
+.g-fact dd { font-family: 'Noto Serif', Georgia, serif; font-size: 1.05rem; color: var(--forest); line-height: 1.35; }
+
+@media (max-width: 600px) {
+  .g-section { padding: 3.25rem 0; }
+  .g-hero-content { padding-bottom: 5.5rem; }
+  .g-tile { padding: .9rem .85rem; }
+  .g-tile-value { font-size: 1.1rem; }
+  .g-head .g-badge { width: 42px; height: 42px; }
+}
+@media print {
+  .site-header, .g-nav, footer, .g-hero::after { display: none !important; }
+  .g-hero { height: auto; min-height: 0; color: var(--forest); }
+  .g-hero img { display: none; }
+  .g-glance { margin-top: 0; }
+  .g-help { display: block; }
+}
