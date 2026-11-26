@@ -127,6 +127,17 @@
                 <input type="hidden" name="discount_code" id="discount-code-hidden" value="">
                 <input type="hidden" name="lang" value="en">
 
+                <!-- Discount code -->
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                  <label class="form-label" for="discount-input">Family?</label>
+                  <div class="discount-row">
+                    <input class="form-input" type="text" id="discount-input"
+                           name="_discount_display" placeholder="Code" autocomplete="off" spellcheck="false">
+                    <button type="button" id="discount-check-btn" class="discount-check-btn">Apply</button>
+                  </div>
+                  <p id="discount-result" class="discount-result" aria-live="polite"></p>
+                </div>
+
                 <div class="form-grid form-grid--booking">
                   <div class="form-group">
                     <label class="form-label" for="field-name">Name *</label>
@@ -195,16 +206,6 @@
                             rows="4" placeholder=""></textarea>
                 </div>
 
-                <!-- Discount code -->
-                <div class="form-group" style="margin-bottom: 0.75rem;">
-                  <label class="form-label" for="discount-input">Discount code (optional)</label>
-                  <div class="discount-row">
-                    <input class="form-input" type="text" id="discount-input"
-                           name="_discount_display" placeholder="CODE" autocomplete="off" spellcheck="false">
-                    <button type="button" id="discount-check-btn" class="discount-check-btn">Apply</button>
-                  </div>
-                  <p id="discount-result" class="discount-result" aria-live="polite"></p>
-                </div>
 
                 <div class="form-submit-wrap">
                   <button type="submit" class="btn btn-primary" style="align-self: flex-start; padding: 1rem 2.5rem;">
