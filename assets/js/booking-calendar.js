@@ -646,6 +646,9 @@
         return;
       }
 
+      // Pflichtfelder (Name, E-Mail, Personen, Adresse) direkt im Browser markieren
+      if (!$form.reportValidity()) return;
+
       S.submitting        = true;
       submitBtn.disabled  = true;
       submitBtn.textContent = 'Wird gesendet…';

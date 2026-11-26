@@ -44,6 +44,11 @@ if (count($hits) >= MAX_PRO_STUNDE) respond(false, t('Zu viele Anfragen. Bitte s
 $name          = clean($_POST['name']        ?? '', 120);
 $rawEmail      = clean($_POST['email']       ?? '', 120);
 $phone         = clean($_POST['phone']       ?? '', 40);
+$street        = clean($_POST['street']      ?? '', 120);
+$zip           = clean($_POST['zip']         ?? '', 12);
+$city          = clean($_POST['city']        ?? '', 80);
+$country       = clean($_POST['country']     ?? '', 60);
+$adresse       = trim("{$street}, {$zip} {$city}" . ($country !== '' ? ", {$country}" : ''), ', ');
 $persons       = (int)($_POST['persons']     ?? 0);
 $arrival       = trim($_POST['arrival']      ?? '');
 $departure     = trim($_POST['departure']    ?? '');
@@ -57,6 +62,7 @@ $linenBeds     = $persons;   // Bettwäsche wird pro Person berechnet
 $email = filter_var($rawEmail, FILTER_VALIDATE_EMAIL);
 
 if ($name === '')                                       respond(false, t('Bitte geben Sie Ihren Namen an.', 'Please enter your name.'), [], 422);
+if ($street === '' || $zip === '' || $city === '' || $country === '') respond(false, t('Bitte geben Sie Ihre vollständige Adresse an.', 'Please enter your full address.'), [], 422);
 if ($persons < 1 || $persons > 4)                      respond(false, t('Das Chalet bietet Platz für 1 bis 4 Personen.', 'The chalet sleeps 1 to 4 guests.'), [], 422);
 if (!$email)                                            respond(false, t('Bitte prüfen Sie die E-Mail-Adresse.', 'Please check your email address.'), [], 422);
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival))    respond(false, t('Ungültiges Anreisedatum.', 'Invalid arrival date.'), [], 422);
@@ -263,6 +269,7 @@ $body .= "KONTAKT\n";
 $body .= "Name:      {$name}\n";
 $body .= "E-Mail:    {$email}\n";
 $body .= "Telefon:   " . ($phone ?: '–') . "\n";
+$body .= "Adresse:   {$street}, {$zip} {$city}, {$country}\n";
 $body .= "Personen:  {$persons}\n\n";
 $body .= "AUFENTHALT\n";
 $body .= "Anreise:   {$von}\n";
@@ -303,6 +310,7 @@ $iBlock = fn(string $titel, string $rows) =>
 $kontaktRows = $iZeile('Name', '<strong>' . $x($name) . '</strong>')
     . $iZeile('E-Mail', '<a href="mailto:' . $x($email) . '" style="color:#2D3E33;">' . $x($email) . '</a>')
     . $iZeile('Telefon', $phone !== '' ? '<a href="tel:' . $x(preg_replace('/[^\d+]/', '', $phone)) . '" style="color:#2D3E33;">' . $x($phone) . '</a>' : '–')
+    . $iZeile('Adresse', $x($street) . '<br>' . $x("{$zip} {$city}") . '<br>' . $x($country))
     . $iZeile('Sprache', $en ? 'Englisch (englische Seite)' : 'Deutsch');
 
 $preisRows = '';
@@ -462,7 +470,7 @@ $hits[] = time();
 // Eine Datei pro Monat, nur für den Betreiber lesbar; Dateien ohne Eintrag seit 12 Monaten werden gelöscht.
 if (@is_dir($dir) || @mkdir($dir, 0700, true)) {
     $kopie = $dir . '/anfragen-' . date('Y-m') . '.jsonl';
-    $log = ['ticket' => $ticket, 'zeit' => date('c'), 'sprache' => $en ? 'en' : 'de', 'name' => $name, 'email' => $email, 'telefon' => $phone,
+    $log = ['ticket' => $ticket, 'zeit' => date('c'), 'sprache' => $en ? 'en' : 'de', 'name' => $name, 'email' => $email, 'telefon' => $phone, 'adresse' => $adresse,
             'personen' => $persons, 'anreise' => $arrival, 'abreise' => $departure, 'naechte' => $nights, 'preis' => $finalPrice,
             'reinigung' => $cleaning, 'bettwaesche' => $linen === 'rent' ? $linenBeds : 0, 'rabattcode' => $discountCode, 'nachricht' => $message];
     if (@file_put_contents($kopie, json_encode($log, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX)) @chmod($kopie, 0600);

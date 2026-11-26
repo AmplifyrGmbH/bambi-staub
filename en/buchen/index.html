@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/assets/css/style.css?v=2026112608">
-  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112608">
+  <link rel="stylesheet" href="/assets/css/style.css?v=2026112609">
+  <link rel="stylesheet" href="/assets/css/booking.css?v=2026112609">
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="7fcc6d7f-97c3-4bc0-884d-22589cac87e5"></script>
 
@@ -162,6 +162,30 @@
                     <input class="form-input" type="number" id="field-persons" name="persons"
                            required min="1" max="4" placeholder="e.g. 4">
                   </div>
+
+                  <div class="form-group" style="grid-column:1/-1">
+                    <label class="form-label" for="field-street">Street and no. *</label>
+                    <input class="form-input" type="text" id="field-street" name="street"
+                           required autocomplete="street-address" placeholder="e.g. Rothornstrasse 40">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="field-zip">Postcode *</label>
+                    <input class="form-input" type="text" id="field-zip" name="zip"
+                           required autocomplete="postal-code" inputmode="numeric" placeholder="e.g. 6174">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="field-city">Town *</label>
+                    <input class="form-input" type="text" id="field-city" name="city"
+                           required autocomplete="address-level2" placeholder="e.g. Sörenberg">
+                  </div>
+
+                  <div class="form-group" style="grid-column:1/-1">
+                    <label class="form-label" for="field-country">Country *</label>
+                    <input class="form-input" type="text" id="field-country" name="country"
+                           required autocomplete="country-name" value="Switzerland">
+                  </div>
                 </div>
 
                 <!-- Final cleaning: no choice, info only (text changes with family code) -->
@@ -269,8 +293,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/script.js?v=2026112608" defer></script>
-<script src="/assets/js/booking-calendar-en.js?v=2026112608" defer></script>
+<script src="/assets/js/script.js?v=2026112609" defer></script>
+<script src="/assets/js/booking-calendar-en.js?v=2026112609" defer></script>
 
 <!-- Sync discount code input → hidden field -->
 <script>
