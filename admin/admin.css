@@ -233,3 +233,18 @@ input, select, textarea { padding: .45rem .6rem; min-height: 40px; }
 /* Buchungen = Kalender + Liste (27.11.) */
 form.suche { margin-bottom: .8rem; }
 .monate + .legende { margin-bottom: 1rem; }
+
+/* Kalender mit Halbtagen (27.11.): Balken absolut pro Woche, Lage über Klassen (CSP: keine Inline-Styles) */
+.monat .tage { display: none; }
+.woche { position: relative; display: block; }
+.wtage { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.woche .tag { min-height: calc(30px + var(--spuren, 0) * 22px); gap: 0; }
+.woche .balken, .woche .balken.beginn { margin: 0; } .woche .balken { position: absolute; height: 20px; overflow: hidden; z-index: 1; border-radius: 0; --ga: 0px; --ge: 0px;
+  left: calc(var(--a) / 14 * 100% + var(--ga)); width: calc(var(--w) / 14 * 100% - var(--ga) - var(--ge)); top: calc(24px + var(--s, 0) * 22px); }
+.woche .balken.beginn { --ga: 2px; border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+.woche .balken.ende { --ge: 2px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+.woche .balken span { display: block; padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.a0{--a:0}.a1{--a:1}.a2{--a:2}.a3{--a:3}.a4{--a:4}.a5{--a:5}.a6{--a:6}.a7{--a:7}.a8{--a:8}.a9{--a:9}.a10{--a:10}.a11{--a:11}.a12{--a:12}.a13{--a:13}.a14{--a:14}
+.w0{--w:0}.w1{--w:1}.w2{--w:2}.w3{--w:3}.w4{--w:4}.w5{--w:5}.w6{--w:6}.w7{--w:7}.w8{--w:8}.w9{--w:9}.w10{--w:10}.w11{--w:11}.w12{--w:12}.w13{--w:13}.w14{--w:14}
+.balken.s0{--s:0}.balken.s1{--s:1}.balken.s2{--s:2}.balken.s3{--s:3}.balken.s4{--s:4}.balken.s5{--s:5}
+.sp0{--spuren:0}.sp1{--spuren:1}.sp2{--spuren:2}.sp3{--spuren:3}.sp4{--spuren:4}.sp5{--spuren:5}.sp6{--spuren:6}

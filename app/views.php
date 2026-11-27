@@ -166,38 +166,62 @@ function seite_buchungen(array $ich): void {
         . '<p class="klein">Freien Tag im Kalender antippen: dort eine Buchung erfassen. <a href="/admin/buchungen?f=alle">Alle Buchungen als Liste</a></p>');
 }
 
-/* Wie viele Tage läuft der Balken ab $d in dieser Woche (und diesem Monat) noch? Begrenzt die Beschriftung. */
-function balkenlaenge(string $d, string $bis): int {
-    $ts = strtotime($d . ' 12:00');
-    $bisWoche = 8 - (int)date('N', $ts);
-    $bisMonat = (int)date('t', $ts) - (int)date('j', $ts) + 1;
-    return max(1, min(7, $bisWoche, $bisMonat, naechte($d, $bis)));
-}
-
+/* Monatskalender: pro Woche eine Zeile, Belegungen als durchgehende Balken von der Mitte des Anreise-
+   bis zur Mitte des Abreisetags (Halbtage). Feste Spuren pro Monat, damit Balken nicht springen. */
 function monat(int $j, int $mo, array $eintraege): string {
     $erster = mktime(12, 0, 0, $mo, 1, $j);
     $tage = (int)date('t', $erster);
     $leer = ((int)date('N', $erster)) - 1;
-    $html = '<section class="monat"><h2>' . MONATE[$mo] . ' ' . $j . '</h2><div class="wochentage"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="tage">';
-    $html .= str_repeat('<span class="tag leer"></span>', $leer);
-    for ($t = 1; $t <= $tage; $t++) {
-        $d = sprintf('%04d-%02d-%02d', $j, $mo, $t);
-        $belegt = ''; $treffer = null;
-        foreach ($eintraege as $e) {
-            if ($d >= $e['von'] && $d < $e['bis']) {
-                $treffer = $e;
-                $erst = $d === $e['von'] || $t === 1 || (int)date('N', strtotime($d)) === 1;
-                $belegt .= '<a class="balken k-' . h($e['art']) . ($d === $e['von'] ? ' beginn' : '') . (date('Y-m-d', strtotime($d . ' +1 day')) === $e['bis'] ? ' ende' : '') . '" href="' . h($e['href']) . '" title="' . h($e['text'] . ': ' . dm($e['von']) . '–' . dm($e['bis'])) . '">'
-                    . ($erst ? '<span class="l' . balkenlaenge($d, $e['bis']) . '">' . h($e['text']) . '</span>' : '') . '</a>';
-            }
-        }
-        $abreise = '';
-        foreach ($eintraege as $e) if ($e['bis'] === $d && $e['art'] !== 'sperre' && $e['art'] !== 'anfrage') $abreise = '<i class="ab k-' . h($e['art']) . '" title="Abreise ' . h($e['text']) . '"></i>';
-        $klasse = 'tag' . ($d === heute() ? ' heute' : '') . ($d < heute() ? ' vorbei' : '');
-        $nr = $treffer ? '<span class="nr">' . $t . '</span>' : '<a class="nr" href="/admin/neu?von=' . $d . '&amp;bis=' . date('Y-m-d', strtotime($d . ' +3 days')) . '" title="Hier erfassen">' . $t . '</a>';
-        $html .= '<div class="' . $klasse . '">' . $nr . $abreise . $belegt . '</div>';
+    $mVon = sprintf('%04d-%02d-01', $j, $mo);
+    $mBis = date('Y-m-d', strtotime($mVon . ' +1 month'));
+    $zelle = fn(string $d): int => $leer + (int)substr($d, 8, 2) - 1;
+
+    // Nur Einträge dieses Monats; Buchungen vor Sperren, dann nach Anreise. Spuren gierig vergeben.
+    $liste = array_values(array_filter($eintraege, fn($e) => $e['von'] < $mBis && $e['bis'] > $mVon));
+    usort($liste, fn($x, $y) => [$x['art'] === 'sperre', $x['von']] <=> [$y['art'] === 'sperre', $y['von']]);
+    $spurEnde = [];
+    foreach ($liste as &$e) {
+        $s = 0;
+        while (isset($spurEnde[$s]) && $spurEnde[$s] > $e['von']) $s++;
+        $spurEnde[$s] = $e['bis']; $e['spur'] = $s;
+        // Lage in halben Zellen: Anfang Mitte Anreisetag, Ende Mitte Abreisetag (ausserhalb des Monats: Rand)
+        $e['x0'] = $e['von'] >= $mVon ? $zelle($e['von']) + .5 : $leer;
+        $e['x1'] = $e['bis'] < $mBis ? $zelle($e['bis']) + .5 : $leer + $tage;
     }
-    return $html . '</div></section>';
+    unset($e);
+
+    $zellen = $leer + $tage;
+    $html = '<section class="monat"><h2>' . MONATE[$mo] . ' ' . $j . '</h2><div class="wochentage"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>';
+    for ($r = 0; $r * 7 < $zellen; $r++) {
+        $tageHtml = ''; $balken = ''; $spuren = 0;
+        for ($c = 0; $c < 7; $c++) {
+            $t = $r * 7 + $c - $leer + 1;
+            if ($t < 1 || $t > $tage) { $tageHtml .= '<span class="tag leer"></span>'; continue; }
+            $d = sprintf('%04d-%02d-%02d', $j, $mo, $t);
+            $belegt = false;
+            foreach ($liste as $e) if ($d >= $e['von'] && $d < $e['bis']) { $belegt = true; break; }
+            $nr = $belegt ? '<span class="nr">' . $t . '</span>' : '<a class="nr" href="/admin/neu?von=' . $d . '&amp;bis=' . date('Y-m-d', strtotime($d . ' +3 days')) . '" title="Hier erfassen">' . $t . '</a>';
+            $tageHtml .= '<div class="tag' . ($d === heute() ? ' heute' : '') . ($d < heute() ? ' vorbei' : '') . '">' . $nr . '</div>';
+        }
+        // Spuren dieser Woche lückenlos durchnummerieren
+        $genutzt = [];
+        foreach ($liste as $e) if (min($e['x1'], $r * 7 + 7) - max($e['x0'], $r * 7) > 0) $genutzt[$e['spur']] = true;
+        ksort($genutzt);
+        $neuSpur = array_flip(array_keys($genutzt));
+        $spuren = count($neuSpur);
+        foreach ($liste as $e) {
+            $a = max($e['x0'], $r * 7); $z = min($e['x1'], $r * 7 + 7);
+            if ($z - $a <= 0) continue;
+            $e['spur'] = $neuSpur[$e['spur']];
+            $kl = 'balken k-' . h($e['art']) . ($a === $e['x0'] ? ' beginn' : '') . ($z === $e['x1'] ? ' ende' : '');
+            $titel = h($e['text'] . ': ' . dm($e['von']) . '–' . dm($e['bis']));
+            $kl .= ' a' . (int)round(($a - $r * 7) * 2) . ' w' . (int)round(($z - $a) * 2) . ' s' . min(5, $e['spur']);
+            $balken .= '<a class="' . $kl . '" href="' . h($e['href']) . '" title="' . $titel . '">'
+                . ($z - $a >= 1 ? '<span>' . h($e['text']) . '</span>' : '') . '</a>';
+        }
+        $html .= '<div class="woche sp' . min(6, $spuren) . '"><div class="wtage">' . $tageHtml . '</div>' . $balken . '</div>';
+    }
+    return $html . '</section>';
 }
 
 // ── Neue Buchung / Detail ─────────────────────────────────────────────
