@@ -13,7 +13,7 @@ function layout(?array $ich, string $titel, string $aktiv, string $inhalt): void
         } else {
             $offen = (int)qv("SELECT COUNT(*) FROM mail WHERE erledigt = 0 AND richtung = 'ein'");
             if (in_array($aktiv, ['sperren', 'geld', 'einstellungen', 'reinigung'], true)) $aktiv = 'mehr';
-            foreach (['' => 'Übersicht', 'buchungen' => 'Buchungen', 'kalender' => 'Kalender', 'posteingang' => 'Post', 'mehr' => 'Mehr'] as $p => $l) {
+            foreach (['' => 'Übersicht', 'buchungen' => 'Buchungen', 'posteingang' => 'Post', 'mehr' => 'Mehr'] as $p => $l) {
                 $nav .= '<a href="/admin' . ($p ? "/$p" : '') . '"' . ($p === $aktiv ? ' aria-current="page"' : '') . '>' . $l . ($p === 'posteingang' && $offen ? ' <span class="zahl">' . $offen . '</span>' : '') . '</a>';
             }
             $nav = '<nav class="nav">' . $nav . '</nav>';
@@ -112,57 +112,58 @@ function seite_uebersicht(array $ich): void {
         . '<section class="karte"><h2>Nächste 14 Tage</h2>' . ($eHtml ?: '<p class="leer">Keine An- oder Abreisen.</p>') . '</section>');
 }
 
-// ── Buchungsliste ─────────────────────────────────────────────────────
+// ── Buchungen: Kalender mit Liste der gezeigten Monate ─────────────────
 function seite_buchungen(array $ich): void {
-    $filter = (string)($_GET['f'] ?? 'kommend');
     $suche = trim((string)($_GET['q'] ?? ''));
-    $heute = heute();
-    [$where, $p, $order] = match ($filter) {
-        'anfragen'  => ["status = 'anfrage'", [], 'anreise'],
-        'vergangen' => ['abreise < ?', [$heute], 'anreise DESC'],
-        'alle'      => ['1', [], 'anreise DESC'],
-        default     => ["abreise >= ? AND status IN ('anfrage','bestaetigt')", [$heute], 'anreise'],
-    };
-    if ($suche !== '') {
-        $where .= ' AND (name LIKE ? OR nummer LIKE ? OR email LIKE ? OR telefon LIKE ?)';
-        $like = '%' . $suche . '%';
-        array_push($p, $like, $like, $like, $like);
-    }
-    $liste = q("SELECT * FROM buchung WHERE $where ORDER BY $order LIMIT 300", $p)->fetchAll();
-    $tabs = '';
-    foreach (['kommend' => 'Kommend', 'anfragen' => 'Anfragen', 'alle' => 'Alle'] as $k => $l) {
-        $tabs .= '<a href="/admin/buchungen?f=' . $k . ($suche ? '&amp;q=' . urlencode($suche) : '') . '"' . ($k === $filter ? ' aria-current="page"' : '') . '>' . $l . '</a>';
-    }
-    layout($ich, 'Buchungen', 'buchungen', '<div class="titelzeile"><h1>Buchungen</h1><a class="knopf klein-knopf" href="/admin/neu">+ Buchung</a></div>'
-        . '<div class="werkzeuge"><nav class="tabs">' . $tabs . '</nav>'
-        . '<form method="get" class="suche"><input type="hidden" name="f" value="' . h($filter) . '"><input type="search" name="q" value="' . h($suche) . '" placeholder="Suchen …" aria-label="Suchen"></form></div>'
-        . '<div class="liste">' . (implode('', array_map('buchung_zeile', $liste)) ?: '<p class="leer">Keine Buchungen.</p>') . '</div>');
-}
-
-// ── Kalender ──────────────────────────────────────────────────────────
-function seite_kalender(array $ich): void {
+    $alle = ($_GET['f'] ?? '') === 'alle';
     $m = preg_match('/^\d{4}-\d{2}$/', (string)($_GET['m'] ?? '')) ? $_GET['m'] : date('Y-m');
     $start = strtotime($m . '-01');
+    $von = date('Y-m-d', $start);
     $vor = date('Y-m', strtotime('-1 month', $start)); $nach = date('Y-m', strtotime('+1 month', $start));
     $ende = date('Y-m-d', strtotime('+2 months', $start));
-    $eintraege = [];
-    foreach (q("SELECT * FROM buchung WHERE status IN ('anfrage','bestaetigt') AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) AND anreise < ? AND abreise > ?", [$ende, date('Y-m-d', $start)]) as $b) {
-        $eintraege[] = ['von' => $b['anreise'], 'bis' => $b['abreise'], 'text' => anzeigename($b), 'art' => $b['status'] === 'anfrage' ? 'anfrage' : $b['quelle'], 'href' => '/admin/buchung/' . $b['id']];
+    $kopf = '<div class="titelzeile"><h1>Buchungen</h1><a class="knopf klein-knopf" href="/admin/neu">+ Buchung</a></div>'
+        . '<form method="get" class="suche"><input type="search" name="q" value="' . h($suche) . '" placeholder="Name, Nummer, E-Mail suchen …" aria-label="Suchen"></form>';
+
+    // Suche oder Gesamtliste: nur Liste
+    if ($suche !== '' || $alle) {
+        $p = [];
+        $where = '1';
+        if ($suche !== '') {
+            $where = '(name LIKE ? OR nummer LIKE ? OR email LIKE ? OR telefon LIKE ?)';
+            $like = '%' . $suche . '%';
+            $p = [$like, $like, $like, $like];
+        }
+        $liste = q("SELECT * FROM buchung WHERE $where ORDER BY anreise DESC LIMIT 300", $p)->fetchAll();
+        layout($ich, 'Buchungen', 'buchungen', $kopf
+            . '<p class="zurueck"><a href="/admin/buchungen" class="link">‹ Kalender</a></p>'
+            . '<div class="liste">' . (implode('', array_map('buchung_zeile', $liste)) ?: '<p class="leer">Nichts gefunden.</p>') . '</div>');
+        return;
     }
-    foreach (q('SELECT * FROM sperre WHERE von < ? AND bis > ?', [$ende, date('Y-m-d', $start)]) as $s) {
+
+    $anfragen = q("SELECT * FROM buchung WHERE status = 'anfrage' ORDER BY anreise")->fetchAll();
+    $eintraege = []; $imZeitraum = [];
+    foreach (q("SELECT * FROM buchung WHERE status IN ('anfrage','bestaetigt') AND NOT (quelle = 'eigentuemer' AND partner_id IS NOT NULL) AND anreise < ? AND abreise > ? ORDER BY anreise", [$ende, $von]) as $b) {
+        $eintraege[] = ['von' => $b['anreise'], 'bis' => $b['abreise'], 'text' => anzeigename($b), 'art' => $b['status'] === 'anfrage' ? 'anfrage' : $b['quelle'], 'href' => '/admin/buchung/' . $b['id']];
+        if ($b['status'] === 'bestaetigt') $imZeitraum[] = $b;
+    }
+    foreach (q('SELECT * FROM sperre WHERE von < ? AND bis > ?', [$ende, $von]) as $s) {
         $eintraege[] = ['von' => $s['von'], 'bis' => $s['bis'], 'text' => $s['grund'] ?: 'Gesperrt', 'art' => 'sperre', 'href' => '/admin/sperren'];
     }
     $legende = '';
-    foreach (['interhome' => 'Interhome', 'website' => 'Direkt (Website)', 'manuell' => 'Von Hand', 'eigentuemer' => 'Eigentümer', 'anfrage' => 'Anfrage (offen)', 'sperre' => 'Gesperrt'] as $k => $l) {
+    foreach (['interhome' => 'Interhome', 'website' => 'Direkt', 'manuell' => 'Von Hand', 'eigentuemer' => 'Eigentümer', 'anfrage' => 'Anfrage', 'sperre' => 'Gesperrt'] as $k => $l) {
         $legende .= '<span><i class="k-' . $k . '"></i>' . $l . '</span>';
     }
-    layout($ich, 'Kalender', 'kalender', '<h1>Kalender</h1>'
-        . '<div class="monatsnav"><a class="knopf hell" href="/admin/kalender?m=' . $vor . '" aria-label="Vorheriger Monat">‹</a>'
-        . '<a class="link" href="/admin/kalender">Heute</a>'
-        . '<a class="knopf hell" href="/admin/kalender?m=' . $nach . '" aria-label="Nächster Monat">›</a></div>'
-        . '<div class="monate">' . monat((int)date('Y', $start), (int)date('n', $start), $eintraege) . monat((int)date('Y', strtotime('+1 month', $start)), (int)date('n', strtotime('+1 month', $start)), $eintraege) . '</div>'
+    $m2 = strtotime('+1 month', $start);
+    layout($ich, 'Buchungen', 'buchungen', $kopf
+        . ($anfragen ? '<section class="karte"><h2>Offene Anfragen</h2><div class="liste">' . implode('', array_map('buchung_zeile', $anfragen)) . '</div></section>' : '')
+        . '<div class="monatsnav"><a class="knopf hell" href="/admin/buchungen?m=' . $vor . '" aria-label="Vorheriger Monat">‹</a>'
+        . '<a class="link" href="/admin/buchungen">Heute</a>'
+        . '<a class="knopf hell" href="/admin/buchungen?m=' . $nach . '" aria-label="Nächster Monat">›</a></div>'
+        . '<div class="monate">' . monat((int)date('Y', $start), (int)date('n', $start), $eintraege) . monat((int)date('Y', $m2), (int)date('n', $m2), $eintraege) . '</div>'
         . '<p class="legende">' . $legende . '</p>'
-        . '<p class="klein">Klick auf einen freien Tag: dort eine Buchung erfassen.</p>');
+        . '<h2>' . MONATE[(int)date('n', $start)] . ' – ' . MONATE[(int)date('n', $m2)] . ' ' . date('Y', $m2) . '</h2>'
+        . '<div class="liste">' . (implode('', array_map('buchung_zeile', $imZeitraum)) ?: '<p class="leer">Keine Buchungen in diesen Monaten.</p>') . '</div>'
+        . '<p class="klein">Freien Tag im Kalender antippen: dort eine Buchung erfassen. <a href="/admin/buchungen?f=alle">Alle Buchungen als Liste</a></p>');
 }
 
 /* Wie viele Tage läuft der Balken ab $d in dieser Woche (und diesem Monat) noch? Begrenzt die Beschriftung. */

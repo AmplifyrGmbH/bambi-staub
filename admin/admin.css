@@ -229,3 +229,7 @@ input, select, textarea { padding: .45rem .6rem; min-height: 40px; }
 .zeile .z-datum small { font-weight: 400; }
 .zeile .z-badges { justify-content: flex-end; }
 @media (max-width: 480px) { .zeile .z-badges { grid-column: 1 / -1; justify-content: flex-start; } }
+
+/* Buchungen = Kalender + Liste (27.11.) */
+form.suche { margin-bottom: .8rem; }
+.monate + .legende { margin-bottom: 1rem; }

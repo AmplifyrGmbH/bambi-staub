@@ -98,9 +98,8 @@ switch ($seite) {
         seite_buchungen($ich);
         break;
 
-    case 'kalender':
-        seite_kalender($ich);
-        break;
+    case 'kalender':   // alte Adresse
+        weiter('buchungen' . (isset($_GET['m']) && preg_match('/^\d{4}-\d{2}$/', (string)$_GET['m']) ? '?m=' . $_GET['m'] : ''));
 
     case 'neu':
         if ($post) {
